@@ -1,0 +1,113 @@
+<?php
+
+namespace App\Http\Controllers\PageController;
+
+use App\Http\Controllers\Controller;
+use App\Models\Attendee;
+use App\Models\Event;
+use App\Models\Organizer;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+
+class HomePageController extends Controller
+{
+    public function index(Request $request)
+    {
+        $tz = request()->cookie('user_timezone', config('app.timezone'));
+        $now = Carbon::now($tz);
+
+        $status = $request->route('status');
+        if (!in_array($status, ['draft', 'ended', 'ongoing', 'upcoming'])) {
+            $status = null;
+        }
+
+        $baseQuery = Event::where('user_id', auth()->id());
+
+        $counts = $this->getEventCountsByStatus($baseQuery, $now);
+
+        $events = $baseQuery
+            ->when($status, function ($query) use ($status, $now) {
+                $this->applyStatusFilter($query, $status, $now);
+            })
+            ->orderBy('start_date')
+            ->paginate(6);
+
+        $eventsCount = Event::where('user_id', auth()->id())->count();
+
+        $organizations = Organizer::where('user_id', auth()->id())->get();
+
+        $attendeesCount = [];
+        foreach ($events as $event) {
+            $attendeesCount[$event->id] = $event->attendees()
+                ->where('status', 'active')
+                ->whereHas('order', function ($q) {
+                    $q->where('status', 'paid');
+                })
+                ->count();
+        }
+
+        return view('admin', [
+            'events' => $events,
+            'eventsCount' => $eventsCount,
+            'currentFilter' => $status,
+            'now' => $now,
+            'tz' => $tz,
+            'organizations' => $organizations,
+            'ongoingCount' => $counts['ongoing'],
+            'upcomingCount' => $counts['upcoming'],
+            'endedCount' => $counts['ended'],
+            'attendeesCountMap' => $attendeesCount,
+        ]);
+    }
+    protected function getEventCountsByStatus($baseQuery, Carbon $now)
+    {
+        $cloneQuery = clone $baseQuery;
+
+        return [
+            'draft' => $cloneQuery->clone()->where('status', 'draft')->count(),
+            'upcoming' => $cloneQuery->clone()
+                ->where('status', 'published')
+                ->where('start_date', '>', $now)
+                ->count(),
+            'ended' => $cloneQuery->clone()
+                ->where('status', 'published')
+                ->whereNotNull('end_date')
+                ->where('end_date', '<', $now)
+                ->count(),
+            'ongoing' => $cloneQuery->clone()
+                ->where('status', 'published')
+                ->where(function ($q) use ($now) {
+                    $q->where('start_date', '<=', $now)
+                        ->where(function ($q2) use ($now) {
+                            $q2->whereNull('end_date')
+                                ->orWhere('end_date', '>=', $now);
+                        });
+                })
+                ->count()
+        ];
+    }
+    protected function applyStatusFilter($query, string $status, Carbon $now)
+    {
+        return match ($status) {
+            'draft' => $query->where('status', 'draft'),
+
+            'upcoming' => $query->where('status', 'published')
+                ->where('start_date', '>', $now),
+
+            'ended' => $query->where('status', 'published')
+                ->whereNotNull('end_date')
+                ->where('end_date', '<', $now),
+
+            'ongoing' => $query->where('status', 'published')
+                ->where(function ($q) use ($now) {
+                        $q->where('start_date', '<=', $now)
+                        ->where(function ($q2) use ($now) {
+                            $q2->whereNull('end_date')
+                            ->orWhere('end_date', '>=', $now);
+                        });
+                    }),
+
+            default => $query
+        };
+    }
+}
