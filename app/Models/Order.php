@@ -9,12 +9,19 @@ class Order extends Model
     protected $table = 'orders';
 
     protected $fillable = [
+        'user_id',
         'name',
         'email',
         'status',
         'total_price',
+        'payment_proof',
+        'promo_id'
     ];
 
+    public function promo()
+    {
+        return $this->belongsTo(PromoCode::class);
+    }
     public function items()
     {
         return $this->hasMany(OrderItem::class);

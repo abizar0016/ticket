@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('address_line')->nullable();
             $table->string('city')->nullable();
             $table->string('state')->nullable();
-            $table->string('custom_maps_url')->nullable();
+            $table->text('custom_maps_url')->nullable();
             $table->timestampsTz();
         });
     }

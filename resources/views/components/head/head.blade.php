@@ -1,7 +1,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> {{ env('APP_NAME') }} | {{ request()->route()->getName() }} </title>
+    <title>
+        {{ env('APP_NAME') }} |
+        {{ ucwords(str_replace(['.', '_'], ' ', request()->route()->getName())) }}
+    </title>
     <meta name="description" content="Modern admin dashboard template built with Tailwind CSS">
 
     <!-- Favicon -->
@@ -16,6 +19,10 @@
 
     <!-- Sweetalert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- QR Scanner -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
 
     {{-- JS --}}
     <script>

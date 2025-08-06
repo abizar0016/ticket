@@ -1,5 +1,5 @@
 <aside
-    class="fixed top-0 left-0 z-40 w-64 h-screen bg-white shadow-2xl transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:shadow-3xl origin-left flex flex-col justify-between">
+    class="fixed top-0 left-0 z-40 w-64 h-screen bg-white shadow-2xl transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:shadow-3xl origin-left flex flex-col justify-between md:-translate-x-0 -translate-x-full">
 
     <!-- Sidebar Scrollable Content -->
     <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 p-4">
@@ -11,7 +11,7 @@
             </li>
 
             <li class="animate-[slideIn_0.6s_cubic-bezier(0.34,1.56,0.64,1)_forwards] delay-100">
-                <a href="?content=dashboard"
+                <a href="{{ route('event.dashboard', ['id' => $event->id]) }}"
                     class="flex items-center p-3 rounded-xl hover:bg-gray-50 transition-all duration-300 group hover:shadow-sm hover:-translate-x-1">
                     <i class="ri-dashboard-line text-xl mr-3 group-hover:scale-110 transition-transform"></i>
                     <span class="font-medium">Dashboard</span>
@@ -26,7 +26,7 @@
             </li>
 
             <li class="animate-[slideIn_0.6s_cubic-bezier(0.34,1.56,0.64,1)_forwards] delay-300">
-                <a href="?content=settings"
+                <a href="{{ route('event.settings', ['id' => $event->id]) }}"
                     class="flex items-center p-3 rounded-xl hover:bg-gray-50 transition-all duration-300 group hover:shadow-sm hover:-translate-x-1">
                     <i class="ri-settings-3-line text-xl mr-3 group-hover:scale-110 transition-transform"></i>
                     <span class="font-medium">Settings</span>
@@ -34,7 +34,7 @@
             </li>
 
             <li class="animate-[slideIn_0.6s_cubic-bezier(0.34,1.56,0.64,1)_forwards] delay-350">
-                <a href="?content=attendees"
+                <a href="{{ route('event.attendees', ['id' => $event->id]) }}"
                     class="flex items-center p-3 rounded-xl hover:bg-gray-50 transition-all duration-300 group hover:shadow-sm hover:-translate-x-1">
                     <i class="ri-group-line text-xl mr-3 group-hover:scale-110 transition-transform"></i>
                     <span class="font-medium">Attendees</span>
@@ -42,15 +42,15 @@
             </li>
 
             <li class="animate-[slideIn_0.6s_cubic-bezier(0.34,1.56,0.64,1)_forwards] delay-400">
-                <a href="?content=orders"
+                <a href="{{ route('event.orders', ['id' => $event->id]) }}"
                     class="flex items-center p-3 rounded-xl hover:bg-gray-50 transition-all duration-300 group hover:shadow-sm hover:-translate-x-1">
-                    <i class="ri-shopping-bag-line text-xl mr-3 group-hover:scale-110 transition-transform"></i>
+                    <i class="ri-shopping-cart-line text-xl mr-3 group-hover:scale-110 transition-transform"></i>
                     <span class="font-medium">Orders</span>
                 </a>
             </li>
 
             <li class="animate-[slideIn_0.6s_cubic-bezier(0.34,1.56,0.64,1)_forwards] delay-450">
-                <a href="?content=ticket-products"
+                <a href="{{ route('event.products', ['id' => $event->id]) }}"
                     class="flex items-center p-3 rounded-xl hover:bg-gray-50 transition-all duration-300 group hover:shadow-sm hover:-translate-x-1">
                     <i class="ri-ticket-2-line text-xl mr-3 group-hover:scale-110 transition-transform"></i>
                     <span class="font-medium">Tickets & Products</span>
@@ -58,15 +58,15 @@
             </li>
 
             <li class="animate-[slideIn_0.6s_cubic-bezier(0.34,1.56,0.64,1)_forwards] delay-550">
-                <a href="?content=checkins"
+                <a href="{{ route('event.checkins', ['id' => $event->id]) }}"
                     class="flex items-center p-3 rounded-xl hover:bg-gray-50 transition-all duration-300 group hover:shadow-sm hover:-translate-x-1">
-                    <i class="ri-list-check-2 text-xl mr-3 group-hover:scale-110 transition-transform"></i>
+                    <i class="ri-qr-code-line text-xl mr-3 group-hover:scale-110 transition-transform"></i>
                     <span class="font-medium">Check-In Lists</span>
                 </a>
             </li>
 
             <li class="animate-[slideIn_0.6s_cubic-bezier(0.34,1.56,0.64,1)_forwards] delay-600">
-                <a href="?content=promo-codes"
+                <a href="{{ route('event.promocodes', ['id' => $event->id]) }}"
                     class="flex items-center p-3 rounded-xl hover:bg-gray-50 transition-all duration-300 group hover:shadow-sm hover:-translate-x-1">
                     <i class="ri-coupon-line text-xl mr-3 group-hover:scale-110 transition-transform"></i>
                     <span class="font-medium">Promo Codes</span>
@@ -87,10 +87,10 @@
     </div>
 
     <!-- Floating Toggle Button -->
-    <div class="absolute -right-5 top-1/2 transform -translate-y-1/2">
+    <div class="absolute -right-5 top-1/2 transform -translate-y-1/2 md:hidden">
         <button id="sidebar-toggle"
             class="p-2 bg-white rounded-full shadow-lg hover:shadow-xl transition-shadow hover:scale-110">
-            <i class="ri-arrow-left-s-line text-gray-600"></i>
+            <i class="ri-arrow-right-s-line text-gray-600"></i>
         </button>
     </div>
 </aside>

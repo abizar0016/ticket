@@ -62,7 +62,7 @@
                         </p>
                     </div>
 
-                    <form class="space-y-4" action="{{ route('login.store') }}" method="POST">
+                    <form class="space-y-4" action="{{ route('login.store') }}" method="POST" autocomplete="on">
                         @csrf
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
@@ -72,7 +72,7 @@
                                 </div>
                                 <input id="email" name="email" type="email" required 
                                     class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
-                                    placeholder="your@email.com">
+                                    placeholder="your@email.com" autocomplete="email">
                             </div>
                         </div>
 
@@ -84,15 +84,15 @@
                                 </div>
                                 <input id="password" name="password" type="password" required 
                                     class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
-                                    placeholder="••••••">
+                                    placeholder="••••••" autocomplete="current-password">
                             </div>
                         </div>
 
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
-                                <input id="remember-me" name="remember-me" type="checkbox" 
+                                <input id="remember" name="remember" type="checkbox"  autocomplete="on"
                                     class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-                                <label for="remember-me" class="ml-2 block text-sm text-gray-700">
+                                <label for="remember" class="ml-2 block text-sm text-gray-700">
                                     Remember me
                                 </label>
                             </div>

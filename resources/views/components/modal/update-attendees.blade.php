@@ -17,7 +17,7 @@
                     <div class="flex items-start justify-between">
                         <div class="flex items-start gap-4">
                             <div
-                                class="p-3 rounded-xl bg-gradient-to-tr from-purple-500 to-indigo-600 text-white shadow-lg">
+                                class="p-3 rounded-xl bg-gradient-to-tr from-indigo-500 to-indigo-600 text-white shadow-lg">
                                 <i class="ri-user-line text-2xl"></i>
                             </div>
                             <div>
@@ -44,14 +44,14 @@
                                     <!-- Name -->
                                     <div class="relative group">
                                         <input type="text" id="attendeeName-{{ $attendee->id }}" name="name"
-                                            class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-purple-300 peer"
+                                            class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer"
                                             placeholder=" " value="{{ old('name', $attendee->name) }}" required>
                                         <label for="attendeeName-{{ $attendee->id }}"
-                                            class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-purple-600">
+                                            class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                             Full Name
                                         </label>
                                         <div
-                                            class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-purple-500">
+                                            class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                             <i class="ri-user-line text-2xl"></i>
                                         </div>
                                     </div>
@@ -59,14 +59,14 @@
                                     <!-- Email -->
                                     <div class="relative group">
                                         <input type="email" id="attendeeEmail-{{ $attendee->id }}" name="email"
-                                            class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-purple-300 peer"
+                                            class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer"
                                             placeholder=" " value="{{ old('email', $attendee->email) }}" required>
                                         <label for="attendeeEmail-{{ $attendee->id }}"
-                                            class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-purple-600">
+                                            class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                             Email Address
                                         </label>
                                         <div
-                                            class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-purple-500">
+                                            class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                             <i class="ri-mail-line text-2xl"></i>
                                         </div>
                                     </div>
@@ -78,14 +78,14 @@
                                     <div class="relative group">
                                         <input type="text" id="attendeeTicketCode-{{ $attendee->id }}"
                                             name="ticket_code"
-                                            class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-purple-300 peer"
+                                            class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer"
                                             placeholder=" " value="{{ old('ticket_code', $attendee->ticket_code) }}">
                                         <label for="attendeeTicketCode-{{ $attendee->id }}"
-                                            class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-purple-600">
+                                            class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                             Ticket Code
                                         </label>
                                         <div
-                                            class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-purple-500">
+                                            class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                             <i class="ri-ticket-2-line text-2xl"></i>
                                         </div>
                                     </div>
@@ -93,19 +93,21 @@
                                     <!-- Status -->
                                     <div class="relative group">
                                         <select id="attendeeStatus-{{ $attendee->id }}" name="status"
-                                            class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-purple-300 peer appearance-none"
+                                            class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer appearance-none"
                                             required>
                                             <option value="active"
                                                 {{ $attendee->status == 'active' ? 'selected' : '' }}>Active</option>
+                                            <option value="used" {{ $attendee->status == 'used' ? 'selected' : '' }}>
+                                                Used</option>
                                             <option value="pending"
                                                 {{ $attendee->status == 'pending' ? 'selected' : '' }}>Pending</option>
                                         </select>
                                         <label for="attendeeStatus-{{ $attendee->id }}"
-                                            class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-purple-600">
+                                            class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                             Status
                                         </label>
                                         <div
-                                            class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-purple-500">
+                                            class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                             <i class="ri-flag-line text-2xl"></i>
                                         </div>
                                         <div
@@ -119,14 +121,14 @@
                                 <div class="relative group">
                                     <input type="text" id="attendeeOrder-{{ $attendee->id }}" name="order"
                                         readonly
-                                        class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-0 bg-gray-100 text-gray-800 transition-all duration-300 shadow-sm group-hover:border-purple-300 peer"
+                                        class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-gray-100 text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer"
                                         placeholder=" " value="{{ old('order', $attendee->order->name) }}">
                                     <label for="attendeeOrder-{{ $attendee->id }}"
-                                        class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-purple-600">
+                                        class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                         Order Reference
                                     </label>
                                     <div
-                                        class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-purple-500">
+                                        class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                         <i class="ri-shopping-bag-line text-2xl"></i>
                                     </div>
                                 </div>
@@ -135,7 +137,7 @@
                             <!-- Modal Footer -->
                             <div class="bg-gray-50 px-6 py-4 sm:flex sm:flex-row-reverse rounded-b-2xl mt-6">
                                 <button type="submit"
-                                    class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-lg font-medium hover:from-purple-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:ml-3 sm:w-auto sm:text-sm transition-all duration-300 transform hover:-translate-y-1 hover:shadow-md">
+                                    class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-6 py-3 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white text-lg font-medium hover:from-indigo-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm transition-all duration-300 transform hover:-translate-y-1 hover:shadow-md">
                                     <i class="ri-save-line mr-2"></i> Update
                                 </button>
                                 <button type="button" id="cancelAttendeesUpdateModal-{{ $attendee->id }}"

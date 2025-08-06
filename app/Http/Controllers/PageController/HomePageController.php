@@ -8,6 +8,7 @@ use App\Models\Event;
 use App\Models\Organizer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomePageController extends Controller
 {
@@ -17,11 +18,17 @@ class HomePageController extends Controller
         $now = Carbon::now($tz);
 
         $status = $request->route('status');
+        $search = $request->query('search');
+
         if (!in_array($status, ['draft', 'ended', 'ongoing', 'upcoming'])) {
             $status = null;
         }
 
-        $baseQuery = Event::where('user_id', auth()->id());
+        $baseQuery = Event::where('user_id', Auth::id());
+
+        if ($search) {
+            $baseQuery->where('title', 'like', '%' . $search . '%');
+        }
 
         $counts = $this->getEventCountsByStatus($baseQuery, $now);
 
@@ -30,23 +37,24 @@ class HomePageController extends Controller
                 $this->applyStatusFilter($query, $status, $now);
             })
             ->orderBy('start_date')
-            ->paginate(6);
+            ->paginate(6)
+            ->withQueryString();
 
-        $eventsCount = Event::where('user_id', auth()->id())->count();
+        $eventsCount = Event::where('user_id', Auth::id())->count();
 
-        $organizations = Organizer::where('user_id', auth()->id())->get();
+        $organizations = Organizer::where('user_id', Auth::id())->get();
 
         $attendeesCount = [];
         foreach ($events as $event) {
             $attendeesCount[$event->id] = $event->attendees()
-                ->where('status', 'active')
+                ->whereIn('status', ['active', 'used'])
                 ->whereHas('order', function ($q) {
                     $q->where('status', 'paid');
                 })
                 ->count();
         }
 
-        return view('admin', [
+        return view('Admin.index', [
             'events' => $events,
             'eventsCount' => $eventsCount,
             'currentFilter' => $status,
@@ -56,9 +64,10 @@ class HomePageController extends Controller
             'ongoingCount' => $counts['ongoing'],
             'upcomingCount' => $counts['upcoming'],
             'endedCount' => $counts['ended'],
-            'attendeesCountMap' => $attendeesCount,
+            'attendeesCount' => $attendeesCount,
         ]);
     }
+
     protected function getEventCountsByStatus($baseQuery, Carbon $now)
     {
         $cloneQuery = clone $baseQuery;
@@ -100,12 +109,12 @@ class HomePageController extends Controller
 
             'ongoing' => $query->where('status', 'published')
                 ->where(function ($q) use ($now) {
-                        $q->where('start_date', '<=', $now)
+                    $q->where('start_date', '<=', $now)
                         ->where(function ($q2) use ($now) {
                             $q2->whereNull('end_date')
-                            ->orWhere('end_date', '>=', $now);
+                                ->orWhere('end_date', '>=', $now);
                         });
-                    }),
+                }),
 
             default => $query
         };

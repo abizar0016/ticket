@@ -1,6 +1,6 @@
 <nav id="navbar"
     class="sticky top-0 z-50 bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-sm transition-all duration-300 w-full">
-    <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
+    <div class="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
         <!-- Logo Section -->
         <div class="flex items-center space-x-3">
             <a href="{{ Auth::user()->role == 'admin' ? route('home.admin') : route('home') }}"
@@ -17,25 +17,18 @@
 
         <!-- Right Controls -->
         <div class="flex items-center space-x-5">
-            <!-- Search Bar -->
-            <div class="hidden lg:block relative w-72">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                    <i class="ri-search-line"></i>
-                </div>
-                <input type="search"
-                    class="block w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white/50 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 hover:shadow-sm"
-                    placeholder="Search events, attendees...">
-            </div>
 
             <!-- Icons Group -->
             <div class="flex items-center space-x-4">
                 <!-- Orders Link (Only for Customers) -->
-                    <a href="" 
-                       class="hidden md:flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-gray-100 transition-all duration-200 group"
-                       title="My Orders">
+                @if (Auth::user()->role == 'customer')
+                    <a href="{{ route('orders.customers') }}"
+                        class="hidden md:flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-gray-100 transition-all duration-200 group"
+                        title="My Orders">
                         <i class="ri-shopping-bag-line text-gray-600 group-hover:text-indigo-600"></i>
                         <span class="text-sm font-medium text-gray-700 group-hover:text-indigo-600">My Orders</span>
                     </a>
+                @endif
 
                 <!-- User Profile -->
                 <div class="relative ml-2">
@@ -65,12 +58,12 @@
                             class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                             <i class="ri-user-line mr-3 text-indigo-500"></i> My Profile
                         </a>
-                            <a href=""
-                                class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors md:hidden">
-                                <i class="ri-shopping-bag-line mr-3 text-indigo-500"></i> My Orders
-                            </a>
+                        <a href="{{ route('orders.customers') }}"
+                            class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors md:hidden">
+                            <i class="ri-shopping-bag-line mr-3 text-indigo-500"></i> My Orders
+                        </a>
 
-                            <a href="#"
+                        <a href="#"
                             class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                             <i class="ri-settings-3-line mr-3 text-indigo-500"></i> Account Settings
                         </a>

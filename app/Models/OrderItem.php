@@ -26,10 +26,4 @@ class OrderItem extends Model
         return $this->belongsTo(Product::class);
     }
 
-    // OrderItem.php
-    public function attendees()
-    {
-        return $this->hasMany(Attendee::class);
-    }
-
 }

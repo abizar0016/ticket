@@ -8,13 +8,13 @@
 
         <!-- Modal Panel -->
         <<div
-            class="inline-block bg-white rounded-4xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl w-full opacity-0 translate-y-4 sm:scale-95"
+            class="inline-block bg-white rounded-4xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle max-w-2xl w-full opacity-0 translate-y-4 scale-95"
             id="modalPanel">
             <div class="bg-white px-6 pt-6 pb-4 sm:p-6 sm:pb-4 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-start justify-between">
                     <div class="flex items-start gap-4">
                         <div
-                            class="p-3 rounded-xl bg-gradient-to-tr from-purple-500 to-indigo-600 text-white shadow-lg">
+                            class="p-3 rounded-xl bg-gradient-to-tr from-indigo-500 to-indigo-600 text-white shadow-lg">
                             <i class="ri-calendar-event-line text-2xl"></i>
                         </div>
                         <div>
@@ -34,36 +34,36 @@
                         @csrf
                         <div class="grid grid-cols-1 gap-6">
                             <!-- Event Organization -->
-                            <div class="relative flex items-start gap-4 w-full">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                                <div class="relative flex-1 group">
+                                <div class="relative group">
                                     <select id="eventOrganizer" name="organization_id"
-                                        class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-purple-300 peer">
+                                        class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer">
                                         @foreach ($organizations as $organization)
                                             <option value="{{ $organization->id }}">{{ $organization->name }}</option>
                                         @endforeach
                                     </select>
                                     <label for="eventOrganizer"
-                                        class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-purple-600">
+                                        class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                         Event Organization
                                     </label>
                                     <div
-                                        class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-purple-500">
+                                        class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                         <i class="ri-community-line text-2xl"></i>
                                     </div>
                                 </div>
 
                                 <!-- Title Input with Floating Label -->
-                                <div class="relative flex-1 group">
+                                <div class="relative group">
                                     <input type="text" id="eventTitle" name="title"
-                                        class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-purple-300 peer"
+                                        class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer"
                                         placeholder=" " required>
                                     <label for="eventTitle"
-                                        class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-purple-600">
+                                        class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                         Event Title
                                     </label>
                                     <div
-                                        class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-purple-500">
+                                        class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                         <i class="ri-edit-box-line text-2xl"></i>
                                     </div>
                                 </div>
@@ -72,14 +72,14 @@
                             <!-- Description -->
                             <div class="relative group">
                                 <textarea id="eventDescription" name="description" rows="3"
-                                    class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-purple-300 resize-y min-h-[100px] hover:min-h-[120px] focus:min-h-[120px] peer"
+                                    class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 resize-y min-h-[100px] hover:min-h-[120px] focus:min-h-[120px] peer"
                                     placeholder=" " required></textarea>
                                 <label for="eventDescription"
-                                    class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-purple-600">
+                                    class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                     Description
                                 </label>
                                 <div
-                                    class="absolute inset-y-0 left-0 pl-5 flex items-start pt-4 pointer-events-none text-purple-500">
+                                    class="absolute inset-y-0 left-0 pl-5 flex items-start pt-4 pointer-events-none text-indigo-500">
                                     <i class="ri-align-left text-2xl"></i>
                                 </div>
                             </div>
@@ -89,14 +89,14 @@
                                 <!-- Start Date -->
                                 <div class="relative group">
                                     <input type="datetime-local" id="startDate" name="start_date"
-                                        class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-purple-300 peer"
+                                        class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer"
                                         placeholder=" " required>
                                     <label for="startDate"
-                                        class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-purple-600">
+                                        class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                         Start Date
                                     </label>
                                     <div
-                                        class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-purple-500">
+                                        class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                         <i class="ri-calendar-2-line text-2xl"></i>
                                     </div>
                                 </div>
@@ -104,14 +104,14 @@
                                 <!-- End Date -->
                                 <div class="relative group">
                                     <input type="datetime-local" id="endDate" name="end_date"
-                                        class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-purple-300 peer"
+                                        class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer"
                                         placeholder=" " required>
                                     <label for="endDate"
-                                        class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-purple-600">
+                                        class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                         End Date
                                     </label>
                                     <div
-                                        class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-purple-500">
+                                        class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                         <i class="ri-calendar-check-line text-2xl"></i>
                                     </div>
                                 </div>
@@ -123,7 +123,7 @@
                                     <!-- Default State -->
                                     <div id="default-state"
                                         class=" flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                                        <i class="ri-upload-cloud-2-line text-4xl text-purple-500"></i>
+                                        <i class="ri-upload-cloud-2-line text-4xl text-indigo-500"></i>
                                         <p class="font-semibold text-gray-700">Upload Event Image</p>
                                         <p class="text-sm text-gray-500">PNG, JPG, GIF up to 10MB</p>
                                     </div>
@@ -147,7 +147,7 @@
                         <!-- Modal Footer -->
                         <div class="bg-gray-50 px-6 py-4 sm:flex sm:flex-row-reverse rounded-b-2xl mt-6">
                             <button type="submit"
-                                class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-lg font-medium hover:from-purple-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:ml-3 sm:w-auto sm:text-sm transition-all duration-300 transform hover:-translate-y-1 hover:shadow-md">
+                                class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-6 py-3 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white text-lg font-medium hover:from-indigo-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm transition-all duration-300 transform hover:-translate-y-1 hover:shadow-md">
                                 <i class="ri-add-line mr-2"></i> Create Event
                             </button>
                             <button type="button" id="cancelEventModal"

@@ -128,7 +128,7 @@
                             <div class="p-6 flex-grow flex flex-col">
                                 <h3
                                     class="text-xl font-extrabold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2">
-                                    {{ $event->name }}
+                                    {{ $event->title }}
                                 </h3>
 
                                 <p class="text-gray-600/90 mb-5 line-clamp-3 flex-grow">
@@ -150,7 +150,7 @@
                                 <!-- Manage + Delete Buttons -->
                                 <div class="mt-auto pt-4 border-t border-gray-100/60 space-y-3">
                                     <!-- Manage -->
-                                    <a href="{{ route('event.manage', $event->id) }}"
+                                    <a href="{{ route('event.dashboard', $event->id) }}"
                                         class="relative flex items-center justify-between gap-3 w-full px-5 py-3 rounded-xl bg-white border border-gray-200 shadow-sm hover:shadow-xl group transition-all duration-300 overflow-hidden">
                                         <span
                                             class="relative z-10 font-semibold text-gray-700 group-hover:text-indigo-600 transition-colors">Manage

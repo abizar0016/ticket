@@ -3,7 +3,8 @@
     <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         {{-- Backdrop --}}
         <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-            <div class="absolute inset-0 bg-gray-500 opacity-0 transition-opacity duration-300" id="promoBackdrop">
+            <div class="absolute inset-0 bg-gray-900/70 backdrop-blur-sm opacity-0 transition-opacity duration-300"
+                id="promoBackdrop">
             </div>
         </div>
 
@@ -23,22 +24,37 @@
                 </div>
 
                 <div class="mt-6">
-                    <form id="create-promo-form" action="{{ route('promocode.store') }}" method="POST" id="promoForm">
+                    <form id="create-promo-form" action="{{ route('promocode.store') }}" method="POST">
                         @csrf
                         <input type="hidden" id="promoId" name="id">
 
                         <div class="grid grid-cols-1 gap-6">
+                            {{-- Promo Name --}}
+                            <div class="relative group">
+                                <input type="text" id="promoName" name="name"
+                                    class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer"
+                                    placeholder=" " required>
+                                <label for="promoName"
+                                    class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
+                                    Promo Name
+                                </label>
+                                <div
+                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
+                                    <i class="ri-coupon-2-line text-2xl"></i>
+                                </div>
+                            </div>
+
                             {{-- Code --}}
                             <div class="relative group">
                                 <input type="text" id="promoCode" name="code"
-                                    class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-purple-300 peer"
+                                    class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer"
                                     placeholder=" " required>
                                 <label for="promoCode"
-                                    class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-purple-600">
+                                    class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                     Promo Code
                                 </label>
                                 <div
-                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-purple-500">
+                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                     <i class="ri-coupon-2-line text-2xl"></i>
                                 </div>
                             </div>
@@ -46,7 +62,7 @@
                             {{-- Product Selection --}}
                             <div class="relative group">
                                 <select id="promoProduct" name="product_id"
-                                    class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-purple-300 peer appearance-none"
+                                    class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer appearance-none"
                                     required>
                                     <option value="">Select a product</option>
                                     @foreach ($products as $product)
@@ -54,11 +70,11 @@
                                     @endforeach
                                 </select>
                                 <label for="promoProduct"
-                                    class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-purple-600">
+                                    class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                     Apply To Product
                                 </label>
                                 <div
-                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-purple-500">
+                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                     <i class="ri-ticket-2-line text-2xl"></i>
                                 </div>
                                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -71,17 +87,17 @@
                                 {{-- Discount Type --}}
                                 <div class="relative group">
                                     <select id="promoType" name="type"
-                                        class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-purple-300 peer appearance-none"
+                                        class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer appearance-none"
                                         required>
                                         <option value="percentage">Percentage</option>
                                         <option value="fixed">Fixed Amount</option>
                                     </select>
                                     <label for="promoType"
-                                        class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-purple-600">
+                                        class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                         Discount Type
                                     </label>
                                     <div
-                                        class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-purple-500">
+                                        class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                         <i class="ri-percent-line text-2xl"></i>
                                     </div>
                                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -92,14 +108,14 @@
                                 {{-- Discount Amount --}}
                                 <div class="relative group">
                                     <input type="number" id="promoDiscount" name="discount" min="1"
-                                        class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-purple-300 peer"
+                                        class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer"
                                         placeholder=" " required>
                                     <label for="promoDiscount"
-                                        class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-purple-600">
+                                        class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                         Discount Amount
                                     </label>
                                     <div
-                                        class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-purple-500">
+                                        class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                         <i class="ri-money-dollar-circle-line text-2xl"></i>
                                     </div>
                                 </div>
@@ -108,14 +124,14 @@
                             {{-- Max Uses --}}
                             <div class="relative group">
                                 <input type="number" id="promoMaxUses" name="max_uses" min="0"
-                                    class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-purple-300 peer"
+                                    class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer"
                                     placeholder=" " required>
                                 <label for="promoMaxUses"
-                                    class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-purple-600">
+                                    class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                     Max Uses
                                 </label>
                                 <div
-                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-purple-500">
+                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                     <i class="ri-user-line text-2xl"></i>
                                 </div>
                                 <div class="absolute right-5 top-4 text-gray-500 text-lg">
@@ -125,7 +141,7 @@
                         </div>
                         <div class="bg-gray-50 px-6 py-4 sm:flex sm:flex-row-reverse rounded-b-2xl">
                             <button type="submit" id="submitPromoForm"
-                                class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-lg font-medium hover:from-purple-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:ml-3 sm:w-auto sm:text-sm transition-all duration-300 transform hover:-translate-y-1 hover:shadow-md">
+                                class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-6 py-3 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white text-lg font-medium hover:from-indigo-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm transition-all duration-300 transform hover:-translate-y-1 hover:shadow-md">
                                 Save Promo Code
                             </button>
                             <button type="button" id="cancelPromoModal"

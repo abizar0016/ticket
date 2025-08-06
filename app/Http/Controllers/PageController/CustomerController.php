@@ -12,6 +12,7 @@ use App\Models\OrderItem;
 use App\Models\Attendee;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CustomerController extends Controller
 {
@@ -22,6 +23,7 @@ class CustomerController extends Controller
         }
 
         $users = Auth::user();
+        $search = request('search');
 
         $events = Event::with([
             'products' => function ($query) {
@@ -32,11 +34,15 @@ class CustomerController extends Controller
         ])
             ->where('end_date', '>', now())
             ->where('status', '!=', 'draft')
+            ->when($search, function ($query) use ($search) {
+                $query->where('title', 'like', '%' . $search . '%');
+            })
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('index', compact('users', 'events'));
+        return view('Customers.index', compact('users', 'events'));
     }
+
 
     public function eventShow($id)
     {
@@ -57,7 +63,7 @@ class CustomerController extends Controller
             ->where('sale_end_date', '>=', now())
             ->get();
 
-        return view('eventShow.index', [
+        return view('Customers.eventShow.index', [
             'event' => $event,
             'products' => $products,
             'cart' => [
@@ -67,86 +73,39 @@ class CustomerController extends Controller
         ]);
     }
 
-    public function submitCheckout(Request $request)
+    public function showCheckoutForm($token)
     {
-        $data = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'attendees' => 'nullable|array',
-            'attendees.*.name' => 'required_with:attendees|string',
-            'attendees.*.email' => 'required_with:attendees|email',
-            'cart_data' => 'required|string',
-        ]);
+        $checkoutData = session('checkout_data');
 
-        $cart = json_decode($data['cart_data'], true);
-        if (empty($cart)) {
-            return redirect('/')->with('error', 'Keranjang kosong.');
+        if (!$checkoutData || $checkoutData['token'] !== $token) {
+            Log::error('Invalid or missing checkout data for token:', [$token]);
+            return redirect()->route('home')->with('error', 'Sesi checkout telah kadaluarsa atau tidak valid.');
         }
 
-        // 🔍 Validasi stok produk terlebih dahulu
-        foreach ($cart as $item) {
-            $product = Product::find($item['productId']);
-            if (!$product) {
-                return redirect()->back()->with('error', 'Produk tidak ditemukan.');
-            }
-            if ($product->quantity < $item['quantity']) {
-                return redirect()->back()->with('error', 'Stok tidak cukup untuk produk: ' . $product->title);
-            }
+        if (now()->gt($checkoutData['expires_at'])) {
+            session()->forget('checkout_data');
+            return redirect()->route('home')->with('error', 'Sesi checkout telah kadaluarsa.');
         }
 
-        $order = Order::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'total_price' => collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']),
-            'status' => 'pending',
-        ]);
+        $productIds = array_merge(
+            array_column($checkoutData['tickets'], 'product_id'),
+            array_column($checkoutData['merchandise'], 'product_id')
+        );
 
-        $attendeeIndex = 0;
-        $createdAttendees = [];
+        $products = Product::with('event')
+            ->whereIn('id', $productIds)
+            ->get()
+            ->keyBy('id');
 
-        foreach ($cart as $item) {
-            $itemTotal = $item['price'] * $item['quantity'];
+        $viewData = [
+            'token' => $token,
+            'tickets' => $checkoutData['tickets'],
+            'merchandise' => $checkoutData['merchandise'],
+            'products' => $products,
+            'ticketCount' => array_sum(array_column($checkoutData['tickets'], 'quantity')),
+            'checkoutData' => $checkoutData
+        ];
 
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $item['productId'],
-                'promo_code_id' => null,
-                'quantity' => $item['quantity'],
-                'total_price' => $itemTotal,
-                'price_before_discount' => $item['price'],
-            ]);
-
-            $product = Product::find($item['productId']);
-            if ($product) {
-                $product->decrement('quantity', $item['quantity']);
-            }
-
-            if (isset($item['type']) && strtolower($item['type']) === 'ticket') {
-                for ($i = 0; $i < $item['quantity']; $i++) {
-                    if (!isset($data['attendees'][$attendeeIndex]))
-                        continue;
-
-                    $attendeeData = $data['attendees'][$attendeeIndex];
-                    $ticketCode = $product->event->event_code . '-' . strtoupper(Str::random(4));
-
-                    $attendee = Attendee::create([
-                        'name' => $attendeeData['name'],
-                        'email' => $attendeeData['email'],
-                        'order_id' => $order->id,
-                        'product_id' => $item['productId'],
-                        'event_id' => $item['eventId'],
-                        'ticket_code' => $ticketCode,
-                        'status' => 'pending',
-                    ]);
-
-                    $createdAttendees[] = $attendee;
-                    $attendeeIndex++;
-                }
-            }
-        }
-
-        session()->forget('cart');
-
-        return redirect()->route('home')->with('success', 'Order berhasil dibuat.');
+        return view('Customers.checkout.form', $viewData);
     }
 }
