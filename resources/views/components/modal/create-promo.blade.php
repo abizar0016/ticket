@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="mt-6">
-                    <form id="create-promo-form" action="{{ route('promocode.store') }}" method="POST">
+                    <form id="create-promo-form" action="{{ route('promocode.store', $event->id ) }}" method="POST">
                         @csrf
                         <input type="hidden" id="promoId" name="id">
 
@@ -56,29 +56,6 @@
                                 <div
                                     class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                     <i class="ri-coupon-2-line text-2xl"></i>
-                                </div>
-                            </div>
-
-                            {{-- Product Selection --}}
-                            <div class="relative group">
-                                <select id="promoProduct" name="product_id"
-                                    class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer appearance-none"
-                                    required>
-                                    <option value="">Select a product</option>
-                                    @foreach ($products as $product)
-                                        <option value="{{ $product->id }}">{{ $product->title }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="promoProduct"
-                                    class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
-                                    Apply To Product
-                                </label>
-                                <div
-                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
-                                    <i class="ri-ticket-2-line text-2xl"></i>
-                                </div>
-                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                    <i class="ri-arrow-down-s-line text-gray-400"></i>
                                 </div>
                             </div>
 

@@ -28,6 +28,7 @@ use App\Http\Controllers\PageController\{
 use Google\Service\BinaryAuthorization\Check;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Log;
 
 // ----------------------------------------- Authorization  -----------------------------------------
 Route::get('/auth/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -99,7 +100,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/order/{id}/destroy', [OrderActionController::class, 'destroy'])->name('order.destroy');
 
     // // ----------------------------------------- Promo Code -----------------------------------------
-    Route::post('/promocode/store', [PromoController::class, 'store'])->name('promocode.store');
+    Route::post('/promocode/{id}/store', [PromoController::class, 'store'])->name('promocode.store');
     Route::put('/promocode/{id}/update', [PromoController::class, 'update'])->name('promocode.update');
     Route::delete('/promocode/{id}/destroy', [PromoController::class, 'destroy'])->name('promocode.destroy');
 
@@ -114,4 +115,9 @@ Route::post('/set-timezone', function (\Illuminate\Http\Request $request) {
     $tz = $request->timezone ?? 'Asia/Jakarta';
     return response()->json(['status' => 'ok'])
         ->cookie('user_timezone', $tz, 60 * 24 * 30);
+});
+
+Route::get('/test-log', function () {
+    Log::debug('🔥 Test log dari route', ['time' => now()]);
+    return 'Cek laravel.log';
 });

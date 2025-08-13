@@ -65,6 +65,7 @@
                         <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mt-1">
                             Rp {{ number_format($totalDiscounts, 0, ',', '.') }}
                         </h3>
+
                     </div>
                     <div class="p-2 sm:p-3 rounded-md sm:rounded-lg bg-blue-100 text-blue-600">
                         <i class="ri-money-dollar-circle-line text-xl sm:text-2xl"></i>
@@ -134,93 +135,95 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach ($promos as $promo)
-                            <tr class="hover:bg-gray-50 transition-colors duration-150">
-                                <td class="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div
-                                            class="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10 bg-purple-100 rounded-md sm:rounded-lg flex items-center justify-center text-purple-600">
-                                            <i class="ri-coupon-2-line text-sm sm:text-base"></i>
+                        <tr class="hover:bg-gray-50 transition-colors duration-150">
+                            <td class="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div
+                                        class="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10 bg-purple-100 rounded-md sm:rounded-lg flex items-center justify-center text-purple-600">
+                                        <i class="ri-coupon-2-line text-sm sm:text-base"></i>
+                                    </div>
+                                    <div class="ml-3 sm:ml-4">
+                                        <div class="text-sm font-semibold text-gray-900">
+                                            {{ Str::limit($promo->name, 15) }}
                                         </div>
-                                        <div class="ml-3 sm:ml-4">
-                                            <div class="text-sm font-semibold text-gray-900">
-                                                {{ Str::limit($promo->name, 15) }}</div>
-                                            <div class="text-xs text-gray-500">Created:
-                                                {{ $promo->created_at->format('M d, Y') }}</div>
+                                        <div class="text-xs text-gray-500">Created:
+                                            {{ $promo->created_at->format('M d, Y') }}
                                         </div>
                                     </div>
-                                </td>
-                                <td class="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap">
-                                    <div class="text-sm font-semibold text-gray-900">{{ $promo->code }}</div>
-                                </td>
-                                <td class="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">
-                                        @if ($promo->type === 'percentage')
-                                            {{ $promo->discount }}% off
-                                        @else
-                                            Rp {{ number_format($promo->discount, 0, ',', '.') }} off
-                                        @endif
-                                    </div>
-                                </td>
-                                <td class="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap hidden sm:table-cell">
-                                    <div class="text-sm text-gray-900">
-                                        @if ($promo->product)
-                                            {{ Str::limit($promo->product->title, 15) }}
-                                        @else
-                                            All Products
-                                        @endif
-                                    </div>
-                                </td>
-                                <td class="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap hidden sm:table-cell">
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-12 sm:w-16 bg-gray-200 rounded-full h-1.5 sm:h-2">
-                                            <div class="bg-indigo-500 h-1.5 sm:h-2 rounded-full"
-                                                style="width: {{ $promo->max_uses > 0 ? min(100, ($promo->order_items_count / $promo->max_uses) * 100) : 100 }}%">
-                                            </div>
-                                        </div>
-                                        <span class="text-xs sm:text-sm text-gray-900">
-                                            {{ $promo->order_items_count }}
-                                            @if ($promo->max_uses > 0)
-                                                /{{ $promo->max_uses }}
-                                            @endif
-                                        </span>
-                                    </div>
-                                </td>
-                                <td class="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap">
-                                    @if ($promo->max_uses == 0 || $promo->order_items_count < $promo->max_uses)
-                                        <span
-                                            class="px-2 py-0.5 sm:px-3 sm:py-1 inline-flex text-xs leading-4 font-medium rounded-full bg-green-100 text-green-800 flex items-center gap-1">
-                                            <i class="ri-checkbox-circle-line text-xs sm:text-sm"></i> <span
-                                                class="hidden sm:inline">Active</span>
-                                        </span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap">
+                                <div class="text-sm font-semibold text-gray-900">{{ $promo->code }}</div>
+                            </td>
+                            <td class="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">
+                                    @if ($promo->type === 'percentage')
+                                    {{ $promo->discount }}% off
                                     @else
-                                        <span
-                                            class="px-2 py-0.5 sm:px-3 sm:py-1 inline-flex text-xs leading-4 font-medium rounded-full bg-red-100 text-red-800 flex items-center gap-1">
-                                            <i class="ri-close-circle-line text-xs sm:text-sm"></i> <span
-                                                class="hidden sm:inline">Used</span>
-                                        </span>
+                                    Rp {{ number_format($promo->discount, 0, ',', '.') }} off
                                     @endif
-                                </td>
-                                <td class="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-right">
-                                    <div class="flex justify-end items-center gap-1 sm:gap-2">
-                                        <button onclick="openEditModal({{ $promo->id }})"
-                                            class="p-1.5 sm:p-2 text-indigo-600 hover:text-white hover:bg-indigo-600 rounded-md sm:rounded-lg transition-all duration-200"
-                                            title="Edit">
-                                            <i class="ri-edit-line text-sm sm:text-base"></i>
-                                        </button>
-                                        <form id="delete-promo-{{ $promo->id }}"
-                                            action="{{ route('promocode.destroy', $promo->id) }}">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button"
-                                                onclick="confirmDelete('delete-promo-{{ $promo->id }}')"
-                                                class="p-1.5 sm:p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-md sm:rounded-lg transition-all duration-200"
-                                                title="Delete">
-                                                <i class="ri-delete-bin-line text-sm sm:text-base"></i>
-                                            </button>
-                                        </form>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap hidden sm:table-cell">
+                                <div class="text-sm text-gray-900">
+                                    @if ($promo->product)
+                                    {{ Str::limit($promo->product->title, 15) }}
+                                    @else
+                                    All Products
+                                    @endif
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap hidden sm:table-cell">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-12 sm:w-16 bg-gray-200 rounded-full h-1.5 sm:h-2">
+                                        <div class="bg-indigo-500 h-1.5 sm:h-2 rounded-full"
+                                            style="width: {{ $promo->max_uses > 0 ? min(100, ($promo->order_items_count / $promo->max_uses) * 100) : 100 }}%">
+                                        </div>
                                     </div>
-                                </td>
-                            </tr>
+                                    <span class="text-xs sm:text-sm text-gray-900">
+                                        {{ $promo->order_items_count }}
+                                        @if ($promo->max_uses > 0)
+                                        /{{ $promo->max_uses }}
+                                        @endif
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap">
+                                @if ($promo->max_uses == 0 || $promo->order_items_count < $promo->max_uses)
+                                    <span
+                                        class="px-2 py-0.5 sm:px-3 sm:py-1 inline-flex text-xs leading-4 font-medium rounded-full bg-green-100 text-green-800 flex items-center gap-1">
+                                        <i class="ri-checkbox-circle-line text-xs sm:text-sm"></i> <span
+                                            class="hidden sm:inline">Active</span>
+                                    </span>
+                                    @else
+                                    <span
+                                        class="px-2 py-0.5 sm:px-3 sm:py-1 inline-flex text-xs leading-4 font-medium rounded-full bg-red-100 text-red-800 flex items-center gap-1">
+                                        <i class="ri-close-circle-line text-xs sm:text-sm"></i> <span
+                                            class="hidden sm:inline">Used</span>
+                                    </span>
+                                    @endif
+                            </td>
+                            <td class="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-right">
+                                <div class="flex justify-end items-center gap-1 sm:gap-2">
+                                    <button onclick="openEditModal({{ $promo->id }})"
+                                        class="p-1.5 sm:p-2 text-indigo-600 hover:text-white hover:bg-indigo-600 rounded-md sm:rounded-lg transition-all duration-200"
+                                        title="Edit">
+                                        <i class="ri-edit-line text-sm sm:text-base"></i>
+                                    </button>
+                                    <form id="delete-promo-{{ $promo->id }}"
+                                        action="{{ route('promocode.destroy', $promo->id) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button"
+                                            onclick="confirmDelete('delete-promo-{{ $promo->id }}')"
+                                            class="p-1.5 sm:p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-md sm:rounded-lg transition-all duration-200"
+                                            title="Delete">
+                                            <i class="ri-delete-bin-line text-sm sm:text-base"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>

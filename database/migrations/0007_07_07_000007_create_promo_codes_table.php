@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('promo_codes', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->string('name');
-            $table->string('code');
-            $table->integer('discount');
-            $table->enum('type', ['percentage', 'fixed'])->default('percentage');
-            $table->integer('max_uses')->default(1);
-            $table->timestamps();
-        });
+            Schema::create('promo_codes', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('event_id')->constrained();
+                $table->string('name');
+                $table->string('code');
+                $table->integer('discount');
+                $table->enum('type', ['percentage', 'fixed'])->default('percentage');
+                $table->integer('max_uses')->default(1);
+                $table->timestamps();
+            });
     }
 
     /**

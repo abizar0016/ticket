@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PageController;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\PromoCode;
@@ -17,30 +18,28 @@ class PromoCodesController extends BaseController
         $viewData = $this->getViewData('promo-codes', $event);
         $search = request('search');
         $statusFilter = request('status');
-
-        $promosQuery = PromoCode::with(['product'])
-            ->whereHas('product', fn($q) => $q->where('event_id', $event->id))
+    
+        $promosQuery = PromoCode::query()
             ->when($search, function ($query) use ($search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('code', 'like', "%{$search}%")
-                        ->orWhereHas('product', fn($q) => $q->where('title', 'like', "%{$search}%"));
-                });
+                $query->where('code', 'like', "%{$search}%");
             })
             ->when($statusFilter, fn($q) => $this->applyPromoStatusFilter($q, $statusFilter));
-
+    
         return view('Admin.eventDashboard.index', array_merge($viewData, [
             'promos' => $promosQuery->orderBy('created_at', 'desc')->paginate(10),
-            'products' => Product::where('event_id', $event->id)->orderBy('title')->get(),
-            'totalPromos' => PromoCode::whereHas('product', fn($q) => $q->where('event_id', $event->id))->count(),
-            'activePromos' => PromoCode::whereHas('product', fn($q) => $q->where('event_id', $event->id))
-                ->where(function ($query) {
-                    $query->where('max_uses', 0)
-                        ->orWhereRaw('(SELECT COUNT(*) FROM order_items WHERE order_items.promo_code_id = promo_codes.id) < max_uses');
-                })->count(),
-            'totalDiscounts' => OrderItem::whereHas('order', fn($q) => $q->where('status', 'paid'))
-                ->whereHas('product', fn($q) => $q->where('event_id', $event->id))
-                ->whereNotNull('promo_code_id')
-                ->sum(DB::raw('price_before_discount - total_price')),
+            'totalPromos' => PromoCode::count(),
+            'activePromos' => PromoCode::where(function ($query) {
+                $query->where('max_uses', 0)
+                    ->orWhereRaw('(SELECT COUNT(*) FROM orders WHERE orders.promo_id = promo_codes.id) < max_uses');
+            })->count(),
+            'totalDiscounts' => OrderItem::whereHas('order', function ($q) use ($event) {
+                $q->where('status', 'paid')
+                  ->whereHas('event', function ($q) use ($event) {
+                      $q->where('id', $event->id);
+                  });
+            })
+            ->selectRaw('SUM(price_before_discount - total_price) as total')
+            ->value('total') ?? 0,        
             'search' => $search,
             'statusFilter' => $statusFilter,
         ]));

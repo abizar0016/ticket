@@ -108,4 +108,5 @@
     window.revenueData = @json($revenueData);
     window.salesData = @json($salesData);
 </script>
+
 <script src="{{ asset('js/chart.js') }}"></script>
