@@ -297,22 +297,6 @@
                             </div>
                         </div>
                     </form>
-
-                    @if ($errors->any())
-                        <div class="fixed bottom-6 right-6 z-50 animate-[slideIn_0.5s_ease-out_forwards]">
-                            <div class="mb-4 p-4 rounded-xl bg-red-50 text-red-700 border border-red-300 shadow-lg">
-                                <div class="flex items-center gap-2">
-                                    <i class="ri-error-warning-line text-xl"></i>
-                                    <strong>Oops! Ada masalah dengan input kamu:</strong>
-                                </div>
-                                <ul class="mt-2 list-disc list-inside text-sm">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
-                    @endif
                 </div>
             </div>
         </section>

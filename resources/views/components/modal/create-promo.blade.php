@@ -11,24 +11,23 @@
         {{-- Modal Panel --}}
         <div class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full opacity-0 translate-y-4 scale-95"
             id="promoPanel">
-            <div class="bg-white px-6 pt-6 pb-4 sm:p-6 sm:pb-4">
+            <div class="bg-white px-6 pt-6 pb-4 sm:p-6 sm:pb-4 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-start justify-between">
                     <div>
-                        <h3 class="text-2xl font-bold text-gray-900" id="promoModalTitle">Create New Promo Code</h3>
-                        <p class="text-sm text-gray-500 mt-1">Set up discounts for your tickets</p>
+                        <h3 class="text-2xl font-bold text-gray-900">Create New Promo Code</h3>
+                        <p class="text-sm text-gray-500 mt-1">Set up discounts for your products</p>
                     </div>
-                    <button id="closePromoModal"
+                    <button type="button" onclick="document.getElementById('promoModal').classList.add('hidden')"
                         class="text-gray-400 hover:text-gray-500 transition-colors duration-200">
                         <i class="ri-close-line text-2xl"></i>
                     </button>
                 </div>
 
                 <div class="mt-6">
-                    <form id="create-promo-form" action="{{ route('promocode.store', $event->id ) }}" method="POST">
+                    <form id="create-promo-form" action="{{ route('promocode.store', $event->id) }}" method="POST">
                         @csrf
-                        <input type="hidden" id="promoId" name="id">
-
-                        <div class="grid grid-cols-1 gap-6">
+                        
+                        <div class="space-y-6">
                             {{-- Promo Name --}}
                             <div class="relative group">
                                 <input type="text" id="promoName" name="name"
@@ -38,8 +37,7 @@
                                     class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                     Promo Name
                                 </label>
-                                <div
-                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
+                                <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                     <i class="ri-coupon-2-line text-2xl"></i>
                                 </div>
                             </div>
@@ -53,8 +51,7 @@
                                     class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                     Promo Code
                                 </label>
-                                <div
-                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
+                                <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                     <i class="ri-coupon-2-line text-2xl"></i>
                                 </div>
                             </div>
@@ -73,8 +70,7 @@
                                         class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                         Discount Type
                                     </label>
-                                    <div
-                                        class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
+                                    <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                         <i class="ri-percent-line text-2xl"></i>
                                     </div>
                                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -91,8 +87,7 @@
                                         class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                         Discount Amount
                                     </label>
-                                    <div
-                                        class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
+                                    <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                         <i class="ri-money-dollar-circle-line text-2xl"></i>
                                     </div>
                                 </div>
@@ -107,21 +102,58 @@
                                     class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
                                     Max Uses
                                 </label>
-                                <div
-                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
+                                <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
                                     <i class="ri-user-line text-2xl"></i>
                                 </div>
                                 <div class="absolute right-5 top-4 text-gray-500 text-lg">
-                                    <span id="promoMaxUsesHelp">(0 for unlimited)</span>
+                                    <span>(0 for unlimited)</span>
+                                </div>
+                            </div>
+
+                            {{-- Modern Checkbox Section --}}
+                            <div class="space-y-4">
+                                <label class="block text-lg font-medium text-gray-700">Applicable To</label>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {{-- Ticket Checkbox --}}
+                                    <label class="relative flex items-start p-4 rounded-xl border-2 border-gray-200 hover:border-indigo-300 transition-all duration-300 cursor-pointer has-[:checked]:border-indigo-400 has-[:checked]:bg-indigo-50/50">
+                                        <div class="flex items-center h-5">
+                                            <input id="is_ticket" name="is_ticket" type="checkbox" value="1" checked
+                                                class="h-5 w-5 rounded border-2 border-gray-300 text-indigo-600 focus:ring-indigo-500 transition-all duration-200 peer">
+                                        </div>
+                                        <div class="ml-3 flex flex-col">
+                                            <span class="text-lg font-medium text-gray-900 peer-checked:text-indigo-700">Tickets</span>
+                                            <span class="text-sm text-gray-500 peer-checked:text-indigo-600">Apply discount to event tickets</span>
+                                        </div>
+                                        <div class="absolute top-4 right-4 text-indigo-600 opacity-0 peer-checked:opacity-100 transition-opacity duration-300">
+                                            <i class="ri-checkbox-circle-fill text-xl"></i>
+                                        </div>
+                                    </label>
+
+                                    {{-- Merchandise Checkbox --}}
+                                    <label class="relative flex items-start p-4 rounded-xl border-2 border-gray-200 hover:border-indigo-300 transition-all duration-300 cursor-pointer has-[:checked]:border-indigo-400 has-[:checked]:bg-indigo-50/50">
+                                        <div class="flex items-center h-5">
+                                            <input id="is_merchandise" name="is_merchandise" type="checkbox" value="1"
+                                                class="h-5 w-5 rounded border-2 border-gray-300 text-indigo-600 focus:ring-indigo-500 transition-all duration-200 peer">
+                                        </div>
+                                        <div class="ml-3 flex flex-col">
+                                            <span class="text-lg font-medium text-gray-900 peer-checked:text-indigo-700">Merchandise</span>
+                                            <span class="text-sm text-gray-500 peer-checked:text-indigo-600">Apply discount to event merchandise</span>
+                                        </div>
+                                        <div class="absolute top-4 right-4 text-indigo-600 opacity-0 peer-checked:opacity-100 transition-opacity duration-300">
+                                            <i class="ri-checkbox-circle-fill text-xl"></i>
+                                        </div>
+                                    </label>
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-gray-50 px-6 py-4 sm:flex sm:flex-row-reverse rounded-b-2xl">
-                            <button type="submit" id="submitPromoForm"
+
+                        {{-- Form Actions --}}
+                        <div class="bg-gray-50 px-6 py-4 sm:flex sm:flex-row-reverse rounded-b-2xl mt-6">
+                            <button type="submit"
                                 class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-6 py-3 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white text-lg font-medium hover:from-indigo-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm transition-all duration-300 transform hover:-translate-y-1 hover:shadow-md">
                                 Save Promo Code
                             </button>
-                            <button type="button" id="cancelPromoModal"
+                            <button type="button" onclick="document.getElementById('promoModal').classList.add('hidden')"
                                 class="mt-3 w-full inline-flex justify-center rounded-xl border border-gray-300 shadow-sm px-6 py-3 bg-white text-lg font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-all duration-300">
                                 Cancel
                             </button>

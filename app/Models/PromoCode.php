@@ -15,19 +15,21 @@ class PromoCode extends Model
         'discount',
         'type',
         'max_uses',
+        'is_ticket',
+        'is_merchandise'
     ];
 
     public function orders()
     {
-        return $this->belongsToMany(Order::class);
+        return $this->hasMany(Order::class, 'promo_id');
     }
+
 
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
 
-    // In PromoCode model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);

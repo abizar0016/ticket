@@ -35,11 +35,11 @@ class CheckoutController extends Controller
         $checkoutData = [
             'token' => $token,
             'tickets' => collect($validated['tickets'])
-                ->map(fn($qty, $id) => ['product_id' => (int)$id, 'quantity' => (int)$qty])
+                ->map(fn($qty, $id) => ['product_id' => (int) $id, 'quantity' => (int) $qty])
                 ->values()
                 ->all(),
             'merchandise' => collect($validated['merchandise'] ?? [])
-                ->map(fn($qty, $id) => ['product_id' => (int)$id, 'quantity' => (int)$qty])
+                ->map(fn($qty, $id) => ['product_id' => (int) $id, 'quantity' => (int) $qty])
                 ->values()
                 ->all(),
             'expires_at' => $expiresAt,
@@ -95,57 +95,107 @@ class CheckoutController extends Controller
             'tickets' => $checkoutData['tickets'],
         ]);
     }
-
     public function applyPromo(Request $request)
     {
         $request->validate([
             'promo_code' => 'required|string|max:50',
-            'token'      => 'required|string'
+            'token' => 'required|string'
         ]);
 
         $token = $request->input('token');
         $checkoutData = $this->getCheckoutData($token);
 
-        if (!$checkoutData || !isset($checkoutData['token']) || $checkoutData['token'] !== $token) {
-            return response()->json(['success' => false, 'message' => 'Invalid checkout session'], 400);
+        if (!$checkoutData) {
+            return response()->json(['success' => false, 'message' => 'Sesi checkout tidak valid atau telah kadaluarsa'], 400);
         }
 
-        // Ambil promo code sesuai kode
         $promo = PromoCode::where('code', $request->input('promo_code'))
             ->where(function ($q) {
                 $q->where('max_uses', '>', 0)->orWhereNull('max_uses');
-            })
-            ->first();
+            })->first();
 
         if (!$promo) {
-            return response()->json(['success' => false, 'message' => 'Invalid or expired promo code'], 400);
+            return response()->json(['success' => false, 'message' => 'Kode promo tidak valid atau telah kadaluarsa'], 400);
         }
 
-        // Cek kuota penggunaan
+        // Check usage quota
         $usedCount = Order::where('promo_id', $promo->id)->count();
         if (!is_null($promo->max_uses) && $usedCount >= $promo->max_uses) {
-            return response()->json(['success' => false, 'message' => 'Promo code has exhausted its uses'], 400);
+            return response()->json(['success' => false, 'message' => 'Kuota penggunaan promo ini telah habis'], 400);
         }
 
-        // Ambil semua product_id dari checkout
+        // Get all products in cart
         $productIds = array_merge(
             array_column($checkoutData['tickets'] ?? [], 'product_id'),
             array_column($checkoutData['merchandise'] ?? [], 'product_id')
         );
 
-        // Pastikan semua product yang dibeli berasal dari event yang sama dengan promo
-        $productsEventIds = Product::whereIn('id', $productIds)->pluck('event_id')->unique();
-        if ($productsEventIds->count() > 1 || !$productsEventIds->contains($promo->event_id)) {
-            return response()->json(['success' => false, 'message' => 'Promo code not valid for this event'], 400);
+        if (empty($productIds)) {
+            return response()->json(['success' => false, 'message' => 'Keranjang belanja kosong'], 400);
         }
 
-        // Simpan promo ke checkout data
+        $products = Product::whereIn('id', $productIds)->get();
+
+        // Calculate total quantity by type
+        $ticketQty = collect($checkoutData['tickets'] ?? [])->sum('quantity');
+        $merchQty = collect($checkoutData['merchandise'] ?? [])->sum('quantity');
+
+        // Validate promo applicability
+        if ($promo->is_ticket && !$promo->is_merchandise && $ticketQty === 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Promo ini hanya untuk tiket, namun keranjang tidak berisi tiket'
+            ], 400);
+        }
+
+        if ($promo->is_merchandise && !$promo->is_ticket && $merchQty === 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Promo ini hanya untuk merchandise, namun keranjang tidak berisi merchandise'
+            ], 400);
+        }
+
+        if (($promo->is_ticket && $promo->is_merchandise) && ($ticketQty === 0 && $merchQty === 0)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Promo ini membutuhkan setidaknya 1 tiket atau merchandise di keranjang'
+            ], 400);
+        }
+
+        // Validate event match
+        $productsEventIds = $products->pluck('event_id')->unique();
+        if ($productsEventIds->count() > 1 || !$productsEventIds->contains($promo->event_id)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Promo tidak valid untuk event yang dipilih'
+            ], 400);
+        }
+
+        // Validate minimum quantity if specified
+        if ($promo->min_tickets && $ticketQty < $promo->min_tickets) {
+            return response()->json([
+                'success' => false,
+                'message' => "Promo ini membutuhkan minimal {$promo->min_tickets} tiket"
+            ], 400);
+        }
+
+        if ($promo->min_merchandise && $merchQty < $promo->min_merchandise) {
+            return response()->json([
+                'success' => false,
+                'message' => "Promo ini membutuhkan minimal {$promo->min_merchandise} merchandise"
+            ], 400);
+        }
+
         $checkoutData['applied_promo'] = [
-            'id'        => $promo->id,
-            'event_id'  => $promo->event_id,
-            'discount'  => $promo->discount,
-            'type'      => $promo->type,
-            'code'      => $promo->code
+            'id' => $promo->id,
+            'event_id' => $promo->event_id,
+            'discount' => $promo->discount,
+            'type' => $promo->type,
+            'code' => $promo->code,
+            'is_ticket' => $promo->is_ticket,
+            'is_merchandise' => $promo->is_merchandise,
+            'min_tickets' => $promo->min_tickets,
+            'min_merchandise' => $promo->min_merchandise
         ];
 
         Cache::put('checkout:' . $token, $checkoutData, Carbon::parse($checkoutData['expires_at']));
@@ -153,7 +203,12 @@ class CheckoutController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Promo code applied successfully',
+            'message' => 'Promo berhasil diterapkan',
+            'promo' => [
+                'code' => $promo->code,
+                'discount' => $promo->discount,
+                'type' => $promo->type
+            ],
             'redirect' => route('checkout.form', ['token' => $token])
         ]);
     }
@@ -180,12 +235,12 @@ class CheckoutController extends Controller
     public function submit(Request $request)
     {
         $validated = $request->validate([
-            'token'                => 'required|string',
-            'name'                 => 'required|string|max:255',
-            'email'                => 'required|email|max:255',
-            'attendees'            => 'nullable|array',
-            'attendees.*.*.name'   => 'required_with:attendees|string|max:255',
-            'attendees.*.*.email'  => 'required_with:attendees|email|max:255',
+            'token' => 'required|string',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'attendees' => 'nullable|array',
+            'attendees.*.*.name' => 'required_with:attendees|string|max:255',
+            'attendees.*.*.email' => 'required_with:attendees|email|max:255',
         ]);
 
         $checkoutData = $this->getCheckoutData($validated['token']);
@@ -197,7 +252,6 @@ class CheckoutController extends Controller
         try {
             $promoId = $checkoutData['applied_promo']['id'] ?? null;
 
-            // Ambil event_id dari produk pertama (ticket / merchandise)
             $firstProductId = $checkoutData['tickets'][0]['product_id'] ?? ($checkoutData['merchandise'][0]['product_id'] ?? null);
             if (!$firstProductId) {
                 throw new \Exception('No products found in checkout');
@@ -205,13 +259,13 @@ class CheckoutController extends Controller
             $eventId = Product::findOrFail($firstProductId)->event_id;
 
             $order = Order::create([
-                'user_id'         => Auth::id(),
-                'event_id'        => $eventId,
-                'promo_id'        => $promoId,
-                'name'            => $validated['name'],
-                'email'           => $validated['email'],
-                'status'          => 'pending',
-                'total_price'     => 0,
+                'user_id' => Auth::id(),
+                'event_id' => $eventId,
+                'promo_id' => $promoId,
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'status' => 'pending',
+                'total_price' => 0,
                 'discount_amount' => 0,
             ]);
 
@@ -226,14 +280,26 @@ class CheckoutController extends Controller
 
                 $itemDiscount = 0;
 
-                // Diskon per tiket / merchandise dalam event yang sama
-                if (!empty($checkoutData['applied_promo']) && $checkoutData['applied_promo']['event_id'] == $product->event_id) {
-                    if ($checkoutData['applied_promo']['type'] === 'percentage') {
-                        // Diskon = (harga satuan × persen) × jumlah
-                        $itemDiscount = ($pricePerUnit * ($checkoutData['applied_promo']['discount'] / 100)) * $quantity;
-                    } else {
-                        // Diskon fixed per item × jumlah
-                        $itemDiscount = min($pricePerUnit, $checkoutData['applied_promo']['discount']) * $quantity;
+                if (
+                    !empty($checkoutData['applied_promo']) &&
+                    $checkoutData['applied_promo']['event_id'] == $product->event_id
+                ) {
+
+                    $isApplicable = false;
+
+                    if ($product->type === 'ticket' && $checkoutData['applied_promo']['is_ticket']) {
+                        $isApplicable = true;
+                    }
+                    if ($product->type === 'merchandise' && $checkoutData['applied_promo']['is_merchandise']) {
+                        $isApplicable = true;
+                    }
+
+                    if ($isApplicable) {
+                        if ($checkoutData['applied_promo']['type'] === 'percentage') {
+                            $itemDiscount = ($pricePerUnit * ($checkoutData['applied_promo']['discount'] / 100)) * $quantity;
+                        } else {
+                            $itemDiscount = min($pricePerUnit, $checkoutData['applied_promo']['discount']) * $quantity;
+                        }
                     }
                 }
 
@@ -244,15 +310,14 @@ class CheckoutController extends Controller
                 $discount += $itemDiscount;
 
                 OrderItem::create([
-                    'order_id'              => $order->id,
-                    'product_id'            => $product->id,
-                    'quantity'              => $quantity,
-                    'total_price'           => $subtotal,
+                    'order_id' => $order->id,
+                    'product_id' => $product->id,
+                    'quantity' => $quantity,
+                    'total_price' => $subtotal,
                     'price_before_discount' => $priceBeforeDiscount,
-                    'discount_amount'       => $itemDiscount,
+                    'discount_amount' => $itemDiscount,
                 ]);
 
-                // Simpan data peserta jika tipe produk ticket
                 if ($product->type === 'ticket' && isset($validated['attendees'][$product->id])) {
                     $this->processAttendees(
                         $validated['attendees'][$product->id],
@@ -263,13 +328,11 @@ class CheckoutController extends Controller
                 }
             }
 
-            // Update total dan diskon order
             $order->update([
-                'total_price'     => $total,
+                'total_price' => $total,
                 'discount_amount' => $discount
             ]);
 
-            // Bersihkan cache dan session
             Cache::forget('checkout:' . $checkoutData['token']);
             Session::forget(['checkout_token', 'checkout_data']);
 
@@ -282,7 +345,6 @@ class CheckoutController extends Controller
             return back()->with('error', 'Checkout failed: ' . $e->getMessage());
         }
     }
-
 
     protected function processAttendees(array $attendees, int $quantity, Order $order, Product $product)
     {
