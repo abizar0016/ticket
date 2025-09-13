@@ -56,14 +56,14 @@
 
             <!-- Content -->
             <div id="tickets-tab" class="tab-content {{ $activeTab === 'tickets' ? '' : 'hidden' }}">
-                @include('Admin.eventDashboard.partials.products-grid', [
+                @include('components.card.items', [
                     'items' => $tickets,
                     'type' => 'ticket',
                 ])
             </div>
 
             <div id="merchandise-tab" class="tab-content {{ $activeTab === 'merchandise' ? '' : 'hidden' }}">
-                @include('Admin.eventDashboard.partials.products-grid', [
+                @include('components.card.items', [
                     'items' => $merchandise,
                     'type' => 'merchandise',
                 ])

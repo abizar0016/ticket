@@ -23,7 +23,7 @@
                         <i class="ri-qr-scan-2-line text-indigo-600"></i>
                         QR Code Scanner
                     </h2>
-                    <button id="manual-entry-btn" class="text-indigo-600 hover:text-indigo-800 text-xs sm:text-sm font-medium flex items-center gap-1">
+                    <button id="manual-entry-btn" class="text-indigo-600 hover:text-indigo-800 text-xs sm:text-sm font-medium flex items-center gap-1 cursor-pointer">
                         <i class="ri-keyboard-line"></i> Manual Entry
                     </button>
                 </div>
@@ -82,10 +82,15 @@
         <div class="space-y-4 sm:space-y-6">
             <!-- Stats Card -->
             @php
-                $checkedIn = ($checkedInCount / $totalAttendees) * 100;
+                if ($totalAttendees > 0) {
+                    $checkedIn = ($checkedInCount / $totalAttendees) * 100;
+                } else {
+                    $checkedIn = 0;
+                }
+
                 $remaining = 100 - $checkedIn;
 
-                $circumference = 283; // 2πr with r = 45
+                $circumference = 283; // 2πr dengan r = 45
                 $checkedOffset = $circumference * (1 - $checkedIn / 100);
                 $remainingOffset = $circumference * (1 - $remaining / 100);
             @endphp
@@ -103,18 +108,13 @@
                             <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" stroke-width="8" />
 
                             <!-- Checked In Segment -->
-                            <circle class="stroke-indigo-500" cx="50" cy="50" r="45" fill="none" 
-                                stroke-width="8" stroke-dasharray="{{ $circumference }}" 
-                                stroke-dashoffset="{{ $checkedOffset }}" stroke-linecap="round" />
+                            <circle class="stroke-indigo-500" cx="50" cy="50" r="45" fill="none" stroke-width="8" stroke-dasharray="{{ $circumference }}" stroke-dashoffset="{{ $checkedOffset }}" stroke-linecap="round" />
 
                             <!-- Remaining Segment -->
-                            <circle class="stroke-yellow-400" cx="50" cy="50" r="45" fill="none" 
-                                stroke-width="8" stroke-dasharray="{{ $circumference }}" 
-                                stroke-dashoffset="{{ $circumference + $checkedOffset }}" stroke-linecap="round" />
+                            <circle class="stroke-yellow-400" cx="50" cy="50" r="45" fill="none" stroke-width="8" stroke-dasharray="{{ $circumference }}" stroke-dashoffset="{{ $circumference + $checkedOffset }}" stroke-linecap="round" />
 
                             <!-- Center Text -->
-                            <text x="50" y="50" text-anchor="middle" dy=".3em" font-size="14" fill="#1f2937" 
-                                font-weight="600" transform="rotate(90 50 50)">
+                            <text x="50" y="50" text-anchor="middle" dy=".3em" font-size="14" fill="#1f2937" font-weight="600" transform="rotate(90 50 50)">
                                 {{ number_format($checkedIn, 0) }}%
                             </text>
                         </svg>
@@ -146,12 +146,11 @@
                     Attendee List
                 </h2>
                 <div class="w-full sm:w-auto">
-                    <form class="relative">
+                    <form class="relative" method="GET">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                             <i class="ri-search-line"></i>
                         </div>
-                        <input type="text" placeholder="Search attendees..."
-                            class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg md:rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-full sm:w-64 transition-all text-xs sm:text-sm">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg md:rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-full sm:w-64 transition-all text-xs sm:text-sm">
                     </form>
                 </div>
             </div>
@@ -207,17 +206,7 @@
                                 </td>
                                 <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium">
                                     <div class="flex justify-end items-center gap-1 sm:gap-2">
-                                        @if ($attendee->checked_in_at)
-                                            <button class="text-gray-400 cursor-not-allowed p-1 sm:p-2" title="Already checked in">
-                                                <i class="ri-check-line text-base sm:text-lg"></i>
-                                            </button>
-                                        @else
-                                            <button class="text-indigo-600 hover:text-indigo-900 p-1 sm:p-2 checkin-btn" 
-                                                data-ticket="{{ $attendee->ticket_code }}" title="Check in">
-                                                <i class="ri-user-received-line text-base sm:text-lg"></i>
-                                            </button>
-                                        @endif
-                                        <button class="text-gray-600 hover:text-gray-900 p-1 sm:p-2" title="View details">
+                                        <button id="open-view-checkins-modal-{{ $attendee->id }}" class="view-checkin-btn text-gray-600 hover:text-indigo-600 p-1 sm:p-2 cursor-pointer" title="View" data-id="{{ $attendee->id }}">
                                             <i class="ri-eye-line text-base sm:text-lg"></i>
                                         </button>
                                     </div>
@@ -238,46 +227,14 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Pagination -->
     <div class="mt-4">
         {{ $attendees->links('pagination::default') }}
     </div>
 </div>
 
-<!-- Manual Check-In Modal -->
-<div id="manual-checkin-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-    <div class="bg-white rounded-xl md:rounded-2xl overflow-hidden w-full max-w-md transform transition-all">
-        <div class="p-4 sm:p-6">
-            <div class="flex items-start gap-3 sm:gap-4">
-                <div class="flex-shrink-0 p-2 sm:p-3 rounded-md sm:rounded-lg bg-indigo-100 text-indigo-600">
-                    <i class="ri-keyboard-line text-lg sm:text-xl"></i>
-                </div>
-                <div class="flex-1">
-                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-1 sm:mb-2">Manual Check-In</h3>
-                    <p class="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">Enter ticket code or attendee details</p>
-
-                    <div class="space-y-3 sm:space-y-4">
-                        <div>
-                            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Ticket Code</label>
-                            <input type="text" class="w-full px-3 sm:px-4 py-2 border border-gray-200 rounded-lg md:rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-xs sm:text-sm" 
-                                   placeholder="ABC123XYZ">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 flex justify-end gap-2 sm:gap-3">
-            <button id="cancel-manual-checkin" class="px-3 sm:px-4 py-1.5 sm:py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors text-xs sm:text-sm">
-                Cancel
-            </button>
-            <button class="px-3 sm:px-4 py-1.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors text-xs sm:text-sm">
-                Check In
-            </button>
-        </div>
-    </div>
-</div>
+@include('components.modal.manual-checkins')
 
 <form action="{{ route('checkin.process') }}" method="POST" class="hidden" id="checkin-form">
     @csrf
@@ -295,21 +252,40 @@
     </div>
 </div>
 
+@include('components.modal.view-checkins')
+
 <style>
     @keyframes scan {
-        0% { top: 0%; }
-        50% { top: 100% }
-        100% { top: 0%; }
+        0% {
+            top: 0%;
+        }
+
+        50% {
+            top: 100%
+        }
+
+        100% {
+            top: 0%;
+        }
     }
+
     .animate-scan {
         animation: scan 2s ease-in-out infinite;
         position: absolute;
     }
 
     @keyframes fade-in-up {
-        0% { opacity: 0; transform: translateY(10px); }
-        100% { opacity: 1; transform: translateY(0); }
+        0% {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
+
     .animate-fade-in-up {
         animation: fade-in-up 0.3s ease-out forwards;
     }
@@ -326,6 +302,7 @@
     const manualEntryBtn = document.getElementById('manual-entry-btn');
     const manualCheckinModal = document.getElementById('manual-checkin-modal');
     const cancelManualCheckin = document.getElementById('cancel-manual-checkin');
+    const manualCheckinForm = document.getElementById('manual-checkin-form');
 
     let isProcessing = false;
 
@@ -333,58 +310,71 @@
     const failSound = new Audio('/Audio/mixkit-losing-bleeps-2026.wav');
     const scanSound = new Audio('/Audio/mixkit-confirmation-tone-2867.wav');
 
-    // Manual check-in modal handlers
     manualEntryBtn.addEventListener('click', () => {
         manualCheckinModal.classList.remove('hidden');
     });
 
-    cancelManualCheckin.addEventListener('click', () => {
+    cancelManualCheckin.addEventListener('click', (e) => {
+        e.preventDefault(); // supaya ga ikut submit
         manualCheckinModal.classList.add('hidden');
     });
 
-    // QR Scanner
+    // === QR Scanner ===
     const scanner = new QrScanner(video, async result => {
         if (isProcessing) return;
         isProcessing = true;
 
-        // UI update
         scanStatus.innerHTML = `<i class="ri-check-line"></i> Processing...`;
         scanStatus.className = 'px-2 sm:px-3 py-1 bg-black/70 text-yellow-400 rounded-full text-xs sm:text-sm flex items-center gap-1';
 
         ticketCodeInput.value = result;
         video.classList.add('border-green-500');
+        scanSound.play().catch(() => {});
 
-        scanSound.play().catch(e => console.log('Scan sound error:', e));
+        await handleSubmit(form);
 
+        setTimeout(() => {
+            video.classList.remove('border-green-500');
+            scanStatus.innerHTML = `<i class="ri-search-line"></i> Ready to scan`;
+            scanStatus.className = 'px-2 sm:px-3 py-1 bg-black/70 text-white rounded-full text-xs sm:text-sm flex items-center gap-1';
+            isProcessing = false;
+        }, 2000);
+    });
+    scanner.start().catch(err => {
+        console.error('Error starting scanner:', err);
+    });
+
+    // === Manual form submit ===
+    manualCheckinForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (isProcessing) return;
+        isProcessing = true;
+
+        await handleSubmit(manualCheckinForm);
+        isProcessing = false;
+    });
+
+    async function handleSubmit(targetForm) {
         try {
-            const response = await fetch(form.action, {
+            const response = await fetch(targetForm.action, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'X-Requested-With': 'XMLHttpRequest',
                     'Accept': 'application/json'
                 },
-                body: new URLSearchParams(new FormData(form))
+                body: new URLSearchParams(new FormData(targetForm))
             });
 
             const data = await response.json();
-
             if (response.ok && data.success) {
-                // ✅ SUCCESS
-                scanStatus.innerHTML = `<i class="ri-check-double-line"></i> Success!`;
-                scanStatus.className = 'px-2 sm:px-3 py-1 bg-black/70 text-green-400 rounded-full text-xs sm:text-sm flex items-center gap-1';
-
                 toast.classList.remove('hidden');
                 setTimeout(() => toast.classList.add('hidden'), 3000);
 
-                successSound.play().catch(e => console.log('Success sound error:', e));
+                successSound.play().catch(() => {});
+                manualCheckinModal.classList.add('hidden');
             } else {
-                // ❌ ERROR
-                scanStatus.innerHTML = `<i class="ri-close-line"></i> ${data.message || 'Error'}`;
-                scanStatus.className = 'px-2 sm:px-3 py-1 bg-black/70 text-red-400 rounded-full text-xs sm:text-sm flex items-center gap-1';
-
-                failSound.play().catch(e => console.log('Fail sound error:', e));
-
+                failSound.play().catch(() => {});
                 Swal.fire({
                     icon: 'error',
                     title: 'Check-in Failed',
@@ -392,89 +382,14 @@
                     confirmButtonColor: '#EF4444'
                 });
             }
-        } catch (error) {
-            console.error('Network Error:', error);
-            scanStatus.innerHTML = `<i class="ri-error-warning-line"></i> Network Error`;
-            scanStatus.className = 'px-2 sm:px-3 py-1 bg-black/70 text-red-400 rounded-full text-xs sm:text-sm flex items-center gap-1';
-
-            failSound.play().catch(e => console.log('Fail sound error:', e));
-
+        } catch (err) {
+            failSound.play().catch(() => {});
             Swal.fire({
                 icon: 'error',
                 title: 'Network Error',
                 text: 'Please check your connection',
                 confirmButtonColor: '#EF4444'
             });
-        } finally {
-            setTimeout(() => {
-                video.classList.remove('border-green-500');
-                scanStatus.innerHTML = `<i class="ri-search-line"></i> Ready to scan`;
-                scanStatus.className = 'px-2 sm:px-3 py-1 bg-black/70 text-white rounded-full text-xs sm:text-sm flex items-center gap-1';
-                isProcessing = false;
-            }, 2000);
         }
-    });
-
-    scanner.start().then(() => {
-        console.log('Scanner started');
-    }).catch(err => {
-        console.error('Error starting scanner:', err);
-        scanStatus.innerHTML = `<i class="ri-error-warning-line"></i> Camera Error`;
-        scanStatus.className = 'px-2 sm:px-3 py-1 bg-black/70 text-red-400 rounded-full text-xs sm:text-sm flex items-center gap-1';
-
-        failSound.play().catch(e => console.log('Fail sound error:', e));
-
-        Swal.fire({
-            icon: 'error',
-            title: 'Camera Error',
-            text: 'Please allow camera access',
-            confirmButtonColor: '#EF4444'
-        });
-    });
-
-    // Handle manual check-in from table rows
-    document.querySelectorAll('.checkin-btn').forEach(btn => {
-        btn.addEventListener('click', async function() {
-            const ticketCode = this.getAttribute('data-ticket');
-            ticketCodeInput.value = ticketCode;
-            
-            try {
-                const response = await fetch(form.action, {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json'
-                    },
-                    body: new URLSearchParams(new FormData(form))
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    toast.classList.remove('hidden');
-                    setTimeout(() => toast.classList.add('hidden'), 3000);
-                    successSound.play().catch(e => console.log('Success sound error:', e));
-                    location.reload(); // Refresh to update status
-                } else {
-                    failSound.play().catch(e => console.log('Fail sound error:', e));
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Check-in Failed',
-                        text: data.message || 'An error occurred',
-                        confirmButtonColor: '#EF4444'
-                    });
-                }
-            } catch (error) {
-                console.error('Network Error:', error);
-                failSound.play().catch(e => console.log('Fail sound error:', e));
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Network Error',
-                    text: 'Please check your connection',
-                    confirmButtonColor: '#EF4444'
-                });
-            }
-        });
-    });
+    }
 </script>

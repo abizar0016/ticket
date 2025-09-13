@@ -37,7 +37,7 @@
 
                     <!-- Animated search bar -->
                     <div class="max-w-md mx-auto mt-8">
-                        <form method="GET" action="{{ route('home') }}">
+                        <form method="GET" action="{{ route('home.customer') }}">
                             <div class="relative group">
                                 <input type="text" name="search" value="{{ request('search') }}"
                                     placeholder="Search events..."
@@ -68,7 +68,7 @@
                             <p class="text-gray-600/90 mb-8 max-w-md mx-auto text-lg">
                                 We couldn't find any events matching your criteria
                             </p>
-                            <a href="{{ route('home') }}"
+                            <a href="{{ route('home.customer') }}"
                                 class="inline-block px-6 py-3 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-xl font-medium hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2">
                                 Check back later
                             </a>
@@ -155,15 +155,22 @@
                                                     <span>{{ $event->start_date->format('g:i A') }} -
                                                         {{ $event->end_date->format('g:i A') }} (Asia/Jakarta)</span>
                                                 </div>
-                                                @if ($event->location)
+                                                @if ($event->location->vanue_name || $event->location->address_line || $event->location->city )
                                                     <div
                                                         class="flex items-center transition-all duration-300 hover:text-indigo-600">
                                                         <i
                                                             class="fas fa-map-marker-alt text-indigo-500 mr-2 w-4 text-center"></i>
-                                                        <span>{{ $event->location->venue_name ?? 'Venue' }}</span>
+                                                        <span>{{ $event->location->venue_name }}</span>
                                                         <span class="text-gray-600">,
-                                                            {{ $event->location->address_line ?? 'Address' }}</span>
-                                                        <span>, {{ $event->location->city ?? 'City' }}</span>
+                                                            {{ $event->location->address_line }}</span>
+                                                        <span>, {{ $event->location->city }}</span>
+                                                    </div>
+                                                @else
+                                                    <div
+                                                        class="flex items-center transition-all duration-300 hover:text-indigo-600">
+                                                        <i
+                                                            class="fas fa-map-marker-alt text-indigo-500 mr-2 w-4 text-center"></i>
+                                                            <span>Online Event</span>
                                                     </div>
                                                 @endif
                                             </div>
@@ -197,6 +204,8 @@
 
         </main>
     </div>
+
+    @include('components.modal.create-organization')
 
     <!-- Scripts -->
     @if (session()->has('error'))

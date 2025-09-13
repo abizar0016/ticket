@@ -4,17 +4,17 @@
 @include('components.head.head')
 
 
-<body class="bg-gray-50  text-gray-800 ">
+<body class="bg-gray-50 text-gray-800 ">
     <!-- Preloader -->
     @include('components.preloader.preloader')
 
-    <div class="flex">
-        <!-- Sidebar -->
-        @include('components.sidebar.sidebar')
+    <!-- Navbar -->
+    @include('components.navbar.navbar')
 
-        <!-- Main Content -->
-        <div class="flex-1 transition-all duration-300 md:ml-64" id="main-content">
-            @include('components.navbar.navbar')
+    <!-- Main Content -->
+    <div class="flex flex-col overflow-hidden">
+        <div class="flex-1 transition-all duration-300 md:ml-80 py-6" id="mainContentAdmin">
+            @include('components.sidebar.sidebar')
 
             <!-- Content -->
             <main class="p-6">
@@ -36,7 +36,7 @@
                     @break
 
                     @case('order-show')
-                        @include('Admin.eventDashboard.order-show.index')
+                        @include('Admin.eventDashboard.page.order-show')
                     @break
 
                     @case('ticket-products')
@@ -56,8 +56,6 @@
                 @endswitch
             </main>
         </div>
-    </div>
-
 </body>
 
 </html>

@@ -75,41 +75,20 @@
             class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 animate-[slideUp_0.8s_ease-out_forwards]">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                    <i class="ri-calendar-event-line text-indigo-500 animate-[pulse_2s_ease-in-out_infinite]"></i>
+                    <i class="ri-calendar-event-line text-indigo-500"></i>
                     Events Summary
                 </h1>
-                <p class="text-gray-500 mt-2">Manage your events and organizers</p>
+                <p class="text-gray-500 mt-2">Manage your events and organization</p>
             </div>
 
             <!-- Create Button with Dropdown -->
             <div class="relative">
-                <button id="dropdownCreateButton"
+                <button id="openEventModal"
                     class="flex items-center gap-2 text-white bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-xl text-sm px-5 py-3 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                     <i class="ri-add-line"></i>
                     Create new
-                    <i class="ri-arrow-down-s-line w-4 h-4 transition-transform duration-300" id="dropdownArrow"></i>
+                    <i class="ri-add-line w-4 h-4 transition-transform duration-300"></i>
                 </button>
-
-                <!-- Dropdown menu -->
-                <div id="dropdownCreate"
-                    class="z-20 hidden bg-white divide-y divide-gray-100 rounded-xl shadow-xl w-44 absolute right-0 mt-2 border border-gray-100 transition-all duration-200 origin-top-right opacity-0 scale-95">
-                    <ul class="py-2 text-sm text-gray-700">
-                        <li>
-                            <a href="#" id="openEventModal"
-                                class="flex items-center px-4 py-2 hover:bg-gray-50 transition-all duration-200 hover:translate-x-1">
-                                <i class="ri-calendar-event-line mr-2 text-indigo-500"></i>
-                                <span>Event</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" id="openOrganizerModal"
-                                class="flex items-center px-4 py-2 hover:bg-gray-50 transition-all duration-200 hover:translate-x-1">
-                                <i class="ri-user-add-line mr-2 text-indigo-500"></i>
-                                <span>Organizer</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
             </div>
         </div>
 
@@ -172,7 +151,7 @@
         </div>
 
         <!-- Event Cards Grid -->
-        @include('components.event-card.card', ['events' => $events])
+        @include('components.card.event', ['events' => $events])
 
         <!-- Pagination -->
         <div class="mt-8 animate-[fadeIn_0.8s_ease-out_forwards] delay-200">
@@ -183,8 +162,8 @@
     <!-- Event Modal -->
     @include('components.modal.create-event')
 
-    <!-- Organizer Modal -->
-    @include('components.modal.create-organizer')
+    <!-- Organization Modal -->
+    @include('components.modal.create-organization')
 
 </body>
 

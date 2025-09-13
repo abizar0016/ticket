@@ -19,6 +19,11 @@ class PromoCode extends Model
         'is_merchandise'
     ];
 
+    public function event()
+    {
+        return $this->belongsTo(Event::class);
+    }
+
     public function orders()
     {
         return $this->hasMany(Order::class, 'promo_id');

@@ -135,7 +135,8 @@
                                                 <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
                                                     <div class="flex justify-between items-center">
                                                         <div>
-                                                            <p class="text-xs text-gray-500">#{{ $loop->iteration }}</p>
+                                                            <p class="text-xs text-gray-500">#{{ $loop->iteration }}
+                                                            </p>
                                                             <p class="font-medium">{{ $attendee->name }}</p>
                                                             <p class="text-sm text-gray-500">{{ $attendee->email }}</p>
                                                             <div class="mt-2 flex items-center">
@@ -157,7 +158,8 @@
                                                         <div class="mt-3 flex flex-col items-end">
                                                             <img src="{{ $attendee->url_qrcode }}" alt="QR Code"
                                                                 class="h-32 w-32">
-                                                            <p class="text-xs text-right text-gray-500 mt-1">Scan QR Code untuk
+                                                            <p class="text-xs text-right text-gray-500 mt-1">Scan QR
+                                                                Code untuk
                                                                 checkin</p>
                                                         </div>
                                                     </div>
@@ -230,19 +232,19 @@
 
                                     <label for="payment_proof"
                                         class="flex items-center justify-between px-4 py-3 bg-gray-50 border border-dashed border-gray-300 rounded-md cursor-pointer hover:bg-gray-100 transition">
-                                        <span class="text-sm text-gray-600">
-                                            <i class="ri-upload-line mr-2 text-gray-500"></i> Pilih File Bukti
-                                            Pembayaran
-                                        </span>
+
                                         <span id="file-name"
-                                            class="text-sm text-gray-400 italic truncate max-w-[200px]">{{ $order->payment_proof ? basename($order->payment_proof) : '' }}</span>
+                                            class="text-sm text-gray-400 italic truncate max-w-[200px]">
+                                            <i class="ri-upload-line mr-2 text-gray-500"></i>{{ $order->payment_proof ? basename($order->payment_proof) : 'Pilih File Bukti Pembayaran' }}
+                                        </span>
+
                                     </label>
                                 </div>
 
                                 <!-- Submit Button -->
-                                <div class="text-right">
+                                <div class="flex justify-center md:justify-end">
                                     <button type="submit"
-                                        class="inline-flex items-center px-5 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md shadow hover:bg-indigo-700 transition">
+                                        class="inline-flex items-center px-5 py-2 w-full md:w-1/3 bg-indigo-600 text-white text-sm font-medium rounded-md shadow hover:bg-indigo-700 transition">
                                         <i class="ri-check-line mr-2 text-lg"></i> Konfirmasi Pembayaran
                                     </button>
                                 </div>
@@ -255,7 +257,7 @@
             <!-- Action Buttons -->
             <div
                 class="px-6 py-4 bg-gray-50 border-t flex flex-col sm:flex-row justify-between space-y-3 sm:space-y-0 sm:space-x-4">
-                <a href="{{ route('home') }}"
+                <a href="{{ route('home.customer') }}"
                     class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 text-center">
                     <i class="ri-arrow-left-line mr-2"></i> Kembali ke Beranda
                 </a>

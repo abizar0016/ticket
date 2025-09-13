@@ -145,8 +145,10 @@
                         </div>
 
                         <div>
-                            <button type="submit"
-                                class="w-full flex justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-300">
+                            <button id="submit-btn" type="submit" disabled
+                                class="w-full flex justify-center items-center py-2 px-4 border border-transparent 
+                                        text-sm font-medium rounded-md text-white bg-indigo-400 cursor-not-allowed 
+                                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-300">
                                 <i class="fas fa-user-plus mr-2"></i>
                                 Create Account
                             </button>
@@ -165,21 +167,12 @@
                             </div>
                         </div>
 
-                        <div class="mt-4 grid grid-cols-2 gap-3">
-                            <div>
-                                <a href="{{ route('login.google') }}"
-                                    class="w-full inline-flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                    <i class="fab fa-google text-red-500"></i>
-                                    <span class="ml-2">Google</span>
-                                </a>
-                            </div>
-                            <div>
-                                <a href="#"
-                                    class="w-full inline-flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                    <i class="fab fa-facebook-f text-blue-600"></i>
-                                    <span class="ml-2">Facebook</span>
-                                </a>
-                            </div>
+                        <div class="mt-4 flex w-full">
+                            <a href="{{ route('login.google') }}"
+                                class="w-full inline-flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <i class="fab fa-google text-red-500"></i>
+                                <span class="ml-2">Google</span>
+                            </a>
                         </div>
                     </div>
 
@@ -193,6 +186,25 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const terms = document.getElementById('terms');
+            const submitBtn = document.getElementById('submit-btn');
+
+            terms.addEventListener('change', function() {
+                if (this.checked) {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('bg-indigo-400', 'cursor-not-allowed');
+                    submitBtn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                } else {
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('bg-indigo-400', 'cursor-not-allowed');
+                    submitBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

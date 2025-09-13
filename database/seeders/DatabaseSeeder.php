@@ -25,5 +25,16 @@ class DatabaseSeeder extends Seeder
             'remember_token' => null,
             'role' => 'admin'
         ]);
+
+        User::factory()->create([
+            'name' => 'superadmin',
+            'email' => 'superadmin@ticket.com',
+            'password' => bcrypt('superadminticket'),
+            'provider' => 'email',
+            'provider_id' => null,
+            'email_verified_at' => now(),
+            'remember_token' => null,
+            'role' => 'superadmin'
+        ]);
     }
 }

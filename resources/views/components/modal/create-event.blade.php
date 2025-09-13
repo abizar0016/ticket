@@ -35,23 +35,22 @@
                         <div class="grid grid-cols-1 gap-6">
                             <!-- Event Organization -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
+                                <!-- Organization -->
                                 <div class="relative group">
-                                    <select id="eventOrganizer" name="organization_id"
-                                        class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-400 focus:ring-0 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer">
-                                        @foreach ($organizations as $organization)
-                                            <option value="{{ $organization->id }}">{{ $organization->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <label for="eventOrganizer"
-                                        class="absolute left-14 top-4 px-2 text-gray-500 text-lg transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600">
-                                        Event Organization
-                                    </label>
                                     <div
                                         class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
-                                        <i class="ri-community-line text-2xl"></i>
+                                        <i class="ri-community-line text-xl"></i>
                                     </div>
+                                    <input type="text" id="eventOrganization" name="organization_id"
+                                        value="{{ $organization->name ?? '' }}" readonly
+                                        class="w-full px-5 py-4 pl-14 pr-4 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-500 bg-gray-100 text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer cursor-not-allowed"
+                                        placeholder=" ">
+                                    <label for="eventOrganization"
+                                        class="absolute left-14 top-4 px-1 text-gray-500 text-base transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600 font-medium">
+                                        Organization
+                                    </label>
                                 </div>
+
 
                                 <!-- Title Input with Floating Label -->
                                 <div class="relative group">
@@ -117,25 +116,30 @@
                                 </div>
                             </div>
 
-                            <!-- Image Upload -->
-                            <div class="relative group">
-                                <div id="upload-container">
+                            {{-- Image Upload --}}
+                            <div class="relative">
+                                <label class="block text-gray-700 text-base font-medium mb-2">Item Image</label>
+                                <div id="upload-container" class="group">
                                     <!-- Default State -->
                                     <div id="default-state"
-                                        class=" flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                                        <i class="ri-upload-cloud-2-line text-4xl text-indigo-500"></i>
-                                        <p class="font-semibold text-gray-700">Upload Event Image</p>
-                                        <p class="text-sm text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                                        class="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer transition-all duration-300 group-hover:border-indigo-400 group-hover:bg-indigo-50/30">
+                                        <i class="ri-upload-cloud-2-line text-4xl text-indigo-500 mb-3"></i>
+                                        <p class="font-semibold text-gray-700">Upload Item Image</p>
+                                        <p class="text-sm text-gray-500 mt-1">PNG, JPG, GIF up to 10MB</p>
                                     </div>
 
                                     <!-- Preview State -->
                                     <div id="preview-state"
-                                        class="hidden relative w-full h-auto rounded-lg overflow-hidden">
-                                        <img id="preview-image" class="w-full object-cover" src=""
+                                        class="hidden relative w-full h-64 rounded-xl overflow-hidden border-2 border-gray-200">
+                                        <img id="preview-image" class="w-full h-full object-cover" src=""
                                             alt="Image Preview">
-                                        <button type="button" id="change-image"
-                                            class="absolute top-2 right-2 bg-white/70 hover:bg-white text-sm px-3 py-1 rounded-md shadow">Change
-                                        </button>
+                                        <div
+                                            class="absolute inset-0 bg-black/0 hover:bg-black/20 transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
+                                            <button type="button" id="change-image"
+                                                class="bg-white text-indigo-600 px-4 py-2 rounded-lg shadow-md font-medium hover:bg-indigo-50 transition-colors cursor-pointer">
+                                                Change Image
+                                            </button>
+                                        </div>
                                     </div>
 
                                     <input id="file-upload" type="file" name="event_image" accept="image/*"

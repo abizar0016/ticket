@@ -45,14 +45,14 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama <span
                                             class="text-red-500">*</span></label>
-                                    <input type="text" name="name" required
+                                    <input type="text" name="name" id="buyer_name" required
                                         class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition duration-200">
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Email <span
                                             class="text-red-500">*</span></label>
-                                    <input type="email" name="email" required
+                                    <input type="email" name="email" id="buyer_email" required
                                         class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition duration-200">
                                     <p class="text-xs text-gray-500 mt-1">
                                         Tiket akan dikirim ke alamat email ini setelah dikonfirmasi.
@@ -142,43 +142,23 @@
                                 value="{{ $checkoutData['token'] }}">
                             <meta name="csrf-token" content="{{ csrf_token() }}">
 
-                            @if (session('error'))
-                                <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-4 rounded">
-                                    <div class="flex items-center">
-                                        <i class="ri-close-circle-fill text-red-400 text-2xl"></i>
-                                        <p class="ml-3 text-sm text-red-700">
-                                            {{ session('error') }}
-                                        </p>
-                                    </div>
-                                </div>
-                            @endif
-
-                            @if (session('success'))
-                                <div class="bg-green-50 border-l-4 border-green-400 p-4 mb-4 rounded">
-                                    <div class="flex items-center">
-                                        <i class="ri-checkbox-circle-fill text-green-400 text-2xl"></i>
-                                        <p class="ml-3 text-sm text-green-700">
-                                            {{ session('success') }}
-                                        </p>
-                                    </div>
-                                </div>
-                            @endif
+                            <div id="promo-message-container">
+                                <!-- Pesan error/success akan ditampilkan di sini -->
+                            </div>
 
                             <div id="promo-code-container">
                                 @php
-                                    // Updated to check applied_promo instead of applied_promo_code
                                     $hasPromo = !empty($checkoutData['applied_promo']);
                                     $promoData = $checkoutData['applied_promo'] ?? null;
                                 @endphp
 
                                 @if (!$hasPromo)
-                                    <div class="flex flex-row justify-between w-full gap-2">
+                                    <div class="flex md:flex-row flex-col justify-between w-full gap-2">
                                         <input type="text" id="promo_code_input" name="promo_code"
                                             placeholder="Masukkan kode promo"
-                                            value="{{ old('promo_code', session('applied_promo_code')) }}"
-                                            class="w-3/4 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none">
-                                        <button id="promo_btn" data-apply-url="{{ route('promo.apply') }}"
-                                            class="w-1/4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200">
+                                            class="md:w-3/4 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none">
+                                        <button id="promo_btn"
+                                            class="md:w-1/4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200">
                                             Terapkan
                                         </button>
                                     </div>
@@ -189,7 +169,7 @@
                                                 class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-medium">
                                                 {{ $promoData['code'] }}
                                             </span>
-                                            <span class="ml-2 text-sm text-gray-600">
+                                            <span class="ml-2 text-sm text-gray-600" id="applied_discount_text">
                                                 @if ($promoData['type'] === 'percentage')
                                                     {{ $promoData['discount'] }}% discount
                                                 @else
@@ -199,7 +179,6 @@
                                             </span>
                                         </div>
                                         <button type="button" id="remove_promo_btn"
-                                            data-remove-url="{{ route('promo.remove') }}"
                                             class="text-red-600 hover:text-red-800 text-sm font-medium flex items-center">
                                             <i class="ri-close-line mr-1"></i> Hapus
                                         </button>
@@ -302,7 +281,7 @@
                                             </p>
                                         </li>
                                     @endif
-                                @endforeach
+                                @endforeach>
                             </ul>
                         </div>
                     @endif
@@ -311,7 +290,7 @@
                     <div class="pt-4 border-t border-gray-200">
                         <div class="flex justify-between items-center mb-2">
                             <span class="font-medium text-gray-700">Subtotal</span>
-                            <span class="font-semibold text-gray-800">
+                            <span class="font-semibold text-gray-800" id="subtotal_amount">
                                 Rp
                                 {{ number_format(
                                     array_reduce(
@@ -336,14 +315,14 @@
                         </div>
 
                         <div id="discount_row"
-                            class="{{ !session('applied_promo_code') ? 'hidden' : '' }} flex justify-between items-center mb-2">
+                            class="{{ !$hasPromo ? 'hidden' : '' }} flex justify-between items-center mb-2">
                             <span class="font-medium text-gray-700">Diskon (<span
-                                    id="discount_code">{{ session('applied_promo_code') ?? '' }}</span>)</span>
+                                    id="discount_code">{{ $hasPromo ? $promoData['code'] : '' }}</span>)</span>
                             <span class="font-semibold text-red-500" id="discount_amount">
-                                @if (session('applied_promo_data'))
+                                @if ($hasPromo)
                                     - Rp
                                     {{ number_format(
-                                        session('applied_promo_data')['type'] == 'percentage'
+                                        $promoData['type'] === 'percentage'
                                             ? (array_reduce(
                                                     $checkoutData['tickets'],
                                                     function ($carry, $item) use ($products) {
@@ -358,8 +337,8 @@
                                                         },
                                                         0,
                                                     )) *
-                                                (session('applied_promo_data')['discount'] / 100)
-                                            : session('applied_promo_data')['discount'],
+                                                ($promoData['discount'] / 100)
+                                            : $promoData['discount'],
                                         0,
                                         ',',
                                         '.',
@@ -375,7 +354,7 @@
                             <span class="text-gray-800">Total</span>
                             <span class="text-indigo-600" id="total_amount">
                                 Rp
-                                @if (session('applied_promo_data'))
+                                @if ($hasPromo)
                                     {{ number_format(
                                         array_reduce(
                                             $checkoutData['tickets'],
@@ -391,7 +370,7 @@
                                                 },
                                                 0,
                                             ) -
-                                            (session('applied_promo_data')['type'] == 'percentage'
+                                            ($promoData['type'] === 'percentage'
                                                 ? (array_reduce(
                                                         $checkoutData['tickets'],
                                                         function ($carry, $item) use ($products) {
@@ -406,8 +385,8 @@
                                                             },
                                                             0,
                                                         )) *
-                                                    (session('applied_promo_data')['discount'] / 100)
-                                                : session('applied_promo_data')['discount']),
+                                                    ($promoData['discount'] / 100)
+                                                : $promoData['discount']),
                                         0,
                                         ',',
                                         '.',
@@ -459,107 +438,460 @@
         </div>
     @endif
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Promo code handling
-            const promoBtn = document.getElementById('promo_btn');
-            const removeBtn = document.getElementById('remove_promo_btn');
-            const promoInput = document.getElementById('promo_code_input');
-            const token = document.querySelector('input[name="token"]').value;
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-
-            async function handlePromo(action, data = {}) {
-                const btn = action === 'apply' ? promoBtn : removeBtn;
-                const originalText = btn?.innerHTML;
-
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Element references
+        const tokenField = document.querySelector('input[name="token"]');
+        const token = tokenField ? tokenField.value : null;
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        const promoMessageContainer = document.getElementById('promo-message-container');
+        
+        // Generate unique key untuk localStorage berdasarkan token
+        const getStorageKey = () => {
+            return `checkout_form_data_${token}`;
+        };
+        
+        // Fungsi untuk mendapatkan URL promo
+        function getPromoUrl(action) {
+            if (action === 'apply') {
+                return '{{ route('promo.apply') }}';
+            } else if (action === 'remove') {
+                return '{{ route('promo.remove') }}';
+            }
+            return null;
+        }
+        
+        // Simpan data form ke localStorage saat input berubah
+        function saveFormData() {
+            const formData = {
+                buyer_name: document.getElementById('buyer_name')?.value || '',
+                buyer_email: document.getElementById('buyer_email')?.value || '',
+                attendees: {},
+                // Tambahkan token ke data yang disimpan
+                token: token
+            };
+            
+            // Simpan data semua attendee
+            document.querySelectorAll('.attendee-item').forEach(item => {
+                const nameInput = item.querySelector('.attendee-name');
+                const emailInput = item.querySelector('.attendee-email');
+                
+                if (nameInput && emailInput) {
+                    const key = nameInput.name;
+                    formData.attendees[key] = {
+                        name: nameInput.value,
+                        email: emailInput.value
+                    };
+                }
+            });
+            
+            localStorage.setItem(getStorageKey(), JSON.stringify(formData));
+        }
+        
+        // Pulihkan data form dari localStorage HANYA jika token cocok
+        function restoreFormData() {
+            const savedData = localStorage.getItem(getStorageKey());
+            if (savedData) {
                 try {
-                    if (btn) {
-                        btn.disabled = true;
-                        btn.innerHTML = '<i class="ri-loader-4-line animate-spin"></i> Processing...';
+                    const formData = JSON.parse(savedData);
+                    
+                    // Hanya pulihkan data jika token cocok
+                    if (formData.token !== token) {
+                        console.log('Token tidak cocok, tidak memulihkan data');
+                        return;
                     }
-
-                    const response = await fetch(`/checkout/${action}-promo`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken,
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            ...data,
-                            token
-                        })
-                    });
-
-                    const result = await response.json();
-
-                    if (!response.ok || !result.success) {
-                        throw new Error(result.message || 'Operation failed');
+                    
+                    // Pulihkan data pembeli
+                    if (document.getElementById('buyer_name')) {
+                        document.getElementById('buyer_name').value = formData.buyer_name || '';
                     }
-
-                    window.location.reload();
-                } catch (error) {
-                    alert(error.message);
-                } finally {
-                    if (btn) {
-                        btn.disabled = false;
-                        btn.innerHTML = originalText;
+                    if (document.getElementById('buyer_email')) {
+                        document.getElementById('buyer_email').value = formData.buyer_email || '';
+                    }
+                    
+                    // Pulihkan data attendees
+                    if (formData.attendees) {
+                        for (const [key, value] of Object.entries(formData.attendees)) {
+                            const input = document.querySelector(`input[name="${key}"]`);
+                            if (input) {
+                                input.value = value.name || '';
+                                
+                                // Cari input email yang sesuai
+                                const emailKey = key.replace('[name]', '[email]');
+                                const emailInput = document.querySelector(`input[name="${emailKey}"]`);
+                                if (emailInput) {
+                                    emailInput.value = value.email || '';
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error restoring form data:', e);
+                }
+            }
+        }
+        
+        // Hapus data form dari localStorage
+        function clearFormData() {
+            localStorage.removeItem(getStorageKey());
+        }
+        
+        // Bersihkan data localStorage untuk token yang sudah tidak valid
+        function cleanupOldStorage() {
+            const prefix = 'checkout_form_data_';
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith(prefix)) {
+                    // Hapus data yang lebih dari 1 jam
+                    try {
+                        const data = JSON.parse(localStorage.getItem(key));
+                        if (data && data.timestamp) {
+                            const oneHourAgo = Date.now() - (60 * 60 * 1000);
+                            if (data.timestamp < oneHourAgo) {
+                                localStorage.removeItem(key);
+                            }
+                        }
+                    } catch (e) {
+                        // Jika error parsing, hapus saja
+                        localStorage.removeItem(key);
                     }
                 }
             }
+        }
+        
+        // Event listener untuk menyimpan data form saat input berubah
+        document.querySelectorAll('#checkout-form input').forEach(input => {
+            input.addEventListener('input', saveFormData);
+        });
+        
+        // Bersihkan data lama dan pulihkan data form saat halaman dimuat
+        cleanupOldStorage();
+        restoreFormData();
+        
+        // Hapus data form saat form berhasil disubmit
+        document.getElementById('checkout-form').addEventListener('submit', function() {
+            clearFormData();
+        });
 
-            // Event listeners
-            if (promoBtn) {
-                promoBtn.addEventListener('click', () => {
-                    if (!promoInput?.value.trim()) {
-                        alert('Please enter a promo code');
-                        return;
-                    }
-                    handlePromo('apply', {
-                        promo_code: promoInput.value.trim()
-                    });
+        // Tampilkan pesan promo
+        function showPromoMessage(message, type = 'error') {
+            promoMessageContainer.innerHTML = `
+                <div class="bg-${type === 'error' ? 'red' : 'green'}-50 border-l-4 border-${type === 'error' ? 'red' : 'green'}-400 p-4 mb-4 rounded">
+                    <div class="flex items-center">
+                        <i class="ri-${type === 'error' ? 'close' : 'checkbox'}-circle-fill text-${type === 'error' ? 'red' : 'green'}-400 text-2xl"></i>
+                        <p class="ml-3 text-sm text-${type === 'error' ? 'red' : 'green'}-700">
+                            ${message}
+                        </p>
+                    </div>
+                </div>
+            `;
+            
+            // Auto-hide pesan setelah 5 detik
+            setTimeout(() => {
+                promoMessageContainer.innerHTML = '';
+            }, 5000);
+        }
+        
+        // Perbarui ringkasan order
+        function updateOrderSummary(data) {
+            if (data.subtotal !== undefined && data.subtotal !== null) {
+                document.getElementById('subtotal_amount').textContent = `Rp ${formatNumber(data.subtotal)}`;
+            }
+            
+            if (data.discount_amount !== undefined && data.discount_amount !== null) {
+                if (data.discount_amount > 0) {
+                    document.getElementById('discount_row').classList.remove('hidden');
+                    document.getElementById('discount_code').textContent = data.promo_code || '';
+                    document.getElementById('discount_amount').textContent = `- Rp ${formatNumber(data.discount_amount)}`;
+                } else {
+                    document.getElementById('discount_row').classList.add('hidden');
+                }
+            }
+            
+            if (data.total !== undefined && data.total !== null) {
+                document.getElementById('total_amount').textContent = `Rp ${formatNumber(data.total)}`;
+            }
+        }
+        
+        // Format angka dengan pemisah ribuan (lebih aman)
+        function formatNumber(number) {
+            if (number === null || number === undefined || isNaN(number)) {
+                return '0';
+            }
+            
+            // Pastikan number adalah angka
+            const num = typeof number === 'number' ? number : parseFloat(number);
+            
+            if (isNaN(num)) {
+                return '0';
+            }
+            
+            // Bulatkan ke bilangan bulat terdekat
+            const roundedNum = Math.round(num);
+            
+            return roundedNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        async function handlePromo(action, data = {}) {
+            const url = getPromoUrl(action);
+            
+            if (!url) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Promo URL tidak ditemukan.',
+                    confirmButtonColor: '#6366f1'
                 });
+                return;
             }
 
-            if (removeBtn) {
-                removeBtn.addEventListener('click', () => {
-                    if (confirm('Remove this promo code?')) {
+            try {
+                // Disable tombol yang sesuai - gunakan selector langsung
+                if (action === 'apply') {
+                    const applyBtn = document.getElementById('promo_btn');
+                    if (applyBtn) {
+                        applyBtn.disabled = true;
+                        applyBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+                    }
+                } else if (action === 'remove') {
+                    const removeBtn = document.getElementById('remove_promo_btn');
+                    if (removeBtn) {
+                        removeBtn.disabled = true;
+                        removeBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+                    }
+                }
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ...data,
+                        token
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'Operation failed');
+                }
+
+                // Tampilkan pesan sukses dengan SweetAlert
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: result.message,
+                    confirmButtonColor: '#6366f1',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                
+                // Perbarui tampilan promo code
+                if (action === 'apply') {
+                    const discountText = result.discount_type === 'percentage' 
+                        ? `${result.discount_value}% discount` 
+                        : `Rp ${formatNumber(result.discount_value)} discount`;
+                        
+                    document.getElementById('promo-code-container').innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-medium">
+                                    ${result.promo_code}
+                                </span>
+                                <span class="ml-2 text-sm text-gray-600" id="applied_discount_text">
+                                    ${discountText}
+                                </span>
+                            </div>
+                            <button type="button" id="remove_promo_btn"
+                                class="text-red-600 hover:text-red-800 text-sm font-medium flex items-center">
+                                <i class="ri-close-line mr-1"></i> Hapus
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Tambahkan event listener untuk tombol hapus yang baru
+                    const newRemoveBtn = document.getElementById('remove_promo_btn');
+                    if (newRemoveBtn) {
+                        newRemoveBtn.addEventListener('click', function() {
+                            Swal.fire({
+                                title: 'Hapus Kode Promo?',
+                                text: 'Apakah Anda yakin ingin menghapus kode promo ini?',
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonColor: '#6366f1',
+                                cancelButtonColor: '#ef4444',
+                                confirmButtonText: 'Ya, Hapus',
+                                cancelButtonText: 'Batal'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    handlePromo('remove');
+                                }
+                            });
+                        });
+                    }
+                } else {
+                    // Kembalikan ke form input promo
+                    document.getElementById('promo-code-container').innerHTML = `
+                        <div class="flex md:flex-row flex-col justify-between w-full gap-2">
+                            <input type="text" id="promo_code_input" name="promo_code"
+                                placeholder="Masukkan kode promo"
+                                class="md:w-3/4 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none">
+                            <button id="promo_btn"
+                                class="md:w-1/4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200">
+                                Terapkan
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Tambahkan event listener untuk tombol promo yang baru
+                    const newPromoBtn = document.getElementById('promo_btn');
+                    const newPromoInput = document.getElementById('promo_code_input');
+                    
+                    if (newPromoBtn) {
+                        newPromoBtn.addEventListener('click', () => {
+                            if (!newPromoInput?.value.trim()) {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Peringatan',
+                                    text: 'Silakan masukkan kode promo',
+                                    confirmButtonColor: '#6366f1'
+                                });
+                                return;
+                            }
+                            handlePromo('apply', {
+                                promo_code: newPromoInput.value.trim()
+                            });
+                        });
+                    }
+                    
+                    // Event: press Enter to apply promo
+                    if (newPromoInput) {
+                        newPromoInput.addEventListener('keypress', (e) => {
+                            if (e.key === 'Enter' && newPromoBtn) {
+                                newPromoBtn.click();
+                            }
+                        });
+                    }
+                }
+                
+                // Perbarui ringkasan order dengan data dari response
+                const summaryData = {
+                    subtotal: result.data?.subtotal || result.subtotal,
+                    discount_amount: result.data?.discount_amount || result.discount_amount,
+                    total: result.data?.total || result.total,
+                    promo_code: result.promo_code
+                };
+                
+                updateOrderSummary(summaryData);
+
+            } catch (error) {
+                // Tampilkan error dengan SweetAlert
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message,
+                    confirmButtonColor: '#6366f1'
+                });
+                
+                // Enable tombol kembali jika error
+                if (action === 'apply') {
+                    const applyBtn = document.getElementById('promo_btn');
+                    if (applyBtn) {
+                        applyBtn.disabled = false;
+                        applyBtn.innerHTML = 'Terapkan';
+                    }
+                } else if (action === 'remove') {
+                    const removeBtn = document.getElementById('remove_promo_btn');
+                    if (removeBtn) {
+                        removeBtn.disabled = false;
+                        removeBtn.innerHTML = '<i class="ri-close-line mr-1"></i> Hapus';
+                    }
+                }
+            }
+        }
+
+        // Event: apply promo
+        const promoBtn = document.getElementById('promo_btn');
+        const promoInput = document.getElementById('promo_code_input');
+        
+        if (promoBtn) {
+            promoBtn.addEventListener('click', () => {
+                if (!promoInput?.value.trim()) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Peringatan',
+                        text: 'Silakan masukkan kode promo',
+                        confirmButtonColor: '#6366f1'
+                    });
+                    return;
+                }
+                handlePromo('apply', {
+                    promo_code: promoInput.value.trim()
+                });
+            });
+        }
+
+        // Event: remove promo dengan SweetAlert confirmation
+        const removeBtn = document.getElementById('remove_promo_btn');
+        
+        if (removeBtn) {
+            removeBtn.addEventListener('click', () => {
+                Swal.fire({
+                    title: 'Hapus Kode Promo?',
+                    text: 'Apakah Anda yakin ingin menghapus kode promo ini?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#6366f1',
+                    cancelButtonColor: '#ef4444',
+                    confirmButtonText: 'Ya, Hapus',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         handlePromo('remove');
                     }
                 });
-            }
+            });
+        }
 
-            if (promoInput) {
-                promoInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter' && promoBtn) {
-                        promoBtn.click();
-                    }
-                });
-            }
+        // Event: press Enter to apply promo
+        if (promoInput) {
+            promoInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && promoBtn) {
+                    promoBtn.click();
+                }
+            });
+        }
 
-            // Handle copy attendee data
-            document.querySelectorAll('.copy-attendee-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const productId = this.dataset.product;
-                    const firstAttendee = document.querySelector(
-                        `.attendee-list[data-product="${productId}"] .attendee-item:first-child`
-                        );
+        // Handle copy attendee data
+        document.querySelectorAll('.copy-attendee-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const productId = this.dataset.product;
+                const firstAttendee = document.querySelector(
+                    `.attendee-list[data-product="${productId}"] .attendee-item:first-child`
+                );
 
-                    if (firstAttendee) {
-                        const name = firstAttendee.querySelector('.attendee-name').value;
-                        const email = firstAttendee.querySelector('.attendee-email').value;
+                if (firstAttendee) {
+                    const name = firstAttendee.querySelector('.attendee-name').value;
+                    const email = firstAttendee.querySelector('.attendee-email').value;
 
-                        document.querySelectorAll(
-                                `.attendee-list[data-product="${productId}"] .attendee-item`)
-                            .forEach(item => {
-                                item.querySelector('.attendee-name').value = name;
-                                item.querySelector('.attendee-email').value = email;
-                            });
-                    }
-                });
+                    document.querySelectorAll(
+                        `.attendee-list[data-product="${productId}"] .attendee-item`
+                    ).forEach(item => {
+                        item.querySelector('.attendee-name').value = name;
+                        item.querySelector('.attendee-email').value = email;
+                    });
+                    
+                    // Simpan perubahan ke localStorage
+                    saveFormData();
+                }
             });
         });
-    </script>
+    });
+</script>
 
 </body>
 

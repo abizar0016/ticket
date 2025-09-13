@@ -84,7 +84,7 @@
                         class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-500">
                         <i class="ri-search-line"></i>
                     </div>
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search promos..."
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..."
                         class="pl-10 pr-4 py-2 sm:py-2.5 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 outline-none w-full transition-all duration-300 group-hover:border-indigo-300 text-sm sm:text-base">
                 </div>
                 <div class="flex gap-2 w-full md:w-auto">
@@ -124,10 +124,7 @@
                                 Applicable To</th>
                             <th scope="col"
                                 class="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs sm:text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
-                                Uses</th>
-                            <th scope="col"
-                                class="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs sm:text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Status</th>
+                                Used</th>
                             <th scope="col"
                                 class="px-4 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Actions</th>
@@ -203,25 +200,11 @@
                                         </span>
                                     </div>
                                 </td>
-                                <td class="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap">
-                                    @if ($promo->max_uses == 0 || $promo->order_items_count < $promo->max_uses)
-                                        <span
-                                            class="px-2 py-0.5 sm:px-3 sm:py-1 inline-flex text-xs leading-4 font-medium rounded-full bg-green-100 text-green-800 flex items-center gap-1">
-                                            <i class="ri-checkbox-circle-line text-xs sm:text-sm"></i> <span
-                                                class="hidden sm:inline">Active</span>
-                                        </span>
-                                    @else
-                                        <span
-                                            class="px-2 py-0.5 sm:px-3 sm:py-1 inline-flex text-xs leading-4 font-medium rounded-full bg-red-100 text-red-800 flex items-center gap-1">
-                                            <i class="ri-close-circle-line text-xs sm:text-sm"></i> <span
-                                                class="hidden sm:inline">Used</span>
-                                        </span>
-                                    @endif
-                                </td>
                                 <td class="px-4 py-3 sm:px-6 sm:py-4 whitespace-nowrap text-right">
                                     <div class="flex justify-end items-center gap-1 sm:gap-2">
-                                        <button onclick="openEditModal({{ $promo->id }})"
-                                            class="p-1.5 sm:p-2 text-indigo-600 hover:text-white hover:bg-indigo-600 rounded-md sm:rounded-lg transition-all duration-200"
+                                        <button id="open-promo-update-modal-{{ $promo->id }}"
+                                        data-id="{{ $promo->id }}"
+                                            class="p-1.5 sm:p-2 text-gray-600 hover:text-indigo-600 rounded-md sm:rounded-lg transition-all duration-200"
                                             title="Edit">
                                             <i class="ri-edit-line text-sm sm:text-base"></i>
                                         </button>
@@ -231,7 +214,7 @@
                                             @method('DELETE')
                                             <button type="button"
                                                 onclick="confirmDelete('delete-promo-{{ $promo->id }}')"
-                                                class="p-1.5 sm:p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-md sm:rounded-lg transition-all duration-200"
+                                                class="p-1.5 sm:p-2 text-gray-600 hover:text-red-600 rounded-md sm:rounded-lg transition-all duration-200"
                                                 title="Delete">
                                                 <i class="ri-delete-bin-line text-sm sm:text-base"></i>
                                             </button>
@@ -251,6 +234,7 @@
 </div>
 
 @include('components.modal.create-promo')
+@include('components.modal.update-promo')
 
 <script>
     function confirmDelete(formId) {

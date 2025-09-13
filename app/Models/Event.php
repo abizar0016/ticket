@@ -44,9 +44,9 @@ class Event extends Model
         return $this->hasMany(Product::class);
     }
 
-    public function organizer()
+    public function organization()
     {
-        return $this->belongsTo(Organizer::class);
+        return $this->belongsTo(Organization::class);
     }
 
     public function attendees()

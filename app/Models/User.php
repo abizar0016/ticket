@@ -56,9 +56,11 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    /**
-     * Get the events for the user.
-     */
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class);
+    }
+
     public function events()
     {
         return $this->hasMany(Event::class);

@@ -16,7 +16,6 @@ class RoleMiddleware
 
         $user = Auth::user();
 
-        // Jika user tidak memiliki salah satu dari role yang diizinkan
         if (!in_array($user->role, $roles)) {
             abort(403, 'Unauthorized');
         }

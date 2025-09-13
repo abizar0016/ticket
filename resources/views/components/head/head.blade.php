@@ -6,10 +6,6 @@
         {{ ucwords(str_replace(['.', '_'], ' ', request()->route()->getName())) }}
     </title>
     <meta name="description" content="Modern admin dashboard template built with Tailwind CSS">
-
-    <!-- Favicon -->
-    <link rel="icon" href="../assets/images/favicon.svg" type="image/x-icon">
-
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -23,62 +19,17 @@
     <!-- QR Scanner -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
+    <!-- Chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     {{-- JS --}}
     <script>
         window.csrfToken = "{{ csrf_token() }}";
     </script>
-    <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/userTimezone.js') }}"></script>
 
-    <!-- Vite CSS -->
-    @vite('resources/css/app.css')
+    <script src="{{ asset('js/superAdmin/chart.js') }}"></script>
 
-    {{-- Custom CSS --}}
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    @vite(['resources/css/app.css', 'resources/js/superAdmin/index.js', 'resources/js/app.js'])
 
-    <style>
-        /* Smooth transitions */
-        .transition-smooth {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-
-        /* Navbar shadow when scrolled */
-        .scrolled-nav {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        #upload-container {
-            transition: all 0.2s ease;
-        }
-
-        #upload-container:hover {
-            border-color: #3b82f6;
-            background-color: #f8fafc;
-        }
-
-        #upload-container.drag-over {
-            border-color: #3b82f6;
-            background-color: #eff6ff;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-    </style>
 </head>

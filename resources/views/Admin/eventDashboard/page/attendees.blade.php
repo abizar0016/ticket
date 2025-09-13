@@ -129,8 +129,8 @@
                                     </td>
                                     <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap text-right">
                                         <div class="flex justify-end items-center gap-1 sm:gap-2">
-                                            <button id="open-attendee-update-modal"
-                                                class="p-1 sm:p-1.5 md:p-2 text-indigo-600 hover:text-indigo-800 rounded-md sm:rounded-lg hover:bg-indigo-50 transition"
+                                            <button id="open-attendee-update-modal-{{ $attendee->id }}"
+                                                class="p-1 sm:p-1.5 md:p-2 text-gray-600 hover:text-indigo-600 transition"
                                                 title="Edit" data-id="{{ $attendee->id }}">
                                                 <i class="ri-edit-line text-base sm:text-lg md:text-xl"></i>
                                             </button>
@@ -142,7 +142,7 @@
                                                 @method('DELETE')
                                                 <button type="button"
                                                     onclick="confirmDelete('delete-attendee-{{ $attendee->id }}')"
-                                                    class="p-1 sm:p-1.5 md:p-2 text-red-600 hover:text-red-800 rounded-md sm:rounded-lg hover:bg-red-50 transition"
+                                                    class="p-1 sm:p-1.5 md:p-2 text-gray-600 hover:text-red-600 transition"
                                                     title="Delete">
                                                     <i class="ri-delete-bin-line text-base sm:text-lg md:text-xl"></i>
                                                 </button>
