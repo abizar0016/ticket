@@ -19,7 +19,7 @@ class CustomersOrderController extends Controller
             ->paginate(10);
 
         // Kirim ke view
-        return view('Customers.orders.index', compact('orders'));
+        return view('pages.Customers.orders.index', compact('orders'));
     }
 
     public function show($id)
@@ -57,6 +57,6 @@ class CustomersOrderController extends Controller
             ]);
         }
 
-        return view('Customers.orders.show', compact('order', 'event'));
+        return view('pages.Customers.orders.show', compact('order', 'event'));
     }
 }

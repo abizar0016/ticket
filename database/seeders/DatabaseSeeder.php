@@ -14,7 +14,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
-
         User::factory()->create([
             'name' => 'admin',
             'email' => 'admin@ticket.com',
@@ -23,7 +22,7 @@ class DatabaseSeeder extends Seeder
             'provider_id' => null,
             'email_verified_at' => now(),
             'remember_token' => null,
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
         User::factory()->create([
@@ -34,7 +33,7 @@ class DatabaseSeeder extends Seeder
             'provider_id' => null,
             'email_verified_at' => now(),
             'remember_token' => null,
-            'role' => 'superadmin'
+            'role' => 'superadmin',
         ]);
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,17 +22,23 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (
-            config('app.env') === 'production' ||
-            str_contains(request()->getHost(), 'ngrok-free.app') // <- deteksi ngrok
-        ) {
+        config(['app.timezone' => 'Asia/Jakarta']);
+        date_default_timezone_set(config('app.timezone'));
+        Carbon::setLocale('id');
+
+        $host = request()->getHost();
+        $schemeHost = request()->getSchemeAndHttpHost();
+
+        if (str_contains($host, 'ngrok-free.app')) {
+            // ✅ Kalau pakai ngrok
+            config(['app.url' => $schemeHost]);
+            URL::forceRootUrl($schemeHost);
+            URL::forceScheme('https');
+        } elseif (config('app.env') === 'production') {
+            // ✅ Kalau production
             URL::forceScheme('https');
         }
 
-        // Set locale Laravel
         App::setLocale('id');
-
-        // Set locale untuk Carbon
-        Carbon::setLocale('id');
     }
 }

@@ -66,9 +66,9 @@ class Product extends Model
         return $this->belongsTo(Event::class);
     }
 
-    public function promo_codes()
+    public function promo()
     {
-        return $this->hasMany(PromoCode::class);
+        return $this->hasMany(Promo::class);
     }
 
     public function orderItems()

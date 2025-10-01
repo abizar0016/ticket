@@ -82,7 +82,7 @@
                         data-id="{{ $item->id }}" title="Edit">
                         <i class="ri-pencil-line text-sm sm:text-base"></i>
                     </button>
-                    <form id="delete-product-{{ $item->id }}" action="{{ route('product.destroy', $item->id) }}">
+                    <form id="delete-product-{{ $item->id }}" action="{{ route('products.destroy', $item->id) }}">
                         @csrf
                         @method('DELETE')
                         <button type="button" onclick="confirmDelete('delete-product-{{ $item->id }}')"
@@ -96,8 +96,6 @@
         </div>
     @endforeach
 </div>
-
-@include('components.modal.update-ticket-merchandise')
 
 <script>
     function confirmDelete(formId) {

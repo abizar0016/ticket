@@ -8,7 +8,7 @@ class PromoProduct extends Model
 {
     protected $fillable = [
         'product_id',
-        'promo_code_id',
+        'promo_id',
         'type',
         'discount',
     ];

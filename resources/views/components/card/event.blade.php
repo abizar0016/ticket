@@ -15,7 +15,11 @@
                     class="text-2xl font-bold text-gray-900 mb-3 bg-clip-text bg-gradient-to-r from-gray-800 to-gray-600">
                     No events found</h3>
                 <p class="text-gray-600/90 mb-8 max-w-md mx-auto text-lg">
-                    @switch($currentFilter)
+                    @switch($eventStatus)
+                        @case('draft')
+                            No events in draft
+                        @break
+
                         @case('upcoming')
                             No upcoming events scheduled
                         @break
@@ -47,142 +51,69 @@
         </div>
     @else
         <!-- Events Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach ($events as $event)
-                @php
-                    $eventStatus = 'Draft';
-                    $statusColors = [
-                        'Draft' => 'bg-gradient-to-r from-amber-400 to-amber-500',
-                        'Ended' => 'bg-gradient-to-r from-rose-500 to-rose-600',
-                        'Ongoing' => 'bg-gradient-to-r from-emerald-400 to-emerald-600',
-                        'Upcoming' => 'bg-gradient-to-r from-blue-400 to-blue-600',
-                    ];
+                <div
+                    class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 dark:border-gray-800 overflow-hidden flex flex-col">
 
-                    $statusIcons = [
-                        'Draft' => 'ri-draft-line',
-                        'Ended' => 'ri-checkbox-circle-line',
-                        'Ongoing' => 'ri-flashlight-line',
-                        'Upcoming' => 'ri-time-line',
-                    ];
-
-                    if ($event->status === 'published') {
-                        if ($event->start_date > $now) {
-                            $eventStatus = 'Upcoming';
-                        } elseif ($event->end_date && $event->end_date < $now) {
-                            $eventStatus = 'Ended';
-                        } else {
-                            $eventStatus = 'Ongoing';
-                        }
-                    }
-                @endphp
-
-                <!-- Event Card -->
-                <div class="relative group transition-all duration-500 hover:z-10">
-                    <div class="relative h-full transition-transform duration-500 ease-out group-hover:-translate-y-2">
-                        <div
-                            class="bg-white/80 backdrop-blur-lg rounded-2xl shadow-lg overflow-hidden border border-white/20 hover:shadow-xl transition-all duration-500 h-full flex flex-col animate-[fadeInUp_0.6s_ease-out_forwards]">
-                            <!-- Image -->
-                            <div class="relative h-56 overflow-hidden">
-                                @if ($event->event_image)
-                                    <div class="absolute inset-0 bg-gradient-to-b from-black/10 to-black/30 z-10"></div>
-                                    <img src="{{ asset($event->event_image) }}" alt="{{ $event->name }}"
-                                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                                @else
-                                    <div
-                                        class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-300 flex items-center justify-center">
-                                        <i class="ri-calendar-event-line text-5xl text-gray-400"></i>
-                                    </div>
-                                @endif
-
-                                <!-- Date Badge -->
-                                <div
-                                    class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg border border-white/20 z-20">
-                                    <div class="text-sm font-bold text-gray-900">
-                                        {{ $event->start_date->setTimezone($tz)->format('M j') }}
-                                        @if ($event->end_date && !$event->start_date->isSameDay($event->end_date))
-                                            <span class="font-normal">-
-                                                {{ $event->end_date->setTimezone($tz)->format('M j') }}</span>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <!-- Status -->
-                                <div class="absolute top-4 right-4 flex items-center gap-2">
-                                    <span
-                                        class="{{ $statusColors[$eventStatus] }} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md backdrop-blur-sm flex items-center gap-1">
-                                        <i class="{{ $statusIcons[$eventStatus] }}"></i>
-                                        {{ $eventStatus }}
-                                    </span>
-                                </div>
+                    {{-- Event Image --}}
+                    <div class="h-40 w-full bg-gray-200 dark:bg-gray-800">
+                        @if ($event->event_image)
+                            <img src="{{ asset($event->event_image) }}" alt="{{ $event->title }}"
+                                class="h-full w-full object-cover">
+                        @else
+                            <div class="h-full w-full flex items-center justify-center text-gray-400">
+                                <i class="ri-image-line text-2xl"></i>
                             </div>
+                        @endif
+                    </div>
 
-                            <!-- Card Content -->
-                            <div class="p-6 flex-grow flex flex-col">
-                                <h3
-                                    class="text-xl font-extrabold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2">
-                                    {{ $event->title }}
-                                </h3>
+                    {{-- Event Content --}}
+                    <div class="p-5 flex-1 flex flex-col">
+                        <h2 class="text-lg font-bold text-gray-900 dark:text-white line-clamp-2">
+                            {{ $event->title }}
+                        </h2>
 
-                                <p class="text-gray-600/90 mb-5 line-clamp-3 flex-grow">
-                                    {{ Str::limit($event->description, 120) }}
-                                </p>
-
-                                <div class="space-y-3 mb-6">
-                                    <div class="flex items-center">
-                                        <div
-                                            class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center mr-3">
-                                            <i class="ri-user-line text-green-600"></i>
-                                        </div>
-                                        <span class="text-sm font-medium text-gray-700">
-                                            {{ $attendeesCount[$event->id] ?? 0 }} attending
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <!-- Manage + Delete Buttons -->
-                                <div class="mt-auto pt-4 border-t border-gray-100/60 space-y-3">
-                                    <!-- Manage -->
-                                    <a href="{{ route('event.dashboard', $event->id) }}"
-                                        class="relative flex items-center justify-between gap-3 w-full px-5 py-3 rounded-xl bg-white border border-gray-200 shadow-sm hover:shadow-xl group transition-all duration-300 overflow-hidden">
-                                        <span
-                                            class="relative z-10 font-semibold text-gray-700 group-hover:text-indigo-600 transition-colors">Manage
-                                            Event</span>
-                                        <span
-                                            class="relative z-10 flex items-center justify-center w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 group-hover:bg-indigo-100 transition-all duration-300 shadow-md group-hover:shadow-lg">
-                                            <i
-                                                class="ri-arrow-right-line group-hover:translate-x-1 transition-transform duration-300 text-lg"></i>
-                                        </span>
-                                        <span
-                                            class="absolute inset-0 bg-gradient-to-r from-indigo-50/60 to-indigo-100/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></span>
-                                    </a>
-
-                                    <!-- Delete -->
-                                    <form id="delete-event-{{ $event->id }}"
-                                        action="{{ route('event.delete', $event->id) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="relative flex items-center justify-between gap-3 w-full px-5 py-3 rounded-xl bg-white border border-red-100 shadow-sm hover:shadow-md group transition-all duration-300 overflow-hidden">
-                                            <span
-                                                class="relative z-10 font-semibold text-red-600 group-hover:text-red-700 transition-colors">Delete
-                                                Event</span>
-                                            <span
-                                                class="relative z-10 flex items-center justify-center w-9 h-9 rounded-xl bg-red-50 text-red-600 group-hover:bg-red-100 transition-all duration-300 shadow-md group-hover:shadow-lg">
-                                                <i
-                                                    class="ri-delete-bin-line group-hover:scale-110 transition-transform duration-300 text-lg"></i>
-                                            </span>
-                                            <span
-                                                class="absolute inset-0 bg-gradient-to-r from-red-50/50 to-red-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></span>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
+                        <div class="mt-2 grid grid-cols-1 gap-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                            <span><i
+                                    class="ri-folder-2-line mr-1"></i>{{ $event->categories->name ?? 'Uncategorized' }}</span>
+                            <span><i class="ri-user-line mr-1"></i>{{ $event->user->name ?? 'Unknown' }}</span>
+                            <span><i
+                                    class="ri-building-2-line mr-1"></i>{{ $event->organization->name ?? 'No Organization' }}</span>
                         </div>
 
-                        <!-- Optional Shadow Layer -->
-                        <div
-                            class="absolute inset-0 rounded-2xl bg-black/5 blur-md -z-10 transition-all duration-500 group-hover:opacity-100 group-hover:-translate-y-1">
+                        <div class="mt-3">
+                            <span
+                                class="inline-flex items-center px-3 py-1 rounded-lg text-xs font-semibold 
+                            @if ($event->status === 'draft') bg-amber-100 text-amber-700
+                            @elseif ($event->status === 'upcoming') bg-blue-100 text-blue-700
+                            @elseif ($event->status === 'ongoing') bg-emerald-100 text-emerald-700
+                            @else bg-rose-100 text-rose-700 @endif">
+                                <i class="ri-time-line mr-1"></i> {{ ucfirst($event->status) }}
+                            </span>
                         </div>
+
+                        <p class="mt-2 text-xs text-gray-400 flex items-center">
+                            <i class="ri-calendar-line mr-1"></i>
+                            {{ $event->start_date }} → {{ $event->end_date }}
+                        </p>
+                    </div>
+
+                    {{-- Actions --}}
+                    <div class="p-5 border-t border-gray-100 dark:border-gray-800 flex gap-3">
+                        <a href="{{ route(Auth::user()->role === 'superadmin' ? 'events.dashboard' : 'admin.events.dashboard', $event->id) }}"
+                            class="flex-1 text-center px-4 py-2 rounded-lg text-sm font-medium bg-gradient-to-r from-indigo-500 to-indigo-600 text-white shadow hover:shadow-md hover:scale-[1.02] transition">
+                            <i class="ri-settings-3-line mr-1"></i> Manage
+                        </a>
+                        <form action="" method="POST" class="flex-1"
+                            onsubmit="return confirm('Are you sure you want to delete this event?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                class="w-full px-4 py-2 text-sm font-medium rounded-lg border border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
+                                <i class="ri-delete-bin-line mr-1"></i> Delete
+                            </button>
+                        </form>
                     </div>
                 </div>
             @endforeach

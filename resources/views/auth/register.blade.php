@@ -1,50 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.auth')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title> {{ __('Register') }} | {{ env('APP_NAME') }} </title>
-    @vite('resources/css/app.css')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .split-container {
-            min-height: 0;
-        }
-
-        @media (min-width: 1024px) {
-            .split-container {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 2rem;
-                align-items: center;
-            }
-
-            .form-container {
-                padding: 2rem 0;
-            }
-        }
-    </style>
-</head>
-
-<body class="font-inter bg-gradient-to-br from-blue-50 to-indigo-100">
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            @foreach ($errors->all() as $error)
-                <p>{{ $error }}</p>
-            @endforeach
-        </div>
-    @endif
-
-    <div class="min-h-screen flex items-center justify-center px-4 py-12">
-        <div class="w-full max-w-4xl animate__animated animate__fadeIn split-container">
+@section('content')
+        <div class="w-full max-w-4xl animate__animated animate__fadeIn lg:grid lg:grid-cols-2 lg:gap-8 lg:items-center">
             <!-- Left Side - Illustration -->
             <div class="hidden lg:flex flex-col items-center justify-center p-8">
                 <div class="w-64 h-64 bg-indigo-100 rounded-full flex items-center justify-center mb-6">
-                    <i class="fas fa-user-plus text-6xl text-indigo-600"></i>
+                    <i class="ri-user-add-line text-6xl text-indigo-600"></i>
                 </div>
                 <h2 class="text-2xl font-extrabold text-gray-900 text-center mb-2">
                     Join Our Community
@@ -53,22 +14,18 @@
                     Create your account and unlock all features
                 </p>
                 <ul class="space-y-3 text-gray-700">
-                    <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i> Access your
-                        dashboard</li>
-                    <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i> Create your
-                        event and tikets</li>
-                    <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i> Manage your
-                        event and tickets</li>
+                    <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i> Access your dashboard</li>
+                    <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i> Create your event and tickets</li>
+                    <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i> Manage your event and tickets</li>
                 </ul>
             </div>
 
             <!-- Right Side - Form -->
-            <div class="bg-white shadow-lg rounded-lg form-container">
+            <div class="bg-white shadow-lg rounded-lg p-8">
                 <div class="p-6 sm:p-8">
                     <div class="lg:hidden text-center mb-6">
-                        <div
-                            class="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 mb-4">
-                            <i class="fas fa-user-plus text-3xl"></i>
+                        <div class="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 mb-4">
+                            <i class="ri-user-add-line text-3xl"></i>
                         </div>
                         <h2 class="text-2xl font-extrabold text-gray-900">
                             Create your account
@@ -78,57 +35,64 @@
                         </p>
                     </div>
 
-                    <form class="space-y-4" action="{{ route('register.store') }}" method="POST">
+                    <form class="space-y-4" action="{{ route('register.store') }}" method="POST" autocomplete="on">
                         @csrf
-                        <div class="flex flex-col gap-4">
-                            <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
-                                <div class="mt-1 relative rounded-md shadow-sm">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-user text-gray-400"></i>
-                                    </div>
-                                    <input id="name" name="name" type="text" required
-                                        class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
-                                        placeholder="your name">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="ri-user-line text-gray-400"></i>
                                 </div>
+                                <input id="name" name="name" type="text" required
+                                    class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
+                                    placeholder="your name" autocomplete="name">
                             </div>
+                        </div>
 
-                            <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                                <div class="mt-1 relative rounded-md shadow-sm">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-envelope text-gray-400"></i>
-                                    </div>
-                                    <input id="email" name="email" type="email" required
-                                        class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
-                                        placeholder="your@email.com">
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="ri-mail-line text-gray-400"></i>
                                 </div>
+                                <input id="email" name="email" type="email" required
+                                    class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
+                                    placeholder="your@email.com" autocomplete="email">
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Password -->
                             <div>
                                 <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
                                 <div class="mt-1 relative rounded-md shadow-sm">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-lock text-gray-400"></i>
+                                        <i class="ri-lock-2-line text-gray-400"></i>
                                     </div>
                                     <input id="password" name="password" type="password" required
-                                        class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
-                                        placeholder="••••••">
+                                        class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-md py-2 border"
+                                        placeholder="••••••" autocomplete="new-password">
+                                    <button type="button" id="togglePassword"
+                                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
+                                        <i id="toggleIconPassword" class="ri-eye-off-line"></i>
+                                    </button>
                                 </div>
                             </div>
 
+                            <!-- Confirm Password -->
                             <div>
-                                <label for="password-confirm" class="block text-sm font-medium text-gray-700">Confirm
-                                    Password</label>
+                                <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
                                 <div class="mt-1 relative rounded-md shadow-sm">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-lock text-gray-400"></i>
+                                        <i class="ri-lock-2-line text-gray-400"></i>
                                     </div>
-                                    <input id="password-confirm" name="password_confirmation" type="password" required
-                                        class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
-                                        placeholder="••••••">
+                                    <input id="password_confirmation" name="password_confirmation" type="password" required
+                                        class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-md py-2 border"
+                                        placeholder="••••••" autocomplete="new-password">
+                                    <button type="button" id="togglePasswordConfirm"
+                                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
+                                        <i id="toggleIconPasswordConfirm" class="ri-eye-off-line"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -137,19 +101,14 @@
                             <input id="terms" name="terms" type="checkbox"
                                 class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
                             <label for="terms" class="ml-2 block text-xs text-gray-700">
-                                I agree to the <a href="#"
-                                    class="font-medium text-indigo-600 hover:text-indigo-500">Terms</a> and <a
-                                    href="#" class="font-medium text-indigo-600 hover:text-indigo-500">Privacy
-                                    Policy</a>
+                                I agree to the <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">Terms</a> and <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">Privacy Policy</a>
                             </label>
                         </div>
 
                         <div>
                             <button id="submit-btn" type="submit" disabled
-                                class="w-full flex justify-center items-center py-2 px-4 border border-transparent 
-                                        text-sm font-medium rounded-md text-white bg-indigo-400 cursor-not-allowed 
-                                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-300">
-                                <i class="fas fa-user-plus mr-2"></i>
+                                class="w-full flex justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-400 cursor-not-allowed transition-colors duration-300">
+                                <i class="ri-user-add-line mr-2"></i>
                                 Create Account
                             </button>
                         </div>
@@ -170,7 +129,7 @@
                         <div class="mt-4 flex w-full">
                             <a href="{{ route('login.google') }}"
                                 class="w-full inline-flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                <i class="fab fa-google text-red-500"></i>
+                                <i class="ri-google-fill text-red-500"></i>
                                 <span class="ml-2">Google</span>
                             </a>
                         </div>
@@ -188,11 +147,11 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const terms = document.getElementById('terms');
             const submitBtn = document.getElementById('submit-btn');
 
-            terms.addEventListener('change', function() {
+            terms.addEventListener('change', function () {
                 if (this.checked) {
                     submitBtn.disabled = false;
                     submitBtn.classList.remove('bg-indigo-400', 'cursor-not-allowed');
@@ -203,8 +162,30 @@
                     submitBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
                 }
             });
+
+            // Toggle password
+            function togglePassword(inputId, iconId) {
+                const input = document.getElementById(inputId);
+                const icon = document.getElementById(iconId);
+
+                if (input.type === "password") {
+                    input.type = "text";
+                    icon.classList.remove("ri-eye-off-line");
+                    icon.classList.add("ri-eye-line");
+                } else {
+                    input.type = "password";
+                    icon.classList.remove("ri-eye-line");
+                    icon.classList.add("ri-eye-off-line");
+                }
+            }
+
+            document.getElementById('togglePassword').addEventListener('click', function () {
+                togglePassword('password', 'toggleIconPassword');
+            });
+
+            document.getElementById('togglePasswordConfirm').addEventListener('click', function () {
+                togglePassword('password_confirmation', 'toggleIconPasswordConfirm');
+            });
         });
     </script>
-</body>
-
-</html>
+@endsection

@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Auth\Events\Login;
-use Carbon\Carbon;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -22,10 +23,10 @@ class AuthController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
 
-            if ($user->role === 'superadmin'){
+            if ($user->role === 'superadmin') {
                 return redirect()->route('superAdmin.dashboard');
             } elseif ($user->role === 'admin') {
-                return redirect()->route('home.admin');
+                return redirect()->route('admin.index');
             } elseif ($user->role === 'customer') {
                 return redirect()->route('home.customer');
             }
@@ -55,8 +56,9 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         // Check if user exists and password matches
-        if (!$user || !Hash::check((string) $request->password, (string) $user->password)) {
+        if (! $user || ! Hash::check((string) $request->password, (string) $user->password)) {
             RateLimiter::hit($this->throttleKey($request));
+
             return back()->withErrors([
                 'email' => 'Email atau password salah.',
             ])->onlyInput('email');
@@ -65,7 +67,7 @@ class AuthController extends Controller
         // Check if user registered with social media
         if ($user->provider && $user->provider !== 'email') {
             return back()->withErrors([
-                'email' => 'Akun ini terdaftar dengan ' . ucfirst($user->provider) . '. Silakan login dengan metode tersebut.',
+                'email' => 'Akun ini terdaftar dengan '.ucfirst($user->provider).'. Silakan login dengan metode tersebut.',
             ])->onlyInput('email');
         }
 
@@ -78,11 +80,11 @@ class AuthController extends Controller
 
         Auth::login($user, $request->filled('remember'));
         event(new Login('web', $user, false));
-        
-        if ($user->role === 'superadmin'){
+
+        if ($user->role === 'superadmin') {
             return redirect()->route('superAdmin.dashboard');
         } elseif ($user->role === 'admin') {
-            return redirect()->route('home.admin');
+            return redirect()->route('admin.index');
         }
 
         $request->session()->regenerate();
@@ -97,10 +99,10 @@ class AuthController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
 
-            if ($user->role === 'superadmin'){
+            if ($user->role === 'superadmin') {
                 return redirect()->route('superAdmin.dashboard');
             } elseif ($user->role === 'admin') {
-                return redirect()->route('home.admin');
+                return redirect()->route('admin.index');
             } elseif ($user->role === 'customer') {
                 return redirect()->route('home.customer');
             }
@@ -108,6 +110,7 @@ class AuthController extends Controller
             // fallback jika role tidak dikenal
             return redirect('/');
         }
+
         return view('auth.register');
     }
 
@@ -118,10 +121,10 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'terms' => 'accepted'
+            'terms' => 'accepted',
         ], [
             'password.confirmed' => 'Konfirmasi password tidak sesuai.',
-            'terms.accepted' => 'Anda harus menyetujui syarat dan ketentuan.'
+            'terms.accepted' => 'Anda harus menyetujui syarat dan ketentuan.',
         ]);
 
         $user = User::create([
@@ -137,19 +140,25 @@ class AuthController extends Controller
             'role' => 'customer',
         ]);
 
+        Activity::create([
+            'user_id' => $user->id,
+            'action' => 'register',
+            'model_type' => 'User',
+            'model_id' => $user->id,
+        ]);
+
         Auth::login($user, $request->filled('remember'));
         event(new Login('web', $user, false));
 
-        if ($user->role === 'superadmin'){
+        if ($user->role === 'superadmin') {
             return redirect()->route('superAdmin.dashboard');
         } elseif ($user->role === 'admin') {
-            return redirect()->route('home.admin');
+            return redirect()->route('admin.index');
         }
+
         return redirect()->route('home.customer');
     }
 
-
-    // Redirect to Google
     public function redirectToGoogle()
     {
         try {
@@ -157,7 +166,8 @@ class AuthController extends Controller
                 ->scopes(['openid', 'profile', 'email'])
                 ->redirect();
         } catch (\Exception $e) {
-            Log::error('Google redirect error: ' . $e->getMessage());
+            Log::error('Google redirect error: '.$e->getMessage());
+
             return redirect()->route('register')
                 ->withErrors(['socialite' => 'Gagal memulai login Google.']);
         }
@@ -174,10 +184,10 @@ class AuthController extends Controller
                 'name' => $googleUser->getName(),
                 'email' => $googleUser->getEmail(),
                 'avatar' => $googleUser->getAvatar(),
-                'raw' => $googleUser->getRaw()
+                'raw' => $googleUser->getRaw(),
             ]);
 
-            if (!$googleUser->getEmail()) {
+            if (! $googleUser->getEmail()) {
                 throw new \Exception('Email tidak diberikan oleh Google');
             }
 
@@ -195,7 +205,7 @@ class AuthController extends Controller
                     'last_login_at' => Carbon::now(),
                     'last_login_ip' => $request->ip(),
                     'login_count' => $user->login_count + 1,
-                    'profile_picture' => $googleUser->getAvatar()
+                    'profile_picture' => $googleUser->getAvatar(),
                 ];
 
                 Log::debug('Updating user with:', $updateData);
@@ -211,25 +221,33 @@ class AuthController extends Controller
                     'last_login_at' => Carbon::now(),
                     'last_login_ip' => $request->ip(),
                     'login_count' => 1,
-                    'profile_picture' => $googleUser->getAvatar()
+                    'profile_picture' => $googleUser->getAvatar(),
                 ];
 
                 Log::debug('Creating user with:', $userData);
                 $user = User::create($userData);
             }
 
+            Activity::create([
+                'user_id' => $user->id,
+                'action' => 'register',
+                'model_type' => 'User',
+                'model_id' => $user->id,
+            ]);
+
             Auth::login($user, true);
-            
+
             if ($user->role === 'admin') {
-                return redirect()->route('home.admin');
+                return redirect()->route('admin.index');
             }
 
             return redirect()->route('home.customer');
 
         } catch (\Exception $e) {
-            Log::error('Google callback error: ' . $e->getMessage());
+            Log::error('Google callback error: '.$e->getMessage());
+
             return redirect()->route('login')
-                ->withErrors(['socialite' => 'Gagal masuk dengan Google: ' . $e->getMessage()]);
+                ->withErrors(['socialite' => 'Gagal masuk dengan Google: '.$e->getMessage()]);
         }
     }
 
@@ -241,7 +259,8 @@ class AuthController extends Controller
                 ->scopes(['email'])
                 ->redirect();
         } catch (\Exception $e) {
-            Log::error('Facebook redirect error: ' . $e->getMessage());
+            Log::error('Facebook redirect error: '.$e->getMessage());
+
             return redirect()->route('register')
                 ->withErrors(['socialite' => 'Gagal memulai login Facebook.']);
         }
@@ -258,10 +277,10 @@ class AuthController extends Controller
                 'name' => $facebookUser->getName(),
                 'email' => $facebookUser->getEmail(),
                 'avatar' => $facebookUser->getAvatar(),
-                'raw' => $facebookUser->getRaw()
+                'raw' => $facebookUser->getRaw(),
             ]);
 
-            if (!$facebookUser->getEmail()) {
+            if (! $facebookUser->getEmail()) {
                 throw new \Exception('Email tidak diberikan oleh Facebook');
             }
 
@@ -279,7 +298,7 @@ class AuthController extends Controller
                     'last_login_at' => Carbon::now(),
                     'last_login_ip' => $request->ip(),
                     'login_count' => $user->login_count + 1,
-                    'profile_picture' => $facebookUser->getAvatar()
+                    'profile_picture' => $facebookUser->getAvatar(),
                 ];
 
                 Log::debug('Updating user with:', $updateData);
@@ -295,7 +314,7 @@ class AuthController extends Controller
                     'last_login_at' => Carbon::now(),
                     'last_login_ip' => $request->ip(),
                     'login_count' => 1,
-                    'profile_picture' => $facebookUser->getAvatar()
+                    'profile_picture' => $facebookUser->getAvatar(),
                 ];
 
                 Log::debug('Creating user with:', $userData);
@@ -305,15 +324,16 @@ class AuthController extends Controller
             Auth::login($user, true);
 
             if ($user->role === 'admin') {
-                return redirect()->route('home.admin');
+                return redirect()->route('admin.index');
             }
 
             return redirect()->route('home.customer');
 
         } catch (\Exception $e) {
-            Log::error('Facebook callback error: ' . $e->getMessage());
+            Log::error('Facebook callback error: '.$e->getMessage());
+
             return redirect()->route('login')
-                ->withErrors(['socialite' => 'Gagal masuk dengan Facebook: ' . $e->getMessage()]);
+                ->withErrors(['socialite' => 'Gagal masuk dengan Facebook: '.$e->getMessage()]);
         }
     }
 
@@ -323,12 +343,13 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect('/');
     }
 
     // Throttle helpers
     protected function throttleKey(Request $request)
     {
-        return Str::lower($request->input('email')) . '|' . $request->ip();
+        return Str::lower($request->input('email')).'|'.$request->ip();
     }
 }

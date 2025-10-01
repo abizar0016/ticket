@@ -21,7 +21,7 @@ class Order extends Model
 
     public function promo()
     {
-        return $this->belongsTo(PromoCode::class);
+        return $this->belongsTo(Promo::class);
     }
     public function items()
     {

@@ -30,7 +30,6 @@ class CustomersHomeController extends Controller
                 $query->where('sale_start_date', '<=', now())
                     ->where('sale_end_date', '>=', now());
             },
-            'location'
         ])
             ->where('end_date', '>', now())
             ->where('status', '!=', 'draft')
@@ -40,9 +39,10 @@ class CustomersHomeController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('Customers.index', compact('users', 'events'));
+        return view('layouts.customers.index', compact('users', 'events'));
     }
 
+    
 
     public function eventShow($id)
     {
@@ -50,22 +50,16 @@ class CustomersHomeController extends Controller
             'products' => function ($query) {
                 $query->where('sale_start_date', '<=', now())
                     ->where('sale_end_date', '>=', now());
-            },
-            'location'
+            }
         ])
             ->where('end_date', '>', now())
             ->where('status', '!=', 'draft')
             ->where('id', $id)
             ->firstOrFail();
 
-        $products = Product::where('event_id', $event->id)
-            ->where('sale_start_date', '<=', now())
-            ->where('sale_end_date', '>=', now())
-            ->get();
-
-        return view('Customers.eventShow.index', [
+        return view('pages.Customers.eventShow.index', [
             'event' => $event,
-            'products' => $products,
+            'products' => $event->products,
             'cart' => [
                 'items' => [],
                 'total' => 0
@@ -106,6 +100,6 @@ class CustomersHomeController extends Controller
             'checkoutData' => $checkoutData
         ];
 
-        return view('Customers.checkout.form', $viewData);
+        return view('pages.Customers.checkout.form', $viewData);
     }
 }

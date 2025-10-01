@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Organization extends Model
 {
-protected $table = 'organizations';
+    protected $table = 'organizations';
 
     protected $fillable = [
         'name',
@@ -15,5 +15,10 @@ protected $table = 'organizations';
     public function event()
     {
         return $this->hasMany(Event::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

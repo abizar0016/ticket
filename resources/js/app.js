@@ -1,7 +1,9 @@
 // ================== GLOBAL ==================
 function handleAttendeeUpdateModal(attendeeId, action) {
     const modal = document.getElementById(`attendeesUpdateModal-${attendeeId}`);
-    const backdrop = document.getElementById(`attendeesUpdateBackdrop-${attendeeId}`);
+    const backdrop = document.getElementById(
+        `attendeesUpdateBackdrop-${attendeeId}`
+    );
     const panel = document.getElementById(`attendeesUpdatePanel-${attendeeId}`);
 
     if (!modal || !backdrop || !panel) return;
@@ -51,53 +53,80 @@ function handleTicketProductUpdateModal(itemsId, action) {
     }
 }
 
+function handlePromoUpdateModal(promoId, action) {
+    const modal = document.getElementById(`promoUpdateModal-${promoId}`);
+    const backdrop = document.getElementById(`promoUpdateBackdrop-${promoId}`);
+    const panel = document.getElementById(`promoUpdatePanel-${promoId}`);
+
+    if (!modal || !backdrop || !panel) return;
+
+    if (action === "open") {
+        modal.classList.remove("hidden");
+        document.body.classList.add("overflow-hidden");
+        setTimeout(() => {
+            backdrop.classList.remove("opacity-0");
+            panel.classList.remove("opacity-0", "translate-y-4", "scale-95");
+            panel.classList.add("opacity-100", "translate-y-0", "scale-100");
+        }, 10);
+    } else {
+        backdrop.classList.add("opacity-0");
+        panel.classList.remove("opacity-100", "translate-y-0", "scale-100");
+        panel.classList.add("opacity-0", "translate-y-4", "scale-95");
+        setTimeout(() => {
+            modal.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
+        }, 300);
+    }
+}
+
 // ================== DOMContentLoaded START ==================
 document.addEventListener("DOMContentLoaded", () => {
     // ================== PAYMENT PROOF UPLOAD ==================
-    const paymentProofInput = document.getElementById('payment_proof');
-    const fileNameSpan = document.getElementById('file-name');
-    const previewContainer = document.getElementById('preview-container');
-    const previewImage = document.getElementById('preview-image');
-    const removeImageBtn = document.getElementById('remove-image');
-    
+    const paymentProofInput = document.getElementById("payment_proof");
+    const fileNameSpan = document.getElementById("file-name");
+    const previewContainer = document.getElementById("preview-container");
+    const previewImage = document.getElementById("preview-image");
+    const removeImageBtn = document.getElementById("remove-image");
+
     if (paymentProofInput) {
-        paymentProofInput.addEventListener('change', function(e) {
+        paymentProofInput.addEventListener("change", function (e) {
             const file = e.target.files[0];
             if (file) {
                 // Check file size (max 5MB)
                 if (file.size > 5 * 1024 * 1024) {
-                    alert('File terlalu besar. Maksimal 5MB.');
-                    this.value = '';
+                    alert("File terlalu besar. Maksimal 5MB.");
+                    this.value = "";
                     return;
                 }
-                
+
                 fileNameSpan.textContent = file.name;
-                
-                if (file.type.match('image.*')) {
+
+                if (file.type.match("image.*")) {
                     const reader = new FileReader();
-                    reader.onload = function(event) {
+                    reader.onload = function (event) {
                         previewImage.src = event.target.result;
-                        previewContainer.classList.remove('hidden');
+                        previewContainer.classList.remove("hidden");
                     };
                     reader.readAsDataURL(file);
                 } else {
-                    previewImage.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzODQgNTEyIj48cGF0aCBmaWxsPSIjNmI3MjgwIiBkPSJNMTgxLjkgMjU2LjFjLTUtMTYtNC45LTQ2LjkgMi0xNjQuMWg5LjFjLTYuOSAxMTcuMS00LjggMTQ4LjIgMiAxNjQuMWgtMTMuMXpNMjI0IDI1NnYtMTYwaDE2djE2MGMwIDguOCA3LjIgMTYgMTYgMTZoMTQ0djE2SDI0MGMtMTMuMyAwLTI0LTEwLjctMjQtMjR6TTM4NCAxMjhIMjU2VjBjNi4xLjEgMTYuMSAxLjIgMTYgMTZ2MTEyYzAgOC44IDcuMiAxNiAxNiAxNmg5NnptLTgwIDI1NkMzMDQgMzkyIDI2NCAzODQgMjQ4IDM4NGgtMTMuMWMtNi45LTYxLjktNi4xLTYxLjIgMC0xMjhoMTMuMWMxNiAwIDU2LTggODAgMHYxMjh6Ii8+PC9zdmc+';
-                    previewContainer.classList.remove('hidden');
+                    previewImage.src =
+                        "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzODQgNTEyIj48cGF0aCBmaWxsPSIjNmI3MjgwIiBkPSJNMTgxLjkgMjU2LjFjLTUtMTYtNC45LTQ2LjkgMi0xNjQuMWg5LjFjLTYuOSAxMTcuMS00LjggMTQ4LjIgMiAxNjQuMWgtMTMuMXpNMjI0IDI1NnYtMTYwaDE2djE2MGMwIDguOCA3LjIgMTYgMTYgMTZoMTQ0djE2SDI0MGMtMTMuMyAwLTI0LTEwLjctMjQtMjR6TTM4NCAxMjhIMjU2VjBjNi4xLjEgMTYuMSAxLjIgMTYgMTZ2MTEyYzAgOC44IDcuMiAxNiAxNiAxNmg5NnptLTgwIDI1NkMzMDQgMzkyIDI2NCAzODQgMjQ4IDM4NGgtMTMuMWMtNi45LTYxLjktNi4xLTYxLjIgMC0xMjhoMTMuMWMxNiAwIDU2LTggODAgMHYxMjh6Ii8+PC9zdmc+";
+                    previewContainer.classList.remove("hidden");
                 }
             } else {
-                fileNameSpan.textContent = '';
-                previewContainer.classList.add('hidden');
+                fileNameSpan.textContent = "";
+                previewContainer.classList.add("hidden");
             }
         });
     }
-    
+
     if (removeImageBtn) {
-        removeImageBtn.addEventListener('click', function() {
+        removeImageBtn.addEventListener("click", function () {
             if (paymentProofInput) {
-                paymentProofInput.value = '';
+                paymentProofInput.value = "";
             }
-            fileNameSpan.textContent = '';
-            previewContainer.classList.add('hidden');
+            fileNameSpan.textContent = "";
+            previewContainer.classList.add("hidden");
         });
     }
 
@@ -136,7 +165,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ================== ORGANIZation MODAL ==================
     const organizationModal = document.getElementById("organizationModal");
-    const organizationBackdrop = document.getElementById("organizationModalBackdrop");
+    const organizationBackdrop = document.getElementById(
+        "organizationModalBackdrop"
+    );
     const organizationPanel = document.getElementById("organizationModalPanel");
 
     document
@@ -146,7 +177,10 @@ document.addEventListener("DOMContentLoaded", () => {
             document.body.classList.add("overflow-hidden");
             setTimeout(() => {
                 organizationBackdrop.classList.remove("opacity-0");
-                organizationPanel.classList.remove("opacity-0", "translate-y-4");
+                organizationPanel.classList.remove(
+                    "opacity-0",
+                    "translate-y-4"
+                );
             }, 10);
         });
 
@@ -202,6 +236,26 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 300);
     }
 
+    // ================== PROMO DISCOUNT VALIDATION ==================
+    const promoDiscountInput = document.getElementById("promoDiscount");
+    const promoTypeSelect = document.getElementById("promoType");
+
+    function validatePromoDiscount() {
+        if (!promoDiscountInput || !promoTypeSelect) return;
+
+        const type = promoTypeSelect.value;
+        const max = type === "percentage" ? 100 : 1000000; // batas max
+        if (Number(promoDiscountInput.value) > max)
+            promoDiscountInput.value = max;
+        if (Number(promoDiscountInput.value) < 0) promoDiscountInput.value = 0;
+    }
+
+    promoDiscountInput?.addEventListener("input", validatePromoDiscount);
+    promoTypeSelect?.addEventListener(
+        "change",
+        () => (promoDiscountInput.value = "")
+    );
+
     // ================== PROMO MODAL ==================
     const promoModal = document.getElementById("promoModal");
     const promoBackdrop = document.getElementById("promoBackdrop");
@@ -236,6 +290,43 @@ document.addEventListener("DOMContentLoaded", () => {
             document.body.classList.remove("overflow-hidden");
         }, 300);
     }
+
+    // ================= PROMO UPDATE MODAL =================
+    document.querySelectorAll("[id^='open-promo-update-modal-']").forEach((button) => {
+        button.addEventListener("click", function (e) {
+            e.preventDefault();
+            const promoId = this.getAttribute("data-id");
+            if (promoId) {
+                handlePromoUpdateModal(promoId, "open");
+            }
+        });
+    });
+
+    document
+        .querySelectorAll(
+            '[id^="closePromoUpdateModal-"], [id^="cancelPromoUpdateModal-"]'
+        )
+        .forEach((button) => {
+            button.addEventListener("click", function () {
+                const parts = this.id.split("-");
+                const promoId = parts.slice(-1)[0];
+                if (promoId) {
+                    handlePromoUpdateModal(promoId, "close");
+                }
+            });
+        });
+
+    document.querySelectorAll('[id^="promoUpdateModal-"]').forEach((modal) => {
+        modal.addEventListener("click", function (e) {
+            if (e.target === this) {
+                const parts = this.id.split("-");
+                const promoId = parts.slice(-1)[0];
+                if (promoId) {
+                    handlePromoUpdateModal(promoId, "close");
+                }
+            }
+        });
+    });
 
     // ================== ATTENDEE UPDATE MODAL ==================
     document
@@ -506,7 +597,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 el.classList.add("text-gray-500");
             });
 
-            this.classList.add("bg-white", "shadow-sm" , "text-indigo-600");
+            this.classList.add("bg-white", "shadow-sm", "text-indigo-600");
             this.classList.remove("text-gray-500");
 
             // Update value hidden input

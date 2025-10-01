@@ -10,16 +10,23 @@ class Event extends Model
     protected $fillable = [
         'event_code',
         'user_id',
+        'organization_id',
+        'categories_id',
         'title',
         'description',
         'start_date',
         'end_date',
-        'timezone',
         'event_image',
+        'venue_name',
+        'address_line',
+        'city',
+        'state',
+        'custom_maps_url',
         'bank_name',
         'bank_account_number',
         'bank_account_name',
         'event_location_id',
+        'is_published',
         'status'
     ];
 
@@ -33,12 +40,6 @@ class Event extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function location()
-    {
-        return $this->hasOne(EventLocation::class);
-    }
-
-
     public function products()
     {
         return $this->hasMany(Product::class);
@@ -47,6 +48,16 @@ class Event extends Model
     public function organization()
     {
         return $this->belongsTo(Organization::class);
+    }
+
+    public function categories()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 
     public function attendees()

@@ -1,131 +1,228 @@
-// dashboard.js
+    // @ts-nocheck
 document.addEventListener("DOMContentLoaded", () => {
-    // User Growth Chart
-    const userGrowthCtx = document.getElementById("userGrowthChart").getContext("2d");
-    new Chart(userGrowthCtx, {
+    const {
+        userGrowth = {},
+        revenueTrend = {},
+        publishedEvents = {},
+        platformUsage = {},
+        performance = {},
+    } = window.dashboardData || {};
+
+    /** ===== User Growth (Line Chart) ===== */
+    const userGrowthCtx = document
+        .getElementById("userGrowthChart")
+        ?.getContext("2d");
+    if (userGrowthCtx) {
+        const months = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+        ];
+        const userGrowthData = months.map((_, i) => userGrowth[i + 1] || 0);
+
+        new Chart(userGrowthCtx, {
+            type: "line",
+            data: {
+                labels: months,
+                datasets: [
+                    {
+                        label: "Total Users",
+                        data: userGrowthData,
+                        borderColor: "#4f46e5",
+                        backgroundColor: "rgba(79,70,229,0.1)",
+                        tension: 0.4,
+                        fill: true,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            precision: 0,
+                        },
+                    },
+                },
+            },
+        });
+    }
+
+    /** ===== Published Events (Line Chart) ===== */
+    const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ];
+    const publishedEventData = months.map(
+        (_, i) => window.dashboardData.publishedEvents[i + 1] || 0
+    );
+
+    new Chart(document.getElementById("publishedEventsChart"), {
         type: "line",
         data: {
-            labels: [
-                "Jan","Feb","Mar","Apr","May","Jun",
-                "Jul","Aug","Sep","Oct","Nov","Dec"
-            ],
-            datasets: [{
-                label: "Total Users",
-                data: [8500, 8900, 9300, 9700, 10100, 10500, 10900, 11200, 11500, 11800, 12100, 12450],
-                borderColor: "#4f46e5",
-                backgroundColor: "rgba(79,70,229,0.1)",
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: false },
-                x: { grid: { display: false } }
-            }
-        }
-    });
-
-    // Event Distribution Chart
-    const eventDistributionCtx = document.getElementById("eventDistributionChart").getContext("2d");
-    new Chart(eventDistributionCtx, {
-        type: "doughnut",
-        data: {
-            labels: ["Conferences", "Workshops", "Webinars", "Meetups"],
-            datasets: [{
-                data: [45, 25, 20, 10],
-                backgroundColor: ["#4f46e5", "#ec4899", "#10b981", "#f59e0b"],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: "bottom" } }
-        }
-    });
-
-    // Revenue Trend Chart
-    const revenueTrendCtx = document.getElementById("revenueTrendChart").getContext("2d");
-    new Chart(revenueTrendCtx, {
-        type: "bar",
-        data: {
-            labels: ["Q1", "Q2", "Q3", "Q4"],
+            labels: months,
             datasets: [
                 {
-                    label: "Revenue",
-                    data: [450000, 520000, 580000, 750000],
-                    backgroundColor: "#4f46e5",
-                    borderRadius: 6
+                    label: "Published Events",
+                    data: publishedEventData,
+                    borderColor: "#4f46e5",
+                    backgroundColor: "rgba(79,70,229,0.1)",
+                    fill: true,
+                    tension: 0.4,
                 },
-                {
-                    label: "Expenses",
-                    data: [320000, 380000, 420000, 480000],
-                    backgroundColor: "#10b981",
-                    borderRadius: 6
-                }
-            ]
+            ],
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
             scales: {
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        callback: (value) => "$" + value / 1000 + "K"
-                    }
+                        stepSize: 1,
+                        precision: 0,
+                    },
                 },
-                x: { grid: { display: false } }
-            }
-        }
+            },
+        },
     });
 
-    // Platform Usage Chart
-    const platformCtx = document.getElementById("platformChart").getContext("2d");
-    new Chart(platformCtx, {
+    /** ===== Best Seller (Bar Chart) ===== */
+    const eventLabels = Object.keys(window.dashboardData.bestSellerEvents);
+    const eventData = Object.values(window.dashboardData.bestSellerEvents);
+
+    new Chart(document.getElementById("bestSellerChart"), {
         type: "bar",
         data: {
-            labels: ["Web", "iOS", "Android", "Tablet"],
-            datasets: [{
-                label: "Active Users",
-                data: [6540, 3120, 3980, 1210],
-                backgroundColor: [
-                    "rgba(79,70,229,0.8)",
-                    "rgba(236,72,153,0.8)",
-                    "rgba(16,185,129,0.8)",
-                    "rgba(245,158,11,0.8)"
-                ],
-                borderRadius: 6
-            }]
+            labels: eventLabels,
+            datasets: [
+                {
+                    label: "Orders",
+                    data: eventData,
+                    backgroundColor: "#4f46e5",
+                    borderRadius: 6,
+                },
+            ],
         },
         options: {
             responsive: true,
-            plugins: { legend: { display: false } }
-        }
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        precision: 0,
+                    },
+                },
+            },
+        },
     });
 
-    // Performance Chart
-    const performanceCtx = document.getElementById("performanceChart").getContext("2d");
-    new Chart(performanceCtx, {
-        type: "radar",
+    /** ===== Reports per Event (Bar Chart) ===== */
+    const reportData = window.dashboardData.reportEvents || [];
+
+    const reportLabels = reportData.map((item) => item.title);
+    const reportCounts = reportData.map((item) => item.total);
+
+    new Chart(document.getElementById("reportEventsChart"), {
+        type: "bar",
         data: {
-            labels: ["CPU Usage", "Memory", "Storage", "Network", "Uptime", "Response Time"],
-            datasets: [{
-                label: "Current Performance",
-                data: [85, 75, 90, 65, 95, 80],
-                backgroundColor: "rgba(79,70,229,0.2)",
-                borderColor: "#4f46e5",
-                pointBackgroundColor: "#4f46e5"
-            }]
+            labels: reportLabels,
+            datasets: [
+                {
+                    label: "Reports",
+                    data: reportCounts,
+                    backgroundColor: "rgba(79,70,229,0.8)",
+                    borderRadius: 6,
+                },
+            ],
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
             scales: {
-                r: {
-                    ticks: { backdropColor: "transparent" }
-                }
-            }
-        }
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        precision: 0,
+                    },
+                },
+            },
+        },
     });
+
+    /** ===== MOST INCOME ===== */
+    const incomeCtx = document
+        .getElementById("mostIncomeChart")
+        ?.getContext("2d");
+
+    if (incomeCtx) {
+        const incomeLabels = Object.keys(window.dashboardData.mostIncome || {});
+        const incomeData = Object.values(window.dashboardData.mostIncome || {});
+
+        new Chart(incomeCtx, {
+            type: "line",
+            data: {
+                labels: incomeLabels,
+                datasets: [
+                    {
+                        label: "Revenue",
+                        data: incomeData,
+                        borderColor: "#10b981",
+                        backgroundColor: "rgba(16,185,129,0.1)",
+                        tension: 0.4,
+                        fill: true,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: {
+                        offset: true,
+                        grid: { display: false },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function (value) {
+                                return "Rp " + value.toLocaleString();
+                            },
+                        },
+                        suggestedMax: 100,
+                    },
+                },
+            },
+        });
+    }
 });

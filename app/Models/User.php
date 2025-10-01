@@ -30,6 +30,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'role',
         'remember_token',
         'email_verified_at',
+        'organization_id',
     ];
 
     /**
@@ -58,9 +59,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function organization()
     {
-        return $this->belongsTo(Organization::class);
+        return $this->belongsTo(Organization::class, 'organization_id');
     }
-
+    
     public function events()
     {
         return $this->hasMany(Event::class);
