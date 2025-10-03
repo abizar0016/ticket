@@ -292,15 +292,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ================= PROMO UPDATE MODAL =================
-    document.querySelectorAll("[id^='open-promo-update-modal-']").forEach((button) => {
-        button.addEventListener("click", function (e) {
-            e.preventDefault();
-            const promoId = this.getAttribute("data-id");
-            if (promoId) {
-                handlePromoUpdateModal(promoId, "open");
-            }
+    document
+        .querySelectorAll("[id^='open-promo-update-modal-']")
+        .forEach((button) => {
+            button.addEventListener("click", function (e) {
+                e.preventDefault();
+                const promoId = this.getAttribute("data-id");
+                if (promoId) {
+                    handlePromoUpdateModal(promoId, "open");
+                }
+            });
         });
-    });
 
     document
         .querySelectorAll(
@@ -330,7 +332,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ================== ATTENDEE UPDATE MODAL ==================
     document
-        .querySelectorAll("#open-attendee-update-modal")
+        .querySelectorAll("[id^='open-attendees-update-modal-']")
         .forEach((button) => {
             button.addEventListener("click", function (e) {
                 e.preventDefault();
@@ -369,15 +371,17 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
     // ================== TIKET & PRIDUCT UPDATE MODAL ==================
-    document.querySelectorAll("#open-item-update-modal").forEach((button) => {
-        button.addEventListener("click", function (e) {
-            e.preventDefault();
-            const ticketId = this.getAttribute("data-id");
-            if (ticketId) {
-                handleTicketProductUpdateModal(ticketId, "open");
-            }
+    document
+        .querySelectorAll("[id^='open-item-update-modal-']")
+        .forEach((button) => {
+            button.addEventListener("click", function (e) {
+                e.preventDefault();
+                const ticketId = this.getAttribute("data-id");
+                if (ticketId) {
+                    handleTicketProductUpdateModal(ticketId, "open");
+                }
+            });
         });
-    });
 
     document
         .querySelectorAll(
@@ -403,6 +407,74 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
+
+    // ================== CHECKINS VIEW ===============
+
+    // semua tombol open
+    const openButtons = document.querySelectorAll(".view-checkin-btn");
+    const closeButtons = document.querySelectorAll(".close-checkin-modal");
+
+    openButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const id = button.getAttribute("data-id");
+            const modal = document.getElementById(`checkinsViewModal-${id}`);
+            const panel = document.getElementById(`checkinsViewPanel-${id}`);
+            const backdrop = document.getElementById(
+                `checkinsViewBackdrop-${id}`
+            );
+
+            modal.classList.remove("hidden");
+
+            // delay biar animasi jalan
+            requestAnimationFrame(() => {
+                panel.classList.remove(
+                    "opacity-0",
+                    "translate-y-4",
+                    "scale-95"
+                );
+                panel.classList.add(
+                    "opacity-100",
+                    "translate-y-0",
+                    "scale-100"
+                );
+                backdrop.classList.remove("opacity-0");
+                backdrop.classList.add("opacity-100");
+            });
+        });
+    });
+
+    closeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const id = button.getAttribute("data-id");
+            closeModal(id);
+        });
+    });
+
+    // close jika klik backdrop
+    document
+        .querySelectorAll('[id^="checkinsViewBackdrop-"]')
+        .forEach((backdrop) => {
+            backdrop.addEventListener("click", () => {
+                const id = backdrop.id.replace("checkinsViewBackdrop-", "");
+                closeModal(id);
+            });
+        });
+
+    function closeModal(id) {
+        const modal = document.getElementById(`checkinsViewModal-${id}`);
+        const panel = document.getElementById(`checkinsViewPanel-${id}`);
+        const backdrop = document.getElementById(`checkinsViewBackdrop-${id}`);
+
+        // animasi keluar
+        panel.classList.add("opacity-0", "translate-y-4", "scale-95");
+        panel.classList.remove("opacity-100", "translate-y-0", "scale-100");
+        backdrop.classList.add("opacity-0");
+        backdrop.classList.remove("opacity-100");
+
+        setTimeout(() => {
+            modal.classList.add("hidden");
+        }, 300);
+    }
 
     // ================== DROPDOWNS ==================
     const userMenuButton = document.getElementById("user-menu-button");
@@ -477,17 +549,43 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ================== SIDEBAR TOGGLE ==================
-    const sidebarToggle = document.getElementById("sidebarAdminToggle");
-    const sidebar = document.getElementById("sidebarAdmin");
+    const sidebar = document.getElementById("sidebar");
+    const toggleBtn = document.getElementById("sidebarToggle");
+    const toggleIcon = document.getElementById("sidebarToggleIcon");
 
-    sidebarToggle?.addEventListener("click", () => {
-        sidebar.classList.toggle("-translate-x-full");
+    function setSidebarState(open) {
+        if (!sidebar || !toggleBtn || !toggleIcon) return;
 
-        // Toggle icon
-        const icon = sidebarToggle.querySelector("i");
-        icon.classList.toggle("ri-arrow-right-s-line");
-        icon.classList.toggle("ri-arrow-left-s-line");
-    });
+        if (open) {
+            sidebar.classList.add("translate-x-0");
+            sidebar.classList.remove("-translate-x-full");
+
+            toggleBtn.classList.add("left-80");
+            toggleBtn.classList.remove("left-0");
+
+            toggleIcon.classList.remove("ri-arrow-right-s-line");
+            toggleIcon.classList.add("ri-arrow-left-s-line");
+        } else {
+            sidebar.classList.remove("translate-x-0");
+            sidebar.classList.add("-translate-x-full");
+
+            toggleBtn.classList.add("left-0");
+            toggleBtn.classList.remove("left-80");
+
+            toggleIcon.classList.remove("ri-arrow-left-s-line");
+            toggleIcon.classList.add("ri-arrow-right-s-line");
+        }
+    };
+
+    // Hanya jalan kalau elemen ada
+    if (sidebar && toggleBtn && toggleIcon) {
+        setSidebarState(false);
+
+        toggleBtn.addEventListener("click", () => {
+            const isOpen = sidebar.classList.contains("translate-x-0");
+            setSidebarState(!isOpen);
+        });
+    };
 
     // ================== IMAGE PREVIEW ==================
     setupImagePreview(
@@ -596,23 +694,62 @@ document.addEventListener("DOMContentLoaded", () => {
                 el.classList.remove("bg-white", "shadow-sm", "text-indigo-600");
                 el.classList.add("text-gray-500");
             });
-
             this.classList.add("bg-white", "shadow-sm", "text-indigo-600");
             this.classList.remove("text-gray-500");
 
             // Update value hidden input
             const itemTypeInput = document.getElementById("itemType");
-            if (itemTypeInput) {
-                itemTypeInput.value = selectedType;
-            }
+            if (itemTypeInput) itemTypeInput.value = selectedType;
 
-            // Optional: Ganti title/modalTitle?
+            // Update modal title
             const modalTitle = document.getElementById("modalTitle");
             if (modalTitle) {
                 modalTitle.textContent =
                     selectedType === "ticket"
                         ? "Add New Ticket"
                         : "Add New Merchandise";
+            }
+
+            // **Toggle image container**
+            const imageContainer = document.getElementById("imageContainer");
+            if (imageContainer) {
+                if (selectedType === "ticket") {
+                    imageContainer.classList.add("hidden");
+                } else {
+                    imageContainer.classList.remove("hidden");
+                }
+            }
+
+            const descriptionContainer = document.getElementById(
+                "descriptionContainer"
+            );
+            if (descriptionContainer) {
+                if (selectedType === "ticket") {
+                    descriptionContainer.classList.add("hidden");
+                } else {
+                    descriptionContainer.classList.remove("hidden");
+                }
+            }
+
+            const scanMode = document.getElementById("scanMode");
+            if (scanMode) {
+                if (selectedType === "ticket") {
+                    scanMode.classList.remove("hidden");
+                } else {
+                    scanMode.classList.add("hidden");
+                }
+            }
+
+            // Optional: Update icon header
+            const icon = document.getElementById("itemTypeIcon");
+            if (icon) {
+                if (selectedType === "ticket") {
+                    icon.innerHTML =
+                        '<i class="ri-ticket-2-line text-2xl"></i>';
+                } else {
+                    icon.innerHTML =
+                        '<i class="ri-shopping-bag-3-line text-2xl"></i>';
+                }
             }
         });
     });

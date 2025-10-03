@@ -76,10 +76,10 @@
 
                         <div class="mt-2 grid grid-cols-1 gap-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                             <span><i
-                                    class="ri-folder-2-line mr-1"></i>{{ $event->categories->name ?? 'Uncategorized' }}</span>
-                            <span><i class="ri-user-line mr-1"></i>{{ $event->user->name ?? 'Unknown' }}</span>
+                                    class="ri-folder-2-line mr-1"></i>Category: {{ $event->categories->name ?? 'Uncategorized' }}</span>
+                            <span><i class="ri-user-line mr-1"></i>Created By: {{ $event->user->name ?? 'Unknown' }}</span>
                             <span><i
-                                    class="ri-building-2-line mr-1"></i>{{ $event->organization->name ?? 'No Organization' }}</span>
+                                    class="ri-building-2-line mr-1"></i>Organization: {{ $event->organization->name ?? 'No Organization' }}</span>
                         </div>
 
                         <div class="mt-3">
@@ -101,16 +101,18 @@
 
                     {{-- Actions --}}
                     <div class="p-5 border-t border-gray-100 dark:border-gray-800 flex gap-3">
-                        <a href="{{ route(Auth::user()->role === 'superadmin' ? 'events.dashboard' : 'admin.events.dashboard', $event->id) }}"
+                        <a href="{{ route(Auth::user()->role === 'superadmin' ? 'superAdmin.events.dashboard' : 'admin.events.dashboard', $event->id) }}"
                             class="flex-1 text-center px-4 py-2 rounded-lg text-sm font-medium bg-gradient-to-r from-indigo-500 to-indigo-600 text-white shadow hover:shadow-md hover:scale-[1.02] transition">
                             <i class="ri-settings-3-line mr-1"></i> Manage
                         </a>
-                        <form action="" method="POST" class="flex-1"
-                            onsubmit="return confirm('Are you sure you want to delete this event?')">
+                        <form action="{{ route('events.delete', $event->id) }}"
+                            method="POST" class="flex-1 ajax-form"
+                            data-success="Event deleted successfully"
+                            data-confirm="Are you sure you want to delete this event?">
                             @csrf
                             @method('DELETE')
                             <button type="submit"
-                                class="w-full px-4 py-2 text-sm font-medium rounded-lg border border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
+                                class="w-full px-4 py-2 text-sm font-medium rounded-lg border border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition cursor-pointer">
                                 <i class="ri-delete-bin-line mr-1"></i> Delete
                             </button>
                         </form>

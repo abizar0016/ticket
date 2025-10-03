@@ -2,25 +2,16 @@
 
 namespace App\Http\Controllers\Customers\Pages;
 
+use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Product;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\Attendee;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CustomersHomeController extends Controller
 {
     public function index()
     {
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
 
         $users = Auth::user();
         $search = request('search');
@@ -34,7 +25,7 @@ class CustomersHomeController extends Controller
             ->where('end_date', '>', now())
             ->where('status', '!=', 'draft')
             ->when($search, function ($query) use ($search) {
-                $query->where('title', 'like', '%' . $search . '%');
+                $query->where('title', 'like', '%'.$search.'%');
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -42,15 +33,13 @@ class CustomersHomeController extends Controller
         return view('layouts.customers.index', compact('users', 'events'));
     }
 
-    
-
     public function eventShow($id)
     {
         $event = Event::with([
             'products' => function ($query) {
                 $query->where('sale_start_date', '<=', now())
                     ->where('sale_end_date', '>=', now());
-            }
+            },
         ])
             ->where('end_date', '>', now())
             ->where('status', '!=', 'draft')
@@ -62,8 +51,8 @@ class CustomersHomeController extends Controller
             'products' => $event->products,
             'cart' => [
                 'items' => [],
-                'total' => 0
-            ]
+                'total' => 0,
+            ],
         ]);
     }
 
@@ -71,14 +60,16 @@ class CustomersHomeController extends Controller
     {
         $checkoutData = session('checkout_data');
 
-        if (!$checkoutData || $checkoutData['token'] !== $token) {
+        if (! $checkoutData || $checkoutData['token'] !== $token) {
             Log::error('Invalid or missing checkout data for token:', [$token]);
-            return redirect()->route('home.customer')->with('error', 'Sesi checkout telah kadaluarsa atau tidak valid.');
+
+            return redirect()->route('home')->with('error', 'Sesi checkout telah kadaluarsa atau tidak valid.');
         }
 
         if (now()->gt($checkoutData['expires_at'])) {
             session()->forget('checkout_data');
-            return redirect()->route('home.customer')->with('error', 'Sesi checkout telah kadaluarsa.');
+
+            return redirect()->route('home')->with('error', 'Sesi checkout telah kadaluarsa.');
         }
 
         $productIds = array_merge(
@@ -97,7 +88,7 @@ class CustomersHomeController extends Controller
             'merchandise' => $checkoutData['merchandise'],
             'products' => $products,
             'ticketCount' => array_sum(array_column($checkoutData['tickets'], 'quantity')),
-            'checkoutData' => $checkoutData
+            'checkoutData' => $checkoutData,
         ];
 
         return view('pages.Customers.checkout.form', $viewData);

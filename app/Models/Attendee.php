@@ -12,6 +12,7 @@ class Attendee extends Model
         'order_id',
         'name',
         'email',
+        'phone',
         'ticket_type',
         'ticket_code',
         'status',

@@ -1,23 +1,34 @@
-<aside id="sidebarSuperAdmin"
-    class="fixed left-0 top-20 flex h-[calc(100vh-5rem)] w-80 flex-col gap-6 overflow-y-auto bg-white px-6 py-4 transition-all duration-300 md:translate-x-0 -translate-x-full dark:bg-gray-900 shadow-2xl shadow-black/25 border-r border-gray-100/80 dark:border-gray-800 z-50">
+<!-- Toggle Button (Mobile Only) -->
+<button id="sidebarToggle"
+    class="fixed left-0 top-1/2 -translate-y-1/2 z-50 flex items-center justify-center
+           w-10 h-16 bg-indigo-600 text-white rounded-r-xl shadow-lg md:hidden transition-all duration-300">
+    <i id="sidebarToggleIcon" class="ri-arrow-right-s-line text-2xl"></i>
+</button>
+
+<!-- Sidebar -->
+<aside id="sidebar"
+    class="fixed left-0 top-20 flex h-[calc(100vh-5rem)] w-80 flex-col gap-6 overflow-y-auto
+           bg-white px-6 py-4 transition-all duration-300 md:translate-x-0 -translate-x-full
+           dark:bg-gray-900 shadow-2xl shadow-black/25 border-r border-gray-100/80 dark:border-gray-800 z-40">
 
     <div class="flex flex-col flex-1 no-scrollbar">
         <nav class="flex-1">
 
+            {{-- ==== MAIN MENU SUPERADMIN ==== --}}
             @if (Auth::user()->role == 'superadmin')
-                <!-- MAIN MENU -->
                 <div class="mb-8">
                     <h3
                         class="mb-4 text-xs font-semibold uppercase tracking-widest text-gray-500/90 dark:text-gray-400/80 pl-2">
                         MAIN MENU
                     </h3>
-
                     <ul class="flex flex-col gap-2 mb-6">
                         <li>
                             <a href="{{ route('superAdmin.dashboard') }}"
-                                class="menu-item group relative flex items-center py-3 px-4 rounded-xl transition-all duration-300 text-gray-800 hover:bg-indigo-100 hover:shadow-md hover:shadow-gray-300 dark:hover:bg-gray-800 dark:text-indigo-100 dark:shadow-indigo-300">
+                                class="menu-item group relative flex items-center py-3 px-4 rounded-xl transition-all duration-300
+                                       text-gray-800 hover:bg-indigo-100 hover:shadow-md hover:shadow-gray-300 
+                                       dark:hover:bg-gray-800 dark:text-indigo-100 dark:shadow-indigo-300">
                                 <i class="ri-dashboard-3-line text-xl relative z-10"></i>
-                                <span class="menu-item-text font-medium relative z-10 ml-3">Dashboard</span>
+                                <span class="ml-3 font-medium">Dashboard</span>
                             </a>
                         </li>
 
@@ -129,49 +140,49 @@
                     </h3>
                     <ul class="flex flex-col gap-2 mb-6">
                         <li>
-                            <a href="{{ route(Auth::user()->role == 'superadmin' ? 'events.dashboard' : 'admin.events.dashboard', $eventId) }}"
+                            <a href="{{ route(Auth::user()->role == 'superadmin' ? 'superAdmin.events.dashboard' : 'admin.events.dashboard', $eventId) }}"
                                 class="menu-item group relative flex items-center py-3 px-4 rounded-xl transition-all duration-300 text-gray-800 hover:bg-indigo-100 hover:shadow-md hover:shadow-gray-300 dark:hover:bg-gray-800 dark:text-indigo-100 dark:shadow-indigo-300">
                                 <i class="ri-dashboard-line text-xl relative z-10"></i>
                                 <span class="menu-item-text font-medium relative z-10 ml-3">Event Dashboard</span>
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route(Auth::user()->role == 'superadmin' ? 'events.settings' : 'admin.events.settings', $eventId) }}"
+                            <a href="{{ route(Auth::user()->role == 'superadmin' ? 'superAdmin.events.settings' : 'admin.events.settings', $eventId) }}"
                                 class="menu-item group relative flex items-center py-3 px-4 rounded-xl transition-all duration-300 text-gray-800 hover:bg-indigo-100 hover:shadow-md hover:shadow-gray-300 dark:hover:bg-gray-800 dark:text-indigo-100 dark:shadow-indigo-300">
                                 <i class="ri-settings-3-line text-xl relative z-10"></i>
                                 <span class="menu-item-text font-medium relative z-10 ml-3">Settings</span>
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route(Auth::user()->role == 'superadmin' ? 'events.attendees' : 'admin.events.attendees', $eventId) }}"
+                            <a href="{{ route(Auth::user()->role == 'superadmin' ? 'superAdmin.events.attendees' : 'admin.events.attendees', $eventId) }}"
                                 class="menu-item group relative flex items-center py-3 px-4 rounded-xl transition-all duration-300 text-gray-800 hover:bg-indigo-100 hover:shadow-md hover:shadow-gray-300 dark:hover:bg-gray-800 dark:text-indigo-100 dark:shadow-indigo-300">
                                 <i class="ri-group-line text-xl relative z-10"></i>
                                 <span class="menu-item-text font-medium relative z-10 ml-3">Attendees</span>
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route(Auth::user()->role == 'superadmin' ? 'events.orders' : 'admin.events.orders', $eventId) }}"
+                            <a href="{{ route(Auth::user()->role == 'superadmin' ? 'superAdmin.events.orders' : 'admin.events.orders', $eventId) }}"
                                 class="menu-item group relative flex items-center py-3 px-4 rounded-xl transition-all duration-300 text-gray-800 hover:bg-indigo-100 hover:shadow-md hover:shadow-gray-300 dark:hover:bg-gray-800 dark:text-indigo-100 dark:shadow-indigo-300">
                                 <i class="ri-shopping-bag-line text-xl relative z-10"></i>
                                 <span class="menu-item-text font-medium relative z-10 ml-3">Orders</span>
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route(Auth::user()->role == 'superadmin' ? 'events.products' : 'admin.events.products', $eventId) }}"
+                            <a href="{{ route(Auth::user()->role == 'superadmin' ? 'superAdmin.events.products' : 'admin.events.products', $eventId) }}"
                                 class="menu-item group relative flex items-center py-3 px-4 rounded-xl transition-all duration-300 text-gray-800 hover:bg-indigo-100 hover:shadow-md hover:shadow-gray-300 dark:hover:bg-gray-800 dark:text-indigo-100 dark:shadow-indigo-300">
                                 <i class="ri-ticket-2-line text-xl relative z-10"></i>
                                 <span class="menu-item-text font-medium relative z-10 ml-3">Tickets & Products</span>
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route(Auth::user()->role == 'superadmin' ? 'events.checkins' : 'admin.events.checkins', $eventId) }}"
+                            <a href="{{ route(Auth::user()->role == 'superadmin' ? 'superAdmin.events.checkins' : 'admin.events.checkins', $eventId) }}"
                                 class="menu-item group relative flex items-center py-3 px-4 rounded-xl transition-all duration-300 text-gray-800 hover:bg-indigo-100 hover:shadow-md hover:shadow-gray-300 dark:hover:bg-gray-800 dark:text-indigo-100 dark:shadow-indigo-300">
                                 <i class="ri-qr-code-line text-xl relative z-10"></i>
                                 <span class="menu-item-text font-medium relative z-10 ml-3">Check-In Lists</span>
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route(Auth::user()->role == 'superadmin' ? 'events.promos' : 'admin.events.promos', $eventId) }}"
+                            <a href="{{ route(Auth::user()->role == 'superadmin' ? 'superAdmin.events.promos' : 'admin.events.promos', $eventId) }}"
                                 class="menu-item group relative flex items-center py-3 px-4 rounded-xl transition-all duration-300 text-gray-800 hover:bg-indigo-100 hover:shadow-md hover:shadow-gray-300 dark:hover:bg-gray-800 dark:text-indigo-100 dark:shadow-indigo-300">
                                 <i class="ri-coupon-line text-xl relative z-10"></i>
                                 <span class="menu-item-text font-medium relative z-10 ml-3">Promo</span>

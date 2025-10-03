@@ -14,6 +14,7 @@ class Product extends Model
         'description',
         'price',
         'quantity',
+        'scan_mode',
         'min_per_order',
         'max_per_order',
         'sale_start_date',

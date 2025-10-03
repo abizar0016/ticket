@@ -13,6 +13,7 @@ class Order extends Model
         'event_id', 
         'name',
         'email',
+        'phone',
         'status',
         'total_price',
         'payment_proof',

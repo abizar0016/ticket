@@ -28,7 +28,7 @@ class AuthController extends Controller
             } elseif ($user->role === 'admin') {
                 return redirect()->route('admin.index');
             } elseif ($user->role === 'customer') {
-                return redirect()->route('home.customer');
+                return redirect()->route('home');
             }
 
             return redirect('/');
@@ -81,6 +81,10 @@ class AuthController extends Controller
         Auth::login($user, $request->filled('remember'));
         event(new Login('web', $user, false));
 
+        if (session()->has('url.intended')) {
+            return redirect()->intended();
+        }
+
         if ($user->role === 'superadmin') {
             return redirect()->route('superAdmin.dashboard');
         } elseif ($user->role === 'admin') {
@@ -90,7 +94,7 @@ class AuthController extends Controller
         $request->session()->regenerate();
         RateLimiter::clear($this->throttleKey($request));
 
-        return redirect()->route('home.customer');
+        return redirect()->route('home');
     }
 
     // Show registration form
@@ -104,7 +108,7 @@ class AuthController extends Controller
             } elseif ($user->role === 'admin') {
                 return redirect()->route('admin.index');
             } elseif ($user->role === 'customer') {
-                return redirect()->route('home.customer');
+                return redirect()->route('home');
             }
 
             // fallback jika role tidak dikenal
@@ -156,7 +160,7 @@ class AuthController extends Controller
             return redirect()->route('admin.index');
         }
 
-        return redirect()->route('home.customer');
+        return redirect()->route('home');
     }
 
     public function redirectToGoogle()
@@ -241,7 +245,7 @@ class AuthController extends Controller
                 return redirect()->route('admin.index');
             }
 
-            return redirect()->route('home.customer');
+            return redirect()->route('home');
 
         } catch (\Exception $e) {
             Log::error('Google callback error: '.$e->getMessage());
@@ -327,7 +331,7 @@ class AuthController extends Controller
                 return redirect()->route('admin.index');
             }
 
-            return redirect()->route('home.customer');
+            return redirect()->route('home');
 
         } catch (\Exception $e) {
             Log::error('Facebook callback error: '.$e->getMessage());
