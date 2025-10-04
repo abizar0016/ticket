@@ -79,23 +79,12 @@
                         <button type="button"
                             onclick="navigator.share ? navigator.share({ title: '{{ $event->title }}', url: '{{ route('events.show', $event->id) }}' }) : copyToClipboard('{{ route('events.show', $event->id) }}')"
                             class="px-8 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-bold rounded-lg border border-white/20 transition-all duration-300 transform hover:scale-105 flex items-center justify-center cursor-pointer">
-                            <i class="ri-share-forward-line"></i>
+                            <i class="ri-share-forward-line mr-2"></i>
                             Share
                         </button>
                     </div>
 
                 </div>
-            </div>
-
-            <!-- Scroll Indicator (Remix Icon) -->
-            <div class="absolute bottom-16 left-1/2 transform -translate-x-1/2 z-10">
-                <a href="#event-content" class="flex flex-col items-center group animate-bounce">
-                    <span class="text-gray-300 text-sm mb-2 group-hover:text-primary-400 transition-colors duration-300">
-                        EXPLORE
-                    </span>
-                    <i
-                        class="ri-arrow-down-line text-2xl text-gray-300 group-hover:text-primary-400 transition-colors duration-300"></i>
-                </a>
             </div>
         </div>
 
