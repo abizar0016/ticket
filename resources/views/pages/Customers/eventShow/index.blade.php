@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="event-show-page overflow-hidden dark:bg-gray-900 transition-colors duration-300">
+    <section class="event-show-page overflow-hidden dark:bg-gray-800 transition-colors duration-300">
         <!-- Hero Section with Parallax Effect -->
         <div class="event-hero w-full h-screen bg-cover bg-center relative overflow-hidden group"
             style="background-image: url('{{ asset($event->event_image) }}')">
@@ -101,7 +101,7 @@
 
         <!-- Event Content Section -->
         <div id="event-content"
-            class="relative bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 py-24 overflow-hidden transition-colors duration-300">
+            class="relative bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-24 overflow-hidden transition-colors duration-300">
 
             <div class="container mx-auto px-6 relative z-10">
                 <div class="max-w-4xl mx-auto text-center mb-16">
@@ -132,7 +132,7 @@
 
         <!-- Tickets & Products Section -->
         <div id="tickets"
-            class="relative bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 py-24 overflow-hidden transition-colors duration-300">
+            class="relative bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-24 overflow-hidden transition-colors duration-300">
         </div>
 
         <div class="container mx-auto px-4 sm:px-6 relative z-10">
@@ -391,7 +391,7 @@
         </div>
 
         <!-- Map Section -->
-        <div class="relative bg-gray-50 dark:bg-gray-900 py-16 md:py-24 overflow-hidden transition-colors duration-300">
+        <div class="relative bg-gray-50 dark:bg-gray-800 py-16 md:py-24 overflow-hidden transition-colors duration-300">
             <div class="container mx-auto px-4 sm:px-6">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">Event Venue</h2>
