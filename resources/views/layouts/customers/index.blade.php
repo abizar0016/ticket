@@ -80,15 +80,23 @@
                                 } else {
                                     $eventStatus = 'Ongoing';
                                 }
+
+                                $locationParts = collect([
+                                    $event->venue_name,
+                                    $event->address_line,
+                                    $event->city,
+                                    $event->state,
+                                ])
+                                    ->filter()
+                                    ->values();
+
+                                $mainLocation = $locationParts->first();
+                                $subLocation = $locationParts->skip(1)->implode(', ');
                             @endphp
 
                             <div class="relative group transition-all duration-500 hover:z-10">
                                 <div
                                     class="relative h-full transition-all duration-500 ease-out group-hover:-translate-y-2 group-hover:scale-[1.02]">
-                                    <!-- Floating card effect -->
-                                    <div
-                                        class="absolute inset-0 bg-gradient-to-br from-indigo-100/30 to-indigo-100/50 dark:from-indigo-900/30 dark:to-indigo-800/40 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 transform translate-y-4 group-hover:translate-y-0">
-                                    </div>
 
                                     <div id="event-{{ $event->id }}"
                                         class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-800 hover:shadow-xl transition-all duration-500 h-full flex flex-col">
@@ -130,37 +138,56 @@
                                                 {{ $event->title }}
                                             </h2>
 
-                                            <div class="space-y-3 mb-4 text-sm text-gray-700 dark:text-gray-300">
+                                            <div class="space-y-3 mb-4">
+                                                <!-- Time -->
                                                 <div
-                                                    class="flex items-center transition-all duration-300 hover:text-indigo-600 dark:hover:text-indigo-400">
-                                                    <i class="fas fa-clock text-indigo-500 mr-2 w-4 text-center"></i>
-                                                    <span>{{ $event->start_date->format('g:i A') }} -
-                                                        {{ $event->end_date->format('g:i A') }} (Asia/Jakarta)</span>
+                                                    class="flex items-center p-3 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-600 transition-all duration-300 group/item">
+                                                    <div
+                                                        class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-r from-indigo-500 to-indigo-600 text-white shadow-md group-hover/item:scale-110 transition-transform duration-300">
+                                                        <i class="fas fa-clock text-sm"></i>
+                                                    </div>
+                                                    <div class="ml-3 flex-1">
+                                                        <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">
+                                                            {{ $event->start_date->format('g:i A') }} -
+                                                            {{ $event->end_date->format('g:i A') }}
+                                                        </div>
+                                                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                                                            Asia/Jakarta
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                @if ($event->vanue_name || $event->address_line || $event->city)
-                                                    <div
-                                                        class="flex items-center transition-all duration-300 hover:text-indigo-600 dark:hover:text-indigo-400">
-                                                        <i
-                                                            class="fas fa-map-marker-alt text-indigo-500 mr-2 w-4 text-center"></i>
-                                                        <span>{{ $event->venue_name }}</span>
-                                                        <span class="text-gray-600 dark:text-gray-400">,
-                                                            {{ $event->address_line }}</span>
-                                                        <span>, {{ $event->city }}</span>
-                                                    </div>
-                                                @else
-                                                    <div
-                                                        class="flex items-center transition-all duration-300 hover:text-indigo-600 dark:hover:text-indigo-400">
-                                                        <i
-                                                            class="fas fa-map-marker-alt text-indigo-500 mr-2 w-4 text-center"></i>
-                                                        <span>Online Event</span>
-                                                    </div>
-                                                @endif
-                                            </div>
 
-                                            <p
-                                                class="text-gray-600 dark:text-gray-400 mb-5 text-sm leading-relaxed line-clamp-3">
-                                                {{ Str::limit(strip_tags($event->description), 150) }}
-                                            </p>
+                                                <!-- Location -->
+                                                <div
+                                                    class="flex items-center p-3 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-600 transition-all duration-300 group/item">
+                                                    <div
+                                                        class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-r from-indigo-500 to-indigo-600 text-white shadow-md group-hover/item:scale-110 transition-transform duration-300">
+                                                        <i class="fas fa-map-marker-alt text-sm"></i>
+                                                    </div>
+                                                    <div class="ml-3 flex-1 min-w-0">
+                                                        @if ($mainLocation)
+                                                            <div
+                                                                class="font-semibold text-gray-900 dark:text-gray-100 text-sm truncate">
+                                                                {{ $mainLocation }}
+                                                            </div>
+                                                            @if ($subLocation)
+                                                                <div
+                                                                    class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                                                                    {{ $subLocation }}
+                                                                </div>
+                                                            @endif
+                                                        @else
+                                                            <div
+                                                                class="font-semibold text-gray-900 dark:text-gray-100 text-sm">
+                                                                Online Event
+                                                            </div>
+                                                            <div class="text-xs text-gray-500 dark:text-gray-400">
+                                                                Virtual Participation
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
 
                                             <div class="mt-4 flex flex-col sm:flex-row gap-3">
                                                 <!-- View Event Button -->

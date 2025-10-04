@@ -41,8 +41,19 @@
                                 <i
                                     class="fas fa-map-marker-alt text-primary-300 group-hover:text-primary-200 transition-colors duration-300"></i>
                             </div>
+                            @php
+                                $locationParts = collect([
+                                    $event->venue_name,
+                                    $event->address_line,
+                                    $event->city,
+                                    $event->state,
+                                ])
+                                    ->filter()
+                                    ->implode(', ');
+                            @endphp
+
                             <span class="font-medium tracking-wide">
-                                {{ $event->venue_name ?? 'Online Event' }}
+                                {{ $locationParts ?? 'Online Event' }}
                             </span>
                         </div>
                         @if ($event->start_time)
