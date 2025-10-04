@@ -10,6 +10,9 @@
                 class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 z-0 opacity-100 group-hover:opacity-90 transition-all duration-1000">
             </div>
 
+            <!-- Floating particles effect -->
+            <div class="absolute inset-0 z-0" id="particles-js"></div>
+
             <div class="h-full flex justify-center items-center relative z-10 px-4">
                 <div
                     class="hero-content max-w-4xl text-center transform transition-all duration-700 group-hover:scale-[1.01]">
@@ -45,43 +48,6 @@
                                 {{ $event->venue_name ?? 'Online Event' }}
                             </span>
                         </div>
-                        @if ($event->start_time)
-                            <div
-                                class="meta-item flex items-center text-white/90 group-hover:text-white transition-all duration-300 hover:scale-105">
-                                <div
-                                    class="icon-container w-10 h-10 bg-primary-500/20 rounded-full flex items-center justify-center mr-3 group-hover:bg-primary-500/30 transition-all duration-300 group-hover:rotate-12">
-                                    <i
-                                        class="fas fa-clock text-primary-300 group-hover:text-primary-200 transition-colors duration-300"></i>
-                                </div>
-                                <span class="font-medium tracking-wide">
-                                    {{ $event->start_time->format('g:i A') }}
-                                    @if ($event->end_time)
-                                        - {{ $event->end_time->format('g:i A') }}
-                                    @endif
-                                </span>
-                            </div>
-                        @endif
-                    </div>
-
-                    <!-- CTA Buttons -->
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-                        <a href="#tickets"
-                            class="px-8 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-bold rounded-lg border border-white/20 transition-all duration-300 transform hover:scale-105 flex items-center justify-center cursor-pointer">
-                            <i class="fas fa-ticket-alt mr-2"></i>
-                            Get Tickets
-                        </a>
-                        <a href="#event-content"
-                            class="px-8 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-bold rounded-lg border border-white/20 transition-all duration-300 transform hover:scale-105 flex items-center justify-center cursor-pointer">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            Learn More
-                        </a>
-
-                        <button type="button"
-                            onclick="navigator.share ? navigator.share({ title: '{{ $event->title }}', url: '{{ route('events.show', $event->id) }}' }) : copyToClipboard('{{ route('events.show', $event->id) }}')"
-                            class="px-8 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-bold rounded-lg border border-white/20 transition-all duration-300 transform hover:scale-105 flex items-center justify-center cursor-pointer">
-                            <i class="ri-share-forward-line"></i>
-                            Share
-                        </button>
                     </div>
 
                 </div>
@@ -560,12 +526,37 @@
                 });
             }
 
+            // ===============================
+            // SCROLL HANDLER FOR STICKY SUMMARY
+            // ===============================
+            function setupScrollHandler() {
+                window.addEventListener('scroll', function() {
+                    const ticketsSection = document.querySelector('#event-content');
+                    const summary = document.getElementById('order-summary');
+                    if (!ticketsSection || !summary) return;
+
+                    const hasItems = parseInt(document.getElementById('selected-items').textContent) > 0;
+                    const shouldShow = window.scrollY > ticketsSection.offsetTop - 300 || hasItems;
+
+                    if (shouldShow) summary.classList.add('show');
+                    else summary.classList.remove('show');
+                });
+            }
 
             // ===============================
             // INITIALIZE
             // ===============================
             setupQuantityButtons();
+            setupScrollHandler();
             updateOrderSummary();
+
+            // Load particles.js if available
+            if (document.getElementById('particles-js')) {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
+                script.onload = initParticles;
+                document.head.appendChild(script);
+            }
         });
     </script>
 @endsection
