@@ -161,7 +161,7 @@
                                             </div>
                                             <div class="text-left sm:text-right mt-3 sm:mt-0">
                                                 <p
-                                                    class="text-lg md:text-xl font-bold text-primary-600 dark:text-primary-400">
+                                                    class="text-lg md:text-xl font-bold text-primary-600 dark:text-white">
                                                     Rp {{ number_format($ticket->price, 0, ',', '.') }}
                                                 </p>
                                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -264,7 +264,7 @@
                                                 </div>
                                                 <div class="text-left sm:text-right">
                                                     <p
-                                                        class="text-lg md:text-xl font-bold text-primary-600 dark:text-primary-400">
+                                                        class="text-lg md:text-xl font-bold text-primary-600 dark:text-white">
                                                         Rp
                                                         {{ number_format($product->price, 0, ',', '.') }}</p>
                                                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
