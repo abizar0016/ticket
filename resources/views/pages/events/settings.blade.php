@@ -21,11 +21,8 @@
 
         {{-- Left Side - Form (8/12 width) --}}
         <div class="lg:col-span-8">
-            <form action="{{ route('events.update', $events->id) }}"
-                method="POST"
-                class="ajax-form"
-                data-success="Event updated successfully."
-                enctype="multipart/form-data" class="space-y-6 sm:space-y-8">
+            <form action="{{ route('events.update', $events->id) }}" method="POST" class="ajax-form"
+                data-success="Event updated successfully." enctype="multipart/form-data" class="space-y-6 sm:space-y-8">
                 @csrf
                 @method('PUT')
 
@@ -380,6 +377,17 @@
                         <p class="text-gray-600 text-xs sm:text-sm line-clamp-2">
                             {{ $events->description ?: 'Event description will appear here...' }}
                         </p>
+
+                        <div class="mt-4 flex flex-col sm:flex-row gap-3">
+                            <!-- Share Event Button -->
+                            <button type="button"
+                                onclick="navigator.share ? navigator.share({ title: '{{ $events->title }}', url: '{{ route('events.show', $events->id) }}' }) : copyToClipboard('{{ route('events.show', $events->id) }}')"
+                                class="w-full sm:w-auto flex-1 bg-indigo-600 text-white py-2.5 px-4 rounded-lg sm:rounded-xl hover:bg-indigo-700 transition-all duration-300 font-medium flex items-center justify-center gap-2 shadown cursor-pointer">
+                                <i class="ri-share-forward-line text-lg"></i>
+                                <span>Share Event</span>
+                            </button>
+                        </div>
+
                     </div>
                 </div>
 

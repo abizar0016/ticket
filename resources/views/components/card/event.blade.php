@@ -75,11 +75,12 @@
                         </h2>
 
                         <div class="mt-2 grid grid-cols-1 gap-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                            <span><i
-                                    class="ri-folder-2-line mr-1"></i>Category: {{ $event->categories->name ?? 'Uncategorized' }}</span>
-                            <span><i class="ri-user-line mr-1"></i>Created By: {{ $event->user->name ?? 'Unknown' }}</span>
-                            <span><i
-                                    class="ri-building-2-line mr-1"></i>Organization: {{ $event->organization->name ?? 'No Organization' }}</span>
+                            <span><i class="ri-folder-2-line mr-1"></i>Category:
+                                {{ $event->categories->name ?? 'Uncategorized' }}</span>
+                            <span><i class="ri-user-line mr-1"></i>Created By:
+                                {{ $event->user->name ?? 'Unknown' }}</span>
+                            <span><i class="ri-building-2-line mr-1"></i>Organization:
+                                {{ $event->organization->name ?? 'No Organization' }}</span>
                         </div>
 
                         <div class="mt-3">
@@ -100,20 +101,33 @@
                     </div>
 
                     {{-- Actions --}}
-                    <div class="p-5 border-t border-gray-100 dark:border-gray-800 flex gap-3">
+                    <div
+                        class="p-5 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between gap-2">
+                        <!-- Manage Button (utama) -->
                         <a href="{{ route(Auth::user()->role === 'superadmin' ? 'superAdmin.events.dashboard' : 'admin.events.dashboard', $event->id) }}"
-                            class="flex-1 text-center px-4 py-2 rounded-lg text-sm font-medium bg-gradient-to-r from-indigo-500 to-indigo-600 text-white shadow hover:shadow-md hover:scale-[1.02] transition">
-                            <i class="ri-settings-3-line mr-1"></i> Manage
+                            class="flex-1 px-4 py-2 rounded-lg text-sm font-medium bg-gradient-to-r from-indigo-500 to-indigo-600 text-white shadow hover:shadow-md hover:scale-[1.02] transition flex items-center justify-center gap-2">
+                            <i class="ri-settings-3-line"></i>
+                            Manage
                         </a>
-                        <form action="{{ route('events.delete', $event->id) }}"
-                            method="POST" class="flex-1 ajax-form"
+
+                        <!-- Share Button (lebih ringan, elegan) -->
+                        <button type="button"
+                            onclick="navigator.share ? navigator.share({ title: '{{ $event->title }}', url: '{{ route('events.show', $event->id) }}' }) : copyToClipboard('{{ route('events.show', $event->id) }}')"
+                            class="px-3 py-2 rounded-lg text-sm font-medium border border-indigo-200 text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition flex items-center gap-1 cursor-pointer">
+                            <i class="ri-share-forward-line"></i>
+                            Share
+                        </button>
+
+                        <!-- Delete Button -->
+                        <form action="{{ route('events.delete', $event->id) }}" method="POST" class="ajax-form"
                             data-success="Event deleted successfully"
                             data-confirm="Are you sure you want to delete this event?">
                             @csrf
                             @method('DELETE')
                             <button type="submit"
-                                class="w-full px-4 py-2 text-sm font-medium rounded-lg border border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition cursor-pointer">
-                                <i class="ri-delete-bin-line mr-1"></i> Delete
+                                class="px-3 py-2 text-sm font-medium rounded-lg border border-red-200 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition flex items-center gap-1 cursor-pointer">
+                                <i class="ri-delete-bin-line"></i>
+                                Delete
                             </button>
                         </form>
                     </div>
@@ -122,78 +136,3 @@
         </div>
     @endif
 </div>
-
-<script>
-    document.querySelectorAll('form[id^="delete-event-"]').forEach(function(form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "This action will permanently delete the product and all related data, including order items and attendees associated with it. Are you sure you want to proceed?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#EF4444',
-                cancelButtonColor: '#6B7280',
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const formData = new FormData(form);
-                    const submitBtn = form.querySelector('button[type="submit"]');
-                    const actionUrl = form.getAttribute('action');
-
-                    submitBtn.disabled = true;
-                    submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
-                    submitBtn.innerHTML =
-                        '<i class="fas fa-spinner fa-spin mr-2"></i> Deleting...';
-
-                    fetch(actionUrl, {
-                            method: 'POST',
-                            body: formData,
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest',
-                                'X-CSRF-TOKEN': form.querySelector('input[name="_token"]')
-                                    .value,
-                            },
-                        }).then(async (res) => {
-                            const data = await res.json();
-
-                            if (res.ok && data.success) {
-                                Swal.fire({
-                                    title: 'Deleted!',
-                                    text: data.message,
-                                    icon: 'success',
-                                    confirmButtonColor: '#6366F1'
-                                }).then(() => {
-                                    window.location.reload();
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: 'Oops!',
-                                    html: (data.errors || [
-                                        'Something went wrong'
-                                    ]).join("<br>"),
-                                    icon: 'error',
-                                    confirmButtonColor: '#EF4444'
-                                });
-                            }
-                        }).catch(() => {
-                            Swal.fire({
-                                title: 'Oops!',
-                                text: 'Something went wrong',
-                                icon: 'error',
-                                confirmButtonColor: '#EF4444'
-                            })
-                        })
-                        .finally(() => {
-                            submitBtn.disabled = false;
-                            submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
-                            submitBtn.innerHTML =
-                                '<i class="ri-delete-bin-line mr-2"></i> Delete';
-                        });
-                }
-            });
-        });
-    });
-</script>
