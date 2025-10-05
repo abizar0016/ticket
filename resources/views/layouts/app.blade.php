@@ -46,14 +46,14 @@
     @if (Auth::check())
         @include('components.navbar')
     @else
-        <nav class="fixed top-0 w-full flex justify-end px-4 py-2 bg-white/60 sm:px-6 sm:py-4 z-50">
+        <nav class="fixed top-0 w-full flex justify-end px-4 py-2 bg-white/60 dark:bg-gray-900/60 sm:px-6 sm:py-4 z-50">
             <div class="flex gap-3">
                 <a href="{{ route('login') }}"
                     class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition">
                     Login
                 </a>
                 <a href="{{ route('register') }}"
-                    class="px-4 py-2 border border-gray-800 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-100 transition">
+                    class="px-4 py-2 border border-gray-800 dark:border-gray-200 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition">
                     Register
                 </a>
             </div>

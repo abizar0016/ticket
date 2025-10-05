@@ -154,6 +154,10 @@ class AuthController extends Controller
         Auth::login($user, $request->filled('remember'));
         event(new Login('web', $user, false));
 
+        if (session()->has('url.intended')) {
+            return redirect()->intended();
+        }
+
         if ($user->role === 'superadmin') {
             return redirect()->route('superAdmin.dashboard');
         } elseif ($user->role === 'admin') {
@@ -241,7 +245,13 @@ class AuthController extends Controller
 
             Auth::login($user, true);
 
-            if ($user->role === 'admin') {
+            if (session()->has('url.intended')) {
+                return redirect()->intended();
+            }
+
+            if ($user->role === 'superadmin') {
+                return redirect()->route('superAdmin.dashboard');
+            } elseif ($user->role === 'admin') {
                 return redirect()->route('admin.index');
             }
 
