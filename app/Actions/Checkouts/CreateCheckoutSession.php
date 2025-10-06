@@ -21,9 +21,10 @@ class CreateCheckoutSession
 
     public function handle(Request $request)
     {
+	//dd($request);
         $validated = $request->validate([
             'tickets' => 'required|array',
-            'tickets.*' => 'integer|min:1',
+            'tickets.*' => 'integer|min:0',
             'merchandise' => 'nullable|array',
             'merchandise.*' => 'nullable|integer',
         ]);
