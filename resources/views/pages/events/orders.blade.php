@@ -9,7 +9,7 @@
             transition-all duration-500 hover:shadow-xl sm:hover:shadow-2xl group">
             <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 md:gap-6">
                 <div
-                    class="p-2 sm:p-3 md:p-4 rounded-lg sm:rounded-xl bg-gradient-to-tr from-indigo-500 to-indigo-600 text-white shadow-md">
+                    class="p-3 sm:p-4 rounded-lg sm:rounded-xl bg-gradient-to-r from-indigo-500 to-indigo-600 text-white shadow-md sm:shadow-lg">
                     <i class="ri-shopping-cart-line text-xl sm:text-2xl md:text-3xl"></i>
                 </div>
                 <div>

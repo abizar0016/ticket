@@ -14,7 +14,7 @@
     @vite(['resources/css/app.css'])
 </head>
 
-<body class="font-inter bg-gradient-to-br from-blue-50 to-indigo-100">
+<body class="font-inter bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-800 dark:to-gray-900">
     <div class="min-h-screen flex items-center justify-center px-4 py-12">
         @yield('content')
     </div>

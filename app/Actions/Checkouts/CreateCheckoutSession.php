@@ -19,15 +19,19 @@ class CreateCheckoutSession
         return $token;
     }
 
-    public function handle(Request $request)
+public function handle(Request $request)
     {
-	//dd($request);
         $validated = $request->validate([
-            'tickets' => 'required|array',
+            'tickets' => 'required|array|min:1',// validasi minimal 1 di array tickets
             'tickets.*' => 'integer|min:0',
             'merchandise' => 'nullable|array',
             'merchandise.*' => 'nullable|integer',
         ]);
+
+        // return invalid ketika tidak ada tiket yang dipilih
+        if (collect($validated['tickets'])->sum() < 1) {
+            return redirect()->back()->withErrors(['tickets' => 'You must select at least one ticket.']);
+        }
 
         $token = $this->generateCheckoutToken();
         $expiresAt = now()->addMinutes(30);
@@ -35,10 +39,12 @@ class CreateCheckoutSession
         $checkoutData = [
             'token' => $token,
             'tickets' => collect($validated['tickets'])
+                ->filter(fn($qty) => $qty > 0)// filter hanya yang qty > 0
                 ->map(fn($qty, $id) => ['product_id' => (int)$id, 'quantity' => (int)$qty])
                 ->values()
                 ->all(),
             'merchandise' => collect($validated['merchandise'] ?? [])
+                ->filter(fn($qty) => $qty > 0)// filter hanya yang qty > 0
                 ->map(fn($qty, $id) => ['product_id' => (int)$id, 'quantity' => (int)$qty])
                 ->values()
                 ->all(),
@@ -53,4 +59,5 @@ class CreateCheckoutSession
 
         return redirect()->route('checkout.form', ['token' => $token]);
     }
+
 }

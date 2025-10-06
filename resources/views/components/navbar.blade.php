@@ -148,7 +148,7 @@
                     <p class="text-xs text-gray-500 truncate dark:text-gray-400">{{ Auth::user()->email }}</p>
                 </div>
 
-                @if (in_array(Auth::user()->role, ['customer', 'admin']))
+                @if (in_array(Auth::user()->role, ['customer', 'admin', 'superadmin']))
                     <a href="{{ route('orders.customers') }}"
                         class="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 md:hidden">
                         <i class="ri-shopping-bag-line mr-3 text-indigo-500"></i> My Orders

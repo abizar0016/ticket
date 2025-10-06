@@ -2,7 +2,7 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 sm:mb-12 gap-4">
         <div class="flex flex-col gap-2">
-            <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white">
                 Explore Events
             </h1>
             <p class="text-gray-600 dark:text-gray-400 max-w-2xl">

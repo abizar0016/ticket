@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (paymentProofInput) {
                 paymentProofInput.value = "";
             }
-            fileNameSpan.textContent = "";
+            fileNameSpan.textContent = "Pilih file bukti pembayaran";
             previewContainer.classList.add("hidden");
         });
     }

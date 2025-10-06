@@ -43,7 +43,6 @@ class UploadPaymentProof
 
         return response()->json([
             'success' => true,
-            'message' => 'Payment proof uploaded successfully.',
         ]);
     }
 }

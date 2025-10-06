@@ -2,7 +2,7 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 sm:mb-12 gap-4">
         <div class="flex flex-col gap-2">
-            <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white">
                 Explore Categories
             </h1>
             <p class="text-gray-600 dark:text-gray-400 max-w-2xl">
@@ -31,14 +31,14 @@
                        border border-gray-200 dark:border-gray-700 hover:-translate-y-1">
                 <!-- Hover overlay -->
                 <div
-                    class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                    class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 dark:from-indigo-300/20 dark:to-pink-300/20 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity">
                 </div>
 
                 <!-- Content -->
                 <div class="p-6 sm:p-8 relative z-10 flex flex-col items-center text-center">
                     <div
                         class="mb-4 w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center 
-                               rounded-xl bg-indigo-100 dark:bg-indigo-900 
+                               rounded-xl bg-indigo-100 dark:bg-indigo-500/50
                                text-indigo-600 dark:text-indigo-300 
                                text-2xl sm:text-3xl font-bold">
                         {{ strtoupper(substr($category->name, 0, 1)) }}

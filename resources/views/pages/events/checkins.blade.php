@@ -196,7 +196,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center gap-3">
                                     <div
-                                        class="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-400 to-purple-500 flex items-center justify-center text-white font-medium">
+                                        class="h-10 w-10 rounded-full  bg-gradient-to-r from-indigo-400 to-indigo-500 flex items-center justify-center text-white font-medium">
                                         {{ substr($attendee->name, 0, 1) }}
                                     </div>
                                     <div>
@@ -264,19 +264,10 @@
 @include('modals.checkins.manual')
 @include('modals.checkins.view')
 
-<form action="{{ route('checkins.process') }}" method="POST" class="hidden" id="checkin-form">
+<form action="{{ route('checkins.process') }}" data-success="Checked in successfully." method="POST" class="ajax-form hidden" id="checkin-form">
     @csrf
     <input type="hidden" name="ticket_code" id="ticket-code-input">
 </form>
-
-<div id="success-toast"
-    class="fixed bottom-6 right-6 z-50 hidden bg-green-500 text-white px-6 py-4 rounded-xl shadow-lg flex items-center gap-3 animate-fade-in-up">
-    <i class="ri-checkbox-circle-fill text-2xl"></i>
-    <div>
-        <div class="font-medium">Check-in Successful</div>
-        <div class="text-sm opacity-90">Attendee successfully checked in</div>
-    </div>
-</div>
 
 <style>
     @keyframes scan {
@@ -334,11 +325,12 @@
     const failSound = new Audio('/Audio/mixkit-losing-bleeps-2026.wav');
     const scanSound = new Audio('/Audio/mixkit-confirmation-tone-2867.wav');
 
-    manualEntryBtn.addEventListener('click', () => {
+    // === Manual check-in modal ===
+    manualEntryBtn?.addEventListener('click', () => {
         manualCheckinModal.classList.remove('hidden');
     });
 
-    cancelManualCheckin.addEventListener('click', (e) => {
+    cancelManualCheckin?.addEventListener('click', (e) => {
         e.preventDefault();
         manualCheckinModal.classList.add('hidden');
     });
@@ -354,9 +346,10 @@
 
         ticketCodeInput.value = result;
         video.classList.add('border-green-500');
+
         scanSound.play().catch(() => {});
 
-        await handleSubmit(form);
+        form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
 
         setTimeout(() => {
             video.classList.remove('border-green-500');
@@ -366,46 +359,24 @@
             isProcessing = false;
         }, 2000);
     });
+
     scanner.start().catch(err => {
         console.error('Error starting scanner:', err);
     });
 
-    async function handleSubmit(targetForm) {
-        try {
-            const response = await fetch(targetForm.action, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'application/json'
-                },
-                body: new URLSearchParams(new FormData(targetForm))
-            });
+    manualCheckinForm?.addEventListener('submit', () => {
+        manualCheckinModal.classList.add('hidden');
+    });
 
-            const data = await response.json();
-            if (response.ok && data.success) {
-                toast.classList.remove('hidden');
-                setTimeout(() => toast.classList.add('hidden'), 3000);
 
-                successSound.play().catch(() => {});
-                manualCheckinModal.classList.add('hidden');
-            } else {
-                failSound.play().catch(() => {});
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Check-in Failed',
-                    text: data.message || 'An error occurred',
-                    confirmButtonColor: '#EF4444'
-                });
-            }
-        } catch (err) {
-            failSound.play().catch(() => {});
-            Swal.fire({
-                icon: 'error',
-                title: 'Network Error',
-                text: 'Please check your connection',
-                confirmButtonColor: '#EF4444'
-            });
-        }
-    }
+    document.addEventListener('ajax:success', () => {
+        successSound.play().catch(() => {});
+        toast?.classList.remove('hidden');
+        setTimeout(() => toast?.classList.add('hidden'), 3000);
+    });
+
+    document.addEventListener('ajax:error', () => {
+        failSound.play().catch(() => {});
+    });
 </script>
+
