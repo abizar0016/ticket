@@ -8,7 +8,8 @@
             <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
                 <ul class="divide-y divide-gray-200 dark:divide-gray-700">
                     @foreach ($orders as $order)
-                        <a href="{{ route('orders.show', $order->id) }}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300">
+                        <a href="{{ route('orders.show', $order->id) }}"
+                            class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300">
                             <li class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center space-x-4">
@@ -19,12 +20,12 @@
                                             </span>
                                         </div>
                                         <div>
-                                            <p class="text-sm font-medium text-gray-900 dark:text-white">Order {{ $loop->iteration }}
+                                            <p class="text-sm font-medium text-gray-900 dark:text-white">Order
+                                                {{ $loop->iteration }}
                                             </p>
                                             <p class="text-sm text-gray-500">
                                                 {{ $order->created_at->translatedFormat('d M Y') }}
-                                                • {{ $order->items->count() }} item
-                                            </p>
+                                                • {{ $order->items->sum('quantity') }} item </p>
                                         </div>
                                     </div>
                                     <div class="flex items-center space-x-4">

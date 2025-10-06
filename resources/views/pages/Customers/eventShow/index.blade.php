@@ -457,104 +457,115 @@
         </div>
     </section>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // ===============================
-    // UPDATE ORDER SUMMARY
-    // ===============================
-    function updateOrderSummary() {
-        let totalItems = 0;
-        let totalPrice = 0;
-        let totalTickets = 0; // track ticket quantity
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ===============================
+            // UPDATE ORDER SUMMARY
+            // ===============================
+            function updateOrderSummary() {
+                let totalItems = 0;
+                let totalPrice = 0;
 
-        document.querySelectorAll('input[type="number"].quantity-input').forEach(input => {
-            let quantity = parseInt(input.value) || 0;
-            const productId = input.id.split('-')[1];
-            const card = input.closest('.ticket-card, .product-card');
-            const isTicket = card.classList.contains('ticket-card');
+                document.querySelectorAll('input[type="number"].quantity-input').forEach(input => {
+                    let quantity = parseInt(input.value) || 0;
+                    const productId = input.id.split('-')[1];
+                    const card = input.closest('.ticket-card, .product-card');
+                    const isTicket = card.classList.contains('ticket-card');
 
-            // Update hidden input
-            const hiddenInputName = isTicket ? `tickets[${productId}]` : `merchandise[${productId}]`;
-            const hiddenInput = document.querySelector(`input[type="hidden"][name="${hiddenInputName}"]`);
-            if (hiddenInput) hiddenInput.value = quantity;
+                    // Update hidden input
+                    const hiddenInputName = isTicket ? `tickets[${productId}]` :
+                        `merchandise[${productId}]`;
+                    const hiddenInput = document.querySelector(
+                        `input[type="hidden"][name="${hiddenInputName}"]`);
+                    if (hiddenInput) hiddenInput.value = quantity;
 
-            // Calculate price
-            if (quantity > 0) {
-                const priceText = card.querySelector('.text-primary-600, .text-primary-400')?.textContent || '0';
-                const price = parseInt(priceText.replace(/[^\d]/g, '')) || 0;
-                totalItems += quantity;
-                totalPrice += quantity * price;
+                    // Calculate price
+                    if (quantity > 0) {
+                        const priceText = card.querySelector('.text-primary-600, .text-primary-400')
+                            .textContent;
+                        const price = parseInt(priceText.replace(/[^\d]/g, '')) || 0;
+                        totalItems += quantity;
+                        totalPrice += quantity * price;
+                    }
+                });
 
-                if (isTicket) totalTickets += quantity;
-            }
-        });
+                document.getElementById('selected-items').textContent =
+                    `${totalItems} item${totalItems !== 1 ? 's' : ''} selected`;
+                document.getElementById('total-price').textContent =
+                    `Rp ${totalPrice.toLocaleString('id-ID')}`;
 
-        document.getElementById('selected-items').textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''} selected`;
-        document.getElementById('total-price').textContent = `Rp ${totalPrice.toLocaleString('id-ID')}`;
+                // Toggle summary visibility and checkout button state
+                const summary = document.getElementById('order-summary');
+                const checkoutButton = document.getElementById('checkout-button');
 
-        // Toggle summary visibility and checkout button state
-        const checkoutButton = document.getElementById('checkout-button');
-        checkoutButton.disabled = totalTickets === 0; // disable jika tidak ada ticket
-    }
-
-    // ===============================
-    // QUANTITY BUTTONS
-    // ===============================
-    function setupQuantityButtons() {
-        document.querySelectorAll('.quantity-increase').forEach(button => {
-            button.addEventListener('click', function() {
-                const productId = this.dataset.id;
-                const input = document.getElementById(`quantity-${productId}`);
-                if (!input) return;
-
-                let currentValue = parseInt(input.value) || 0;
-                const max = parseInt(input.max);
-
-                if (isNaN(max)) {
-                    input.value = currentValue + 1;
+                if (totalItems > 0) {
+                    checkoutButton.disabled = false;
                 } else {
-                    input.value = Math.min(currentValue + 1, max);
+                    ;
+                    checkoutButton.disabled = true;
                 }
+            }
 
-                updateOrderSummary();
-            });
+            // ===============================
+            // QUANTITY BUTTONS
+            // ===============================
+            function setupQuantityButtons() {
+                document.querySelectorAll('.quantity-increase').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const productId = this.dataset.id;
+                        const input = document.getElementById(`quantity-${productId}`);
+                        if (!input) return;
+
+                        let currentValue = parseInt(input.value) || 0;
+                        const max = parseInt(input.max);
+
+                        if (isNaN(max)) {
+                            // Unlimited
+                            input.value = currentValue + 1;
+                        } else {
+                            input.value = Math.min(currentValue + 1, max);
+                        }
+
+                        updateOrderSummary();
+                    });
+                });
+
+                document.querySelectorAll('.quantity-decrease').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const productId = this.dataset.id;
+                        const input = document.getElementById(`quantity-${productId}`);
+                        if (!input) return;
+
+                        let currentValue = parseInt(input.value) || 0;
+                        const min = parseInt(input.min) || 0;
+                        input.value = Math.max(currentValue - 1, min);
+
+                        updateOrderSummary();
+                    });
+                });
+
+                // Manual input change
+                document.querySelectorAll('input[type="number"].quantity-input').forEach(input => {
+                    input.addEventListener('change', function() {
+                        let value = parseInt(this.value) || 0;
+                        const min = parseInt(this.min) || 0;
+                        const max = parseInt(this.max);
+
+                        if (value < min) value = min;
+                        if (!isNaN(max) && value > max) value = max;
+
+                        this.value = value;
+                        updateOrderSummary();
+                    });
+                });
+            }
+
+
+            // ===============================
+            // INITIALIZE
+            // ===============================
+            setupQuantityButtons();
+            updateOrderSummary();
         });
-
-        document.querySelectorAll('.quantity-decrease').forEach(button => {
-            button.addEventListener('click', function() {
-                const productId = this.dataset.id;
-                const input = document.getElementById(`quantity-${productId}`);
-                if (!input) return;
-
-                let currentValue = parseInt(input.value) || 0;
-                const min = parseInt(input.min) || 0;
-                input.value = Math.max(currentValue - 1, min);
-
-                updateOrderSummary();
-            });
-        });
-
-        document.querySelectorAll('input[type="number"].quantity-input').forEach(input => {
-            input.addEventListener('change', function() {
-                let value = parseInt(this.value) || 0;
-                const min = parseInt(this.min) || 0;
-                const max = parseInt(this.max);
-
-                if (value < min) value = min;
-                if (!isNaN(max) && value > max) value = max;
-
-                this.value = value;
-                updateOrderSummary();
-            });
-        });
-    }
-
-    // ===============================
-    // INITIALIZE
-    // ===============================
-    setupQuantityButtons();
-    updateOrderSummary();
-});
-</script>
-
+    </script>
 @endsection

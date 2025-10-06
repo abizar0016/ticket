@@ -548,21 +548,159 @@
                 const prefix = 'checkout_form_data_';
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
-                    if (!key.startsWith(prefix)) continue;
-                    try {
-                        const data = JSON.parse(localStorage.getItem(key));
-                        if (data.timestamp && Date.now() - data.timestamp > 2 * 60 * 60 * 1000) { // 2 hours
+                    if (key && key.startsWith(prefix)) {
+                        try {
+                            const data = JSON.parse(localStorage.getItem(key));
+                            if (data && data.timestamp) {
+                                if (data.timestamp < Date.now() - 3600000) localStorage.removeItem(key);
+                            }
+                        } catch (e) {
                             localStorage.removeItem(key);
                         }
-                    } catch {}
+                    }
                 }
             }
 
-            restoreFormData();
-            cleanupOldStorage();
+            // ===============================
+            // COPY ATTENDEE TO ALL
+            // ===============================
+            document.querySelectorAll('.copy-attendee-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const productId = btn.dataset.product;
+                    const firstAttendee = document.querySelector(
+                        `.attendee-list[data-product="${productId}"] .attendee-item:first-child`
+                    );
+                    if (!firstAttendee) return;
 
-            document.getElementById('checkout-form').addEventListener('input', saveFormData);
+                    const values = {
+                        name: firstAttendee.querySelector('.attendee-name').value,
+                        phone: firstAttendee.querySelector('.attendee-phone').value,
+                        email: firstAttendee.querySelector('.attendee-email').value,
+                    };
+
+                    document.querySelectorAll(
+                        `.attendee-list[data-product="${productId}"] .attendee-item`
+                    ).forEach(item => {
+                        item.querySelector('.attendee-name').value = values.name;
+                        item.querySelector('.attendee-phone').value = values.phone;
+                        item.querySelector('.attendee-email').value = values.email;
+                    });
+
+                    saveFormData();
+                });
+            });
+
+            // ===============================
+            // PROMO HANDLER
+            // ===============================
+            function getPromoUrl(action) {
+                if (action === 'apply') return '{{ route('promos.apply') }}';
+                if (action === 'remove') return '{{ route('promos.remove') }}';
+                return null;
+            }
+
+            async function handlePromo(action, data = {}) {
+                const url = getPromoUrl(action);
+                if (!url) return Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Promo URL tidak ditemukan.',
+                    confirmButtonColor: '#6366f1'
+                });
+
+                const btnId = action === 'apply' ? 'promo_btn' : 'remove_promo_btn';
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+                }
+
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            ...data,
+                            token
+                        })
+                    });
+
+                    const result = await response.json();
+                    if (!response.ok || !result.success) throw new Error(result.message || 'Operation failed');
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: result.message,
+                        confirmButtonColor: '#6366f1',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => location.reload());
+
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message,
+                        confirmButtonColor: '#6366f1'
+                    });
+                    if (btn) btn.disabled = false;
+                    if (btn) btn.innerHTML = action === 'apply' ? 'Terapkan' :
+                        '<i class="ri-close-line mr-1"></i> Hapus';
+                }
+            }
+
+            // ===============================
+            // EVENT LISTENERS
+            // ===============================
+            document.querySelectorAll('#checkout-form input').forEach(input => input.addEventListener('input',
+                saveFormData));
             document.getElementById('checkout-form').addEventListener('submit', clearFormData);
+
+            const promoBtn = document.getElementById('promo_btn');
+            const promoInput = document.getElementById('promo_code_input');
+            if (promoBtn && promoInput) {
+                promoBtn.addEventListener('click', () => {
+                    if (!promoInput.value.trim()) return Swal.fire({
+                        icon: 'warning',
+                        title: 'Peringatan',
+                        text: 'Silakan masukkan kode promo',
+                        confirmButtonColor: '#6366f1'
+                    });
+                    handlePromo('apply', {
+                        promo_code: promoInput.value.trim()
+                    });
+                });
+                promoInput.addEventListener('keypress', e => {
+                    if (e.key === 'Enter') promoBtn.click();
+                });
+            }
+
+            const removeBtn = document.getElementById('remove_promo_btn');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', () => {
+                    Swal.fire({
+                        title: 'Hapus Kode Promo?',
+                        text: 'Apakah Anda yakin ingin menghapus kode promo ini?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#6366f1',
+                        cancelButtonColor: '#ef4444',
+                        confirmButtonText: 'Ya, Hapus',
+                        cancelButtonText: 'Batal'
+                    }).then(result => {
+                        if (result.isConfirmed) handlePromo('remove');
+                    });
+                });
+            }
+
+            cleanupOldStorage();
+            restoreFormData();
+
         });
     </script>
 
