@@ -1,6 +1,6 @@
 <div
-    class="border flex flex-col p-5 rounded-2xl 
-            bg-white/70 dark:bg-gray-900/70 backdrop-blur-md 
+    class="border dark:border-gray-700 flex flex-col p-5 rounded-2xl 
+            bg-white dark:bg-gray-800 backdrop-blur-md 
             shadow-sm text-indigo-600 dark:text-indigo-100 mb-6">
     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
 
@@ -43,7 +43,7 @@
                 <div class="relative w-full sm:w-48">
                     <select name="category" id="categories" onchange="this.form.submit()"
                         class="block w-full px-4 py-2 pr-10 text-sm font-medium rounded-xl 
-                   bg-gray-100 dark:bg-gray-800 border border-gray-300 
+                   bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700
                    text-gray-700 dark:text-gray-200 shadow-sm 
                    focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer appearance-none">
                         <option value="all" {{ $selectedCategory == 'all' || !$selectedCategory ? 'selected' : '' }}>

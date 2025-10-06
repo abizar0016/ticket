@@ -2,19 +2,16 @@
     @if ($events->isEmpty())
         <!-- Empty State -->
         <div
-            class="relative bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-12 text-center animate-[fadeIn_0.6s_ease-out_forwards] overflow-hidden border border-white/20">
-            <div
-                class="absolute inset-0 [background-image:radial-gradient(ellipse_at_center,white,transparent_70%)] [mask-image:radial-gradient(ellipse_at_center,white,transparent_70%)]">
-            </div>
+            class="relative bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-12 text-center animate-[fadeIn_0.6s_ease-out_forwards] overflow-hidden border border-white/20 dark:border-gray-700/20">
             <div class="relative z-10">
                 <div
-                    class="mx-auto w-24 h-24 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                    class="mx-auto w-24 h-24 bg-gradient-to-br from-gray-200 to-gray-400 dark:from-gray-600 dark:to-gray-800 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
                     <i class="ri-calendar-2-line text-4xl"></i>
                 </div>
                 <h3
-                    class="text-2xl font-bold text-gray-900 mb-3 bg-clip-text bg-gradient-to-r from-gray-800 to-gray-600">
+                    class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 bg-clip-text bg-gradient-to-r from-gray-800 to-gray-600 dark">
                     No events found</h3>
-                <p class="text-gray-600/90 mb-8 max-w-md mx-auto text-lg">
+                <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto text-lg">
                     @switch($eventStatus)
                         @case('draft')
                             No events in draft
@@ -36,17 +33,6 @@
                             There are currently no events available
                     @endswitch
                 </p>
-                <a href="#"
-                    class="relative inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-medium rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-300 hover:shadow-lg group overflow-hidden">
-                    <span
-                        class="absolute inset-0 bg-gradient-to-r from-primary-600 to-primary-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                    <span class="relative z-10 flex items-center">
-                        <i class="ri-add-line mr-2 text-lg"></i>
-                        <span
-                            class="relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-white/70 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300">Create
-                            New Event</span>
-                    </span>
-                </a>
             </div>
         </div>
     @else

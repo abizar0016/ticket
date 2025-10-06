@@ -76,7 +76,7 @@ class AdminHomeController extends SuperAdminBaseController
             'ended' => 'text-white bg-gradient-to-r from-rose-400 to-rose-600 dark:from-rose-600 dark:to-rose-800',
         ];
 
-        $defaultClass = 'text-gray-700 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-indigo-700 dark:hover:text-indigo-100';
+        $defaultClass = 'text-gray-700 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-indigo-700 dark:hover:text-indigo-100';
         $allClass = 'text-white bg-gradient-to-r from-gray-400 to-gray-600';
 
         $statusIcons = [
