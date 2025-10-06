@@ -1,4 +1,5 @@
-<div class="min-h-screen bg-gray-50 p-3 sm:p-4 md:p-6">
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-3 sm:p-4 md:p-6 transition-colors duration-500">
+
     <!-- Animated Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {{-- Product Sold --}}
@@ -74,9 +75,9 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {{-- Revenue Chart --}}
         <div
-            class="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 animate-[slideUp_0.8s_ease-out_forwards]">
-            <div class="border-b border-gray-100 px-6 py-4 flex justify-between items-center">
-                <h3 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
+            class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 animate-[slideUp_0.8s_ease-out_forwards]">
+            <div class="border-b border-gray-100 dark:border-gray-700 px-6 py-4 flex justify-between items-center">
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
                     <i class="ri-line-chart-line text-rose-500 animate-[pulse_2s_ease-in-out_infinite]"></i>
                     Revenue Overview
                 </h3>
@@ -90,9 +91,9 @@
 
         {{-- Sales Chart --}}
         <div
-            class="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 animate-[slideUp_0.8s_ease-out_forwards] delay-100">
-            <div class="border-b border-gray-100 px-6 py-4 flex justify-between items-center">
-                <h3 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
+            class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 animate-[slideUp_0.8s_ease-out_forwards] delay-100">
+            <div class="border-b border-gray-100 dark:border-gray-700 px-6 py-4 flex justify-between items-center">
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
                     <i class="ri-bar-chart-2-line text-blue-500 animate-[pulse_2s_ease-in-out_infinite]"></i>
                     Sales Performance
                 </h3>
@@ -106,12 +107,103 @@
     </div>
 </div>
 
-{{-- Chart.js --}}
+{{-- Dependencies --}}
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     window.chartLabels = @json($chartLabels);
     window.revenueData = @json($revenueData);
     window.salesData = @json($salesData);
-</script>
 
-<script src="{{ asset('js/chart.js') }}"></script>
+    // Chart.js init
+    document.addEventListener("alpine:init", () => {
+        const textColor = getComputedStyle(document.documentElement).getPropertyValue('--tw-prose-body');
+        const borderColor = '#e5e7eb';
+
+        const revenueCtx = document.getElementById("revenueChart");
+        new Chart(revenueCtx, {
+            type: "line",
+            data: {
+                labels: window.chartLabels,
+                datasets: [{
+                    label: "Revenue",
+                    data: window.revenueData,
+                    borderColor: "#f43f5e",
+                    backgroundColor: "rgba(244,63,94,0.2)",
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: "#9ca3af"
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: "#9ca3af"
+                        },
+                        grid: {
+                            color: "rgba(255,255,255,0.05)"
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: "#9ca3af"
+                        },
+                        grid: {
+                            color: "rgba(255,255,255,0.05)"
+                        }
+                    }
+                }
+            }
+        });
+
+        const salesCtx = document.getElementById("salesChart");
+        new Chart(salesCtx, {
+            type: "bar",
+            data: {
+                labels: window.chartLabels,
+                datasets: [{
+                    label: "Sales",
+                    data: window.salesData,
+                    backgroundColor: "#3b82f6",
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: "#9ca3af"
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: "#9ca3af"
+                        },
+                        grid: {
+                            color: "rgba(255,255,255,0.05)"
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: "#9ca3af"
+                        },
+                        grid: {
+                            color: "rgba(255,255,255,0.05)"
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>

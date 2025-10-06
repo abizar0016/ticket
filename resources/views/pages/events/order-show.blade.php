@@ -1,14 +1,14 @@
-<div class="min-h-screen bg-gray-50 p-3 sm:p-4 md:p-6">
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-3 sm:p-4 md:p-6">
     <!-- Header Section -->
     <div
-        class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-50 to-indigo-100 p-8 mb-8 shadow-lg transition-all duration-500 hover:shadow-xl">
+        class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-50 to-indigo-100 dark:from-gray-700 dark:to-gray-800 p-8 mb-8 shadow-lg transition-all duration-500 hover:shadow-xl">
         <div class="flex items-center gap-6 z-10 relative">
             <div class="p-4 rounded-xl bg-gradient-to-tr from-indigo-500 to-indigo-600 text-white shadow-lg">
                 <i class="ri-bill-line text-3xl"></i>
             </div>
             <div>
-                <h1 class="text-3xl font-bold text-gray-800 tracking-tight">Event Orders</h1>
-                <p class="text-indigo-600/80 text-lg mt-2">Manage all event orders and payments</p>
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">Event Orders</h1>
+                <p class="text-indigo-600/80 dark:text-indigo-300/80 text-lg mt-2">Manage all event orders and payments</p>
             </div>
         </div>
     </div>
@@ -17,35 +17,35 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Order Details -->
         <div class="lg:col-span-2">
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-6">
                 <div class="flex justify-between items-start mb-6">
                     <div>
-                        <h2 class="text-xl font-bold text-gray-800 mb-1">{{ $events->title }}</h2>
-                        <p class="text-gray-500">
+                        <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-1">{{ $events->title }}</h2>
+                        <p class="text-gray-500 dark:text-gray-400">
                             {{ $events->start_date->translatedFormat('l, d F Y H:i') }} WIB -
                             {{ $events->end_date->translatedFormat('l, d F Y H:i') }} WIB
                         </p>
                     </div>
                     <span
                         class="px-3 py-1 rounded-full text-sm font-medium 
-                        @if ($order->status === 'paid') bg-green-100 text-green-800 
+                        @if ($order->status === 'paid') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 
                         @else
-                        bg-yellow-100 text-yellow-800 @endif">
+                        bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 @endif">
                         {{ ucfirst($order->status) }}
                     </span>
                 </div>
 
                 <!-- Order Items -->
                 <div class="mb-8">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Order Items</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 border-b pb-2 border-gray-200 dark:border-gray-700">Order Items</h3>
                     <div class="space-y-4">
                         @foreach ($order->items as $item)
-                            <div class="flex justify-between items-start p-3 bg-gray-50 rounded-lg">
+                            <div class="flex justify-between items-start p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                 <div>
-                                    <p class="font-medium text-gray-800">{{ $item->product->title }}</p>
-                                    <p class="text-sm text-gray-500">Quantity: {{ $item->quantity }}</p>
+                                    <p class="font-medium text-gray-800 dark:text-gray-100">{{ $item->product->title }}</p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Quantity: {{ $item->quantity }}</p>
                                     @if ($item->promo_id)
-                                        <p class="text-sm text-green-600 mt-1">
+                                        <p class="text-sm text-green-600 dark:text-green-400 mt-1">
                                             <i class="ri-coupon-line"></i> Promo Applied
                                         </p>
                                     @endif
@@ -55,7 +55,7 @@
                                         <p class="text-sm text-gray-400 line-through">Rp
                                             {{ number_format($item->price_before_discount, 0, ',', '.') }}</p>
                                     @endif
-                                    <p class="font-medium text-gray-800">Rp
+                                    <p class="font-medium text-gray-800 dark:text-gray-100">Rp
                                         {{ number_format($item->total_price, 0, ',', '.') }}</p>
                                 </div>
                             </div>
@@ -64,22 +64,22 @@
                 </div>
 
                 <!-- Order Summary -->
-                <div class="border-t pt-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Order Summary</h3>
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Order Summary</h3>
                     <div class="space-y-3">
                         <div class="flex justify-between">
-                            <span class="text-gray-600">Subtotal</span>
-                            <span class="font-medium">Rp
+                            <span class="text-gray-600 dark:text-gray-300">Subtotal</span>
+                            <span class="font-medium text-gray-800 dark:text-gray-100">Rp
                                 {{ number_format($order->items->sum('total_price'), 0, ',', '.') }}</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-600">Discount</span>
-                            <span class="font-medium text-green-600">- Rp
+                            <span class="text-gray-600 dark:text-gray-300">Discount</span>
+                            <span class="font-medium text-green-600 dark:text-green-400">- Rp
                                 {{ number_format($order->items->sum('price_before_discount') - $order->items->sum('total_price'), 0, ',', '.') }}</span>
                         </div>
-                        <div class="flex justify-between border-t pt-3">
-                            <span class="text-gray-800 font-semibold">Total</span>
-                            <span class="text-indigo-600 font-bold">Rp
+                        <div class="flex justify-between border-t border-gray-200 dark:border-gray-700 pt-3">
+                            <span class="text-gray-800 dark:text-gray-100 font-semibold">Total</span>
+                            <span class="text-indigo-600 dark:text-indigo-400 font-bold">Rp
                                 {{ number_format($order->total_price, 0, ',', '.') }}</span>
                         </div>
                     </div>
@@ -87,8 +87,8 @@
 
                 <!-- Payment Proof -->
                 @if ($order->payment_proof)
-                    <div class="border-t pt-6 mt-6 flex flex-col items-center">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Payment Proof</h3>
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6 flex flex-col items-center">
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Payment Proof</h3>
 
                         <img src="{{ asset($order->payment_proof) }}" alt="Payment Proof"
                             class="w-full max-w-xs rounded shadow cursor-pointer hover:opacity-90 transition"
@@ -97,7 +97,7 @@
 
                     <!-- Fullscreen overlay -->
                     <div id="fullscreenImage"
-                        class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+                        class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
 
                         <!-- Tombol Close -->
                         <button class="absolute top-5 right-5 text-white text-3xl font-bold z-50 cursor-pointer"
@@ -113,51 +113,51 @@
             </div>
 
             <!-- Attendees -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Attendees
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 border-b pb-2 border-gray-200 dark:border-gray-700">Attendees
                     ({{ $order->attendees->count() }})</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full">
-                        <thead class="bg-gray-50 border-b border-gray-200">
+                        <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
                             <tr>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Name</th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Ticket</th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Status</th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-500">Ticket Code</th>
+                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 dark:text-gray-300">Name</th>
+                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 dark:text-gray-300">Ticket</th>
+                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 dark:text-gray-300">Status</th>
+                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 dark:text-gray-300">Ticket Code</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200">
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                             @foreach ($order->attendees as $attendee)
                                 <tr>
                                     <td class="px-4 py-3 whitespace-nowrap">
                                         <div class="flex items-center gap-3">
                                             <div
-                                                class="flex-shrink-0 h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-medium">
+                                                class="flex-shrink-0 h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-medium">
                                                 {{ substr($attendee->name, 0, 1) }}
                                             </div>
                                             <div>
-                                                <div class="font-medium text-gray-800">{{ $attendee->name }}</div>
-                                                <div class="text-gray-500 text-sm">{{ $attendee->email }}</div>
+                                                <div class="font-medium text-gray-800 dark:text-gray-100">{{ $attendee->name }}</div>
+                                                <div class="text-gray-500 dark:text-gray-400 text-sm">{{ $attendee->email }}</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-gray-600">
+                                    <td class="px-4 py-3 whitespace-nowrap text-gray-600 dark:text-gray-300">
                                         {{ $attendee->product->title }}
                                     </td>
                                     <td class="px-4 py-3 whitespace-nowrap">
                                         @if ($attendee->status === 'used')
                                             <span
-                                                class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800 font-medium">Used</span>
+                                                class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 font-medium">Used</span>
                                         @elseif($attendee->status === 'active')
                                             <span
-                                                class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800 font-medium">Active</span>
+                                                class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 font-medium">Active</span>
                                         @else
                                             <span
-                                                class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800 font-medium">Pending</span>
+                                                class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 font-medium">Pending</span>
                                         @endif
                                     </td>
                                     <td
-                                        class="px-4 py-3 whitespace-nowrap text-gray-600 font-mono flex items-center gap-2">
+                                        class="px-4 py-3 whitespace-nowrap text-gray-600 dark:text-gray-300 font-mono flex items-center gap-2">
                                         <span>{{ $attendee->ticket_code ?? 'N/A' }}</span>
                                         @if ($attendee->ticket_code)
                                             <img src="{{ $attendee->url_qrcode }}" alt="QR Code" class="h-8 w-8" />
@@ -174,46 +174,46 @@
         <!-- Customer & Payment Info -->
         <div class="lg:col-span-1 space-y-6">
             <!-- Customer Card -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Customer Information</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 border-b pb-2 border-gray-200 dark:border-gray-700">Customer Information</h3>
                 <div class="flex items-center gap-4 mb-4">
                     <div
                         class="flex-shrink-0 h-12 w-12 rounded-full bg-gradient-to-r from-indigo-400 to-indigo-500 flex items-center justify-center text-white font-bold">
                         {{ substr($order->name, 0, 1) }}{{ substr(strstr($order->name, ' '), 1, 1) ?? '' }}
                     </div>
                     <div>
-                        <h4 class="font-medium text-gray-800">{{ $order->name }}</h4>
-                        <p class="text-gray-500 text-sm">{{ $order->email }}</p>
+                        <h4 class="font-medium text-gray-800 dark:text-gray-100">{{ $order->name }}</h4>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">{{ $order->email }}</p>
                     </div>
                 </div>
                 <div class="space-y-2">
                     <div>
-                        <p class="text-sm text-gray-500">Order Date</p>
-                        <p class="text-gray-800">{{ $order->created_at->format('F j, Y \a\t g:i A') }}</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Order Date</p>
+                        <p class="text-gray-800 dark:text-gray-100">{{ $order->created_at->format('F j, Y \a\t g:i A') }}</p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-500">User ID</p>
-                        <p class="text-gray-800">{{ $order->user_id }}</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">User ID</p>
+                        <p class="text-gray-800 dark:text-gray-100">{{ $order->user_id }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Payment Status -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Payment Status</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 border-b pb-2 border-gray-200 dark:border-gray-700">Payment Status</h3>
                 <div class="space-y-4">
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Status</span>
+                        <span class="text-gray-600 dark:text-gray-300">Status</span>
                         <span
-                            class="font-medium @if ($order->status === 'paid') text-green-600 @else text-yellow-600 @endif">
+                            class="font-medium @if ($order->status === 'paid') text-green-600 dark:text-green-400 @else text-yellow-600 dark:text-yellow-400 @endif">
                             {{ ucfirst($order->status) }}
                         </span>
                     </div>
 
                     @if ($order->status === 'paid')
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Paid At</span>
-                            <span class="font-medium text-gray-800">
+                            <span class="text-gray-600 dark:text-gray-300">Paid At</span>
+                            <span class="font-medium text-gray-800 dark:text-gray-100">
                                 {{ $order->updated_at->format('F j, Y \a\t g:i A') }}
                             </span>
                         </div>
@@ -425,51 +425,4 @@
             })
         });
     });
-
-    function downloadTickets(orderId) {
-        window.location.href = `/admin/orders/${orderId}/download-tickets`;
-    }
-
-    function confirmDelete(orderId) {
-        Swal.fire({
-            title: 'Cancel This Order?',
-            text: "This will cancel the order and invalidate any ticket codes. This action cannot be undone.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#EF4444',
-            cancelButtonColor: '#6B7280',
-            confirmButtonText: 'Yes, cancel order'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/admin/orders/${orderId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire({
-                                title: 'Cancelled!',
-                                text: data.message,
-                                icon: 'success',
-                                confirmButtonColor: '#6366F1'
-                            }).then(() => {
-                                window.location.href = '';
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: data.message,
-                                icon: 'error',
-                                confirmButtonColor: '#EF4444'
-                            });
-                        }
-                    });
-            }
-        });
-    }
 </script>
