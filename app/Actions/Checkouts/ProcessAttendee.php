@@ -15,11 +15,11 @@ class ProcessAttendee
             Attendee::create([
                 'name' => $attendee['name'],
                 'email' => $attendee['email'],
-                'phone' => $attendee['phone'],
+                'phone' => $this->normalizePhone($attendee['phone']),
                 'order_id' => $order->id,
                 'product_id' => $product->id,
                 'event_id' => $product->event_id,
-                'ticket_code' => $product->event->event_code . '-' . Str::upper(Str::random(6)),
+                'ticket_code' => $product->event->event_code.'-'.Str::upper(Str::random(6)),
                 'status' => 'pending',
             ]);
         }

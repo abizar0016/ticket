@@ -210,7 +210,7 @@
                                 class="absolute left-14 top-4 px-1 text-gray-500 text-base transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600 font-medium">Description</label>
                         </div>
 
-                        <div class="relative">
+                        <div class="relative hidden" id="imageContainer">
                             <label class="block text-gray-700 text-base font-medium mb-2">Item Image</label>
                             <div id="upload-container" class="group">
                                 <!-- Default State -->

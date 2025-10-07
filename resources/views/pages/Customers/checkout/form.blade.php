@@ -59,6 +59,38 @@
                                         Tiket akan dikirim ke nomor telepon ini setelah dikonfirmasi.
                                     </p>
                                 </div>
+
+                                <!-- Tipe Identitas Section -->
+                                <div class="relative">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipe
+                                        Identitas <span class="text-red-500">*</span></label>
+                                    <select name="identity_type" id="identity_type" required
+                                        class="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition duration-200 appearance-none">
+                                        <option value="" disabled selected>Pilih tipe identitas</option>
+                                        <option value="KTP" selected>KTP</option>
+                                        <option value="SIM">SIM</option>
+                                        <option value="Paspor">Paspor</option>
+                                        <option value="Kartu Pelajar">Kartu Pelajar</option>
+                                    </select>
+                                    <div
+                                        class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500">
+                                        <i class="ri-arrow-down-s-line"></i>
+                                    </div>
+                                </div>
+
+
+                                <!-- Nomor Identitas Section -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nomor
+                                        Identitas
+                                        <span class="text-red-500">*</span></label>
+                                    <input type="text" name="identity_number" id="identity_number" required
+                                        placeholder="123456789012345"
+                                        class="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition duration-200">
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        Pastikan nomor identitas sesuai dengan dokumen yang dipilih.
+                                    </p>
+                                </div>
                             </div>
 
                             <div>
@@ -161,13 +193,15 @@
                         @endif
 
                         {{-- Promo Code Section --}}
-                        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900">
+                        <div
+                            class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900">
                             <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-3 flex items-center">
                                 <i class="ri-coupon-2-line text-indigo-500 dark:text-indigo-400 text-2xl mr-3"></i>
                                 Kode Promo
                             </h4>
 
-                            <input type="hidden" id="checkout_token" name="token" value="{{ $checkoutData['token'] }}">
+                            <input type="hidden" id="checkout_token" name="token"
+                                value="{{ $checkoutData['token'] }}">
                             <meta name="csrf-token" content="{{ csrf_token() }}">
 
                             <div id="promo-message-container">
@@ -236,216 +270,110 @@
                 <div class="bg-gray-50 dark:bg-gray-900 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100">Ringkasan Pesanan</h3>
                 </div>
-
                 <div class="p-6">
-                    <!-- Event Info -->
-                    @if ($products->first()->event)
-                        <div class="mb-6">
-                            <div class="flex items-center gap-4 mb-3">
-                                <img src="{{ asset($products->first()->event->event_image) }}" alt="Event Image"
-                                    class="w-14 h-14 rounded-lg object-cover border border-gray-200 dark:border-gray-700">
-                                <div>
-                                    <h4 class="font-semibold text-gray-800 dark:text-gray-100">
-                                        {{ $products->first()->event->title }}
-                                    </h4>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                        <i class="ri-calendar-2-line"></i>
-                                        {{ $products->first()->event->start_date->format('d M Y') }} -
-                                        {{ $products->first()->event->end_date->format('d M Y') }}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- Tickets -->
-                    @if (count($checkoutData['tickets']) > 0)
-                        <div class="mb-6">
-                            <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-3 flex items-center">
-                                <i class="ri-ticket-2-line text-indigo-500 dark:text-indigo-400 mr-2"></i>
-                                Tiket
-                            </h4>
-                            <ul class="space-y-3">
-                                @foreach ($checkoutData['tickets'] as $ticket)
-                                    @if (isset($products[$ticket['product_id']]) && $ticket['quantity'] > 0)
-                                        <li class="flex justify-between items-start">
-                                            <div>
-                                                <p class="font-medium text-gray-800 dark:text-gray-100 truncate max-w-[180px] block"
-                                                    title="{{ $products[$ticket['product_id']]->title }}">
-                                                    {{ $products[$ticket['product_id']]->title }}
-                                                </p>
-
-                                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Qty:
-                                                    {{ $ticket['quantity'] }}
-                                                </p>
-                                            </div>
-                                            <p class="font-semibold text-gray-800 dark:text-gray-100 whitespace-nowrap">Rp
-                                                {{ number_format($products[$ticket['product_id']]->price * $ticket['quantity'], 0, ',', '.') }}
-                                            </p>
-                                        </li>
-                                    @endif
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    <!-- Merchandise -->
-                    @if (count($checkoutData['merchandise']) > 0)
-                        <div class="mb-6">
-                            <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-3 flex items-center">
-                                <i class="ri-shopping-bag-3-line text-indigo-500 dark:text-indigo-400 mr-2"></i>
-                                Merchandise
-                            </h4>
-                            <ul class="space-y-3">
-                                @foreach ($checkoutData['merchandise'] as $merch)
-                                    @if (isset($products[$merch['product_id']]) && $merch['quantity'] > 0)
-                                        <li class="flex justify-between items-start">
-                                            <div>
-                                                <p class="font-medium text-gray-800 dark:text-gray-100 truncate max-w-[180px] block"
-                                                    title="{{ $products[$merch['product_id']]->title }}">
-                                                    {{ $products[$merch['product_id']]->title }}
-                                                </p>
-                                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Qty:
-                                                    {{ $merch['quantity'] }}
-                                                </p>
-                                            </div>
-                                            <p class="font-semibold text-gray-800 dark:text-gray-100 whitespace-nowrap">Rp
-                                                {{ number_format($products[$merch['product_id']]->price * $merch['quantity'], 0, ',', '.') }}
-                                            </p>
-                                        </li>
-                                    @endif
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    <!-- Total -->
+                    <!-- Total dengan Unique Amount -->
                     <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                        @php
+                            // Hitung subtotal
+                            $subtotal =
+                                array_reduce(
+                                    $checkoutData['tickets'],
+                                    function ($carry, $item) use ($products) {
+                                        return $carry + $products[$item['product_id']]->price * $item['quantity'];
+                                    },
+                                    0,
+                                ) +
+                                array_reduce(
+                                    $checkoutData['merchandise'] ?? [],
+                                    function ($carry, $item) use ($products) {
+                                        return $carry + $products[$item['product_id']]->price * $item['quantity'];
+                                    },
+                                    0,
+                                );
+
+                            $hasPromo = !empty($checkoutData['applied_promo']);
+                            $promoData = $checkoutData['applied_promo'] ?? null;
+
+                            // Hitung diskon
+                            $discount = 0;
+                            if ($hasPromo) {
+                                if ($promoData['type'] === 'percentage') {
+                                    $discount = $subtotal * ($promoData['discount'] / 100);
+                                } else {
+                                    $discount = $promoData['discount'];
+                                }
+                            }
+
+                            // Hitung total normal
+                            $normalTotal = $subtotal - $discount;
+
+                            // GENERATE ATAU AMBIL UNIQUE CODE DARI CACHE
+                            $cacheKey = 'checkout_unique_code_' . $checkoutData['token'];
+                            if (!Cache::has($cacheKey)) {
+                                $uniqueCode = rand(100, 500);
+                                Cache::put($cacheKey, $uniqueCode, now()->addMinutes(30));
+                            } else {
+                                $uniqueCode = Cache::get($cacheKey);
+                            }
+
+                            $uniqueAmount = $normalTotal + $uniqueCode;
+                        @endphp
+
+                        <!-- Tampilkan seperti sebelumnya -->
                         <div class="flex justify-between items-center mb-2">
                             <span class="font-medium text-gray-700 dark:text-gray-300">Subtotal</span>
-                            <span class="font-semibold text-gray-800 dark:text-gray-100" id="subtotal_amount">
-                                Rp
-                                {{ number_format(
-                                    array_reduce(
-                                        $checkoutData['tickets'],
-                                        function ($carry, $item) use ($products) {
-                                            return $carry + $products[$item['product_id']]->price * $item['quantity'];
-                                        },
-                                        0,
-                                    ) +
-                                        array_reduce(
-                                            $checkoutData['merchandise'],
-                                            function ($carry, $item) use ($products) {
-                                                return $carry + $products[$item['product_id']]->price * $item['quantity'];
-                                            },
-                                            0,
-                                        ),
-                                    0,
-                                    ',',
-                                    '.',
-                                ) }}
+                            <span class="font-semibold text-gray-800 dark:text-gray-100">
+                                Rp {{ number_format($subtotal, 0, ',', '.') }}
                             </span>
                         </div>
 
-                        <div id="discount_row"
-                            class="{{ !$hasPromo ? 'hidden' : '' }} flex justify-between items-center mb-2">
-                            <span class="font-medium text-gray-700 dark:text-gray-300">Diskon (<span
-                                    id="discount_code">{{ $hasPromo ? $promoData['code'] : '' }}</span>)</span>
-                            <span class="font-semibold text-red-500" id="discount_amount">
-                                @if ($hasPromo)
-                                    - Rp
-                                    {{ number_format(
-                                        $promoData['type'] === 'percentage'
-                                            ? (array_reduce(
-                                                    $checkoutData['tickets'],
-                                                    function ($carry, $item) use ($products) {
-                                                        return $carry + $products[$item['product_id']]->price * $item['quantity'];
-                                                    },
-                                                    0,
-                                                ) +
-                                                    array_reduce(
-                                                        $checkoutData['merchandise'],
-                                                        function ($carry, $item) use ($products) {
-                                                            return $carry + $products[$item['product_id']]->price * $item['quantity'];
-                                                        },
-                                                        0,
-                                                    )) *
-                                                ($promoData['discount'] / 100)
-                                            : $promoData['discount'],
-                                        0,
-                                        ',',
-                                        '.',
-                                    ) }}
-                                @else
-                                    - Rp 0
-                                @endif
+                        @if ($hasPromo)
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-gray-700 dark:text-gray-300">Diskon
+                                    ({{ $promoData['code'] }})</span>
+                                <span class="font-semibold text-red-500">
+                                    - Rp {{ number_format($discount, 0, ',', '.') }}
+                                </span>
+                            </div>
+                        @endif
+
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">Total</span>
+                            <span class="font-semibold text-gray-800 dark:text-gray-100">
+                                Rp {{ number_format($normalTotal, 0, ',', '.') }}
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-medium text-gray-700 dark:text-gray-300">Kode Unik</span>
+                            <span class="font-semibold text-green-600 dark:text-green-400">
+                                + Rp {{ number_format($uniqueCode, 0, ',', '.') }}
                             </span>
                         </div>
 
                         <div
                             class="flex justify-between items-center text-lg font-bold mt-4 pt-2 border-t border-gray-200 dark:border-gray-700">
-                            <span class="text-gray-800 dark:text-gray-100">Total</span>
-                            <span class="text-indigo-600 dark:text-indigo-400" id="total_amount">
-                                Rp
-                                @if ($hasPromo)
-                                    {{ number_format(
-                                        array_reduce(
-                                            $checkoutData['tickets'],
-                                            function ($carry, $item) use ($products) {
-                                                return $carry + $products[$item['product_id']]->price * $item['quantity'];
-                                            },
-                                            0,
-                                        ) +
-                                            array_reduce(
-                                                $checkoutData['merchandise'],
-                                                function ($carry, $item) use ($products) {
-                                                    return $carry + $products[$item['product_id']]->price * $item['quantity'];
-                                                },
-                                                0,
-                                            ) -
-                                            ($promoData['type'] === 'percentage'
-                                                ? (array_reduce(
-                                                        $checkoutData['tickets'],
-                                                        function ($carry, $item) use ($products) {
-                                                            return $carry + $products[$item['product_id']]->price * $item['quantity'];
-                                                        },
-                                                        0,
-                                                    ) +
-                                                        array_reduce(
-                                                            $checkoutData['merchandise'],
-                                                            function ($carry, $item) use ($products) {
-                                                                return $carry + $products[$item['product_id']]->price * $item['quantity'];
-                                                            },
-                                                            0,
-                                                        )) *
-                                                    ($promoData['discount'] / 100)
-                                                : $promoData['discount']),
-                                        0,
-                                        ',',
-                                        '.',
-                                    ) }}
-                                @else
-                                    {{ number_format(
-                                        array_reduce(
-                                            $checkoutData['tickets'],
-                                            function ($carry, $item) use ($products) {
-                                                return $carry + $products[$item['product_id']]->price * $item['quantity'];
-                                            },
-                                            0,
-                                        ) +
-                                            array_reduce(
-                                                $checkoutData['merchandise'],
-                                                function ($carry, $item) use ($products) {
-                                                    return $carry + $products[$item['product_id']]->price * $item['quantity'];
-                                                },
-                                                0,
-                                            ),
-                                        0,
-                                        ',',
-                                        '.',
-                                    ) }}
-                                @endif
+                            <span class="text-gray-800 dark:text-gray-100">Total Pembayaran</span>
+                            <span class="text-indigo-600 dark:text-indigo-400">
+                                Rp {{ number_format($uniqueAmount, 0, ',', '.') }}
                             </span>
+                        </div>
+
+                        <div
+                            class="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-lg">
+                            <div class="flex items-start">
+                                <i class="ri-information-line text-yellow-500 text-lg mt-0.5 mr-2"></i>
+                                <div>
+                                    <p class="text-sm text-yellow-700 dark:text-yellow-300 font-medium">
+                                        Transfer tepat sebesar: <span class="font-bold">Rp
+                                            {{ number_format($uniqueAmount, 0, ',', '.') }}</span>
+                                    </p>
+                                    <p class="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                                        Kode unik <span class="font-bold">{{ $uniqueCode }}</span> digunakan untuk
+                                        memudahkan kami mengkonfirmasi pembayaran
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -489,6 +417,8 @@
                     buyer_name: document.getElementById('buyer_name')?.value || '',
                     buyer_email: document.getElementById('buyer_email')?.value || '',
                     buyer_phone: document.getElementById('buyer_phone')?.value || '',
+                    identity_type: document.getElementById('identity_type')?.value || '',
+                    identity_number: document.getElementById('identity_number')?.value || '',
                     attendees: {},
                     token: token,
                     timestamp: Date.now()
@@ -516,10 +446,16 @@
                     if (formData.token !== token) return;
 
                     // Restore buyer info
-                    ['buyer_name', 'buyer_email', 'buyer_phone'].forEach(id => {
+                    ['buyer_name', 'buyer_email', 'buyer_phone', 'identity_number'].forEach(id => {
                         const el = document.getElementById(id);
                         if (el && formData[id] !== undefined) el.value = formData[id];
                     });
+
+                    // Restore identity type
+                    if (formData.identity_type) {
+                        const identitySelect = document.getElementById('identity_type');
+                        if (identitySelect) identitySelect.value = formData.identity_type;
+                    }
 
                     // Restore attendees
                     if (formData.attendees) {
@@ -657,8 +593,9 @@
             // ===============================
             // EVENT LISTENERS
             // ===============================
-            document.querySelectorAll('#checkout-form input').forEach(input => input.addEventListener('input',
-                saveFormData));
+            document.querySelectorAll('#checkout-form input, #checkout-form select').forEach(input => input
+                .addEventListener('input',
+                    saveFormData));
             document.getElementById('checkout-form').addEventListener('submit', clearFormData);
 
             const promoBtn = document.getElementById('promo_btn');
@@ -703,5 +640,4 @@
 
         });
     </script>
-
 @endsection

@@ -10,7 +10,8 @@
                     <i class="ri-group-line text-xl sm:text-2xl md:text-3xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">
+                    <h1
+                        class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">
                         Event Attendees
                     </h1>
                     <p class="text-indigo-600/80 dark:text-indigo-400/80 text-sm sm:text-base md:text-lg mt-1 sm:mt-2">
@@ -28,7 +29,8 @@
             <!-- Search and Filter Bar -->
             <div
                 class="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6 shadow-md sm:shadow-lg md:shadow-xl border border-gray-100 dark:border-gray-700 transition-colors duration-500">
-                <form action="{{ route(Auth::user()->role == 'superadmin' ? 'superAdmin.events.attendees' : 'admin.events.attendees', $eventId) }}"
+                <form
+                    action="{{ route(Auth::user()->role == 'superadmin' ? 'superAdmin.events.attendees' : 'admin.events.attendees', $eventId) }}"
                     method="GET"
                     class="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 items-stretch sm:items-center">
                     <div class="relative w-full group">
@@ -89,7 +91,8 @@
                                                 {{ substr($attendee->name, 0, 1) }}{{ substr(strstr($attendee->name, ' '), 1, 1) ?? '' }}
                                             </div>
                                             <div>
-                                                <div class="font-medium text-gray-900 dark:text-gray-100 text-xs sm:text-sm md:text-base">
+                                                <div
+                                                    class="font-medium text-gray-900 dark:text-gray-100 text-xs sm:text-sm md:text-base">
                                                     {{ $attendee->name }}</div>
                                                 <div class="text-gray-500 dark:text-gray-400 text-2xs sm:text-xs">
                                                     {{ $attendee->created_at->diffForHumans() }}
@@ -97,13 +100,21 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td
-                                        class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap hidden sm:table-cell">
-                                        <div class="text-gray-900 dark:text-gray-100 text-xs sm:text-sm md:text-base">
-                                            {{ $attendee->email }}</div>
+                                    <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap flex flex-col">
+                                        <a href="https://mail.google.com/mail/?view=cm&to={{ $attendee->email }}"
+                                            target="_blank"
+                                            class="text-gray-900 dark:text-gray-100 text-xs sm:text-sm md:text-base hover:underline">
+                                            {{ $attendee->email }}
+                                        </a>
+                                        <a href="https://wa.me/{{ $attendee->phone }}" target="_blank"
+                                            class="text-gray-800 dark:text-gray-300 text-xs sm:text-sm md:text-base hover:underline">
+                                            {{ $attendee->phone }}
+                                        </a>
+
                                     </td>
                                     <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
-                                        <div class="text-gray-900 dark:text-gray-100 font-mono text-xs sm:text-sm md:text-base">
+                                        <div
+                                            class="text-gray-900 dark:text-gray-100 font-mono text-xs sm:text-sm md:text-base">
                                             {{ $attendee->ticket_code ?? 'N/A' }}</div>
                                         <div class="text-gray-500 dark:text-gray-400 text-2xs sm:text-xs">Order
                                             {{ $attendee->order->name }}</div>
@@ -137,10 +148,8 @@
                                                 <i class="ri-edit-line text-base sm:text-lg md:text-xl"></i>
                                             </button>
 
-                                            <form id="delete-attendee-{{ $attendee->id }}"
-                                                class="ajax-form"
-                                                action="{{ route('attendees.destroy', $attendee->id) }}"
-                                                method="POST"
+                                            <form id="delete-attendee-{{ $attendee->id }}" class="ajax-form"
+                                                action="{{ route('attendees.destroy', $attendee->id) }}" method="POST"
                                                 data-success="Attendee deleted successfully"
                                                 data-confirm="Are you sure you want to delete this attendee?">
                                                 @csrf
@@ -186,22 +195,28 @@
                     class="bg-white dark:bg-gray-800 h-full rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 shadow-md sm:shadow-lg md:shadow-xl border border-purple-100 dark:border-gray-700 transition-all duration-500 hover:shadow-sm sm:hover:shadow-md md:hover:shadow-lg hover:-translate-y-0.5 sm:hover:-translate-y-1">
                     <h3
                         class="text-base sm:text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100 mb-2 sm:mb-3 md:mb-4 flex items-center gap-1 sm:gap-2">
-                        <i class="ri-line-chart-line text-indigo-500 dark:text-indigo-400 text-lg sm:text-xl md:text-2xl"></i>
+                        <i
+                            class="ri-line-chart-line text-indigo-500 dark:text-indigo-400 text-lg sm:text-xl md:text-2xl"></i>
                         Attendance Summary
                     </h3>
 
                     <div class="space-y-2 sm:space-y-3 md:space-y-4">
                         <div>
                             <div class="flex justify-between items-center mb-1">
-                                <span class="text-2xs sm:text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">Total Registered</span>
-                                <span class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">{{ $totalAttendees }}</span>
+                                <span
+                                    class="text-2xs sm:text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">Total
+                                    Registered</span>
+                                <span
+                                    class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">{{ $totalAttendees }}</span>
                             </div>
                         </div>
 
                         <div>
                             <div class="flex justify-between items-center mb-1">
-                                <span class="text-2xs sm:text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">Used</span>
-                                <span class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">{{ $usedAttendees }}</span>
+                                <span
+                                    class="text-2xs sm:text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">Used</span>
+                                <span
+                                    class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">{{ $usedAttendees }}</span>
                             </div>
                             <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
                                 <div class="bg-indigo-600 h-1.5 sm:h-2 rounded-full"
@@ -211,8 +226,10 @@
 
                         <div>
                             <div class="flex justify-between items-center mb-1">
-                                <span class="text-2xs sm:text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">Active</span>
-                                <span class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">{{ $activeAttendees }}</span>
+                                <span
+                                    class="text-2xs sm:text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">Active</span>
+                                <span
+                                    class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">{{ $activeAttendees }}</span>
                             </div>
                             <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
                                 <div class="bg-green-500 h-1.5 sm:h-2 rounded-full"
@@ -222,8 +239,10 @@
 
                         <div>
                             <div class="flex justify-between items-center mb-1">
-                                <span class="text-2xs sm:text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">Pending</span>
-                                <span class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">{{ $pendingAttendees }}</span>
+                                <span
+                                    class="text-2xs sm:text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">Pending</span>
+                                <span
+                                    class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">{{ $pendingAttendees }}</span>
                             </div>
                             <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
                                 <div class="bg-yellow-500 h-1.5 sm:h-2 rounded-full"

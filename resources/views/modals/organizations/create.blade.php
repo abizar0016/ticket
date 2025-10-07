@@ -9,7 +9,7 @@
 
 <!-- Modal panel with animation -->
 <div id="organizationModalPanel"
-    class="bg-white rounded-2xl overflow-hidden shadow-xl transform transition-all sm:max-w-2xl w-full opacity-0 translate-y-4 scale-95">
+    class="bg-white rounded-2xl overflow-hidden shadow-xl transform transition-all sm:max-w-2xl w-full translate-y-4 scale-95">
 
     <!-- Modal header with icon -->
     <div class="sticky top-0 bg-white px-6 pt-5 pb-2 border-b border-gray-100 z-10">

@@ -81,7 +81,7 @@
                                     <i class="ri-money-dollar-circle-line text-xl"></i>
                                 </div>
                                 <input type="number" id="promoDiscount" name="discount"
-                                    class="w-full px-5 py-4 pl-14 pr-4 text-lg rounded-xl border-2 border-gray-200"
+                                    class="w-full px-5 py-4 pl-14 pr-4 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer"
                                     placeholder=" " required min="0" step="0.01">
                                 <label for="promoDiscount"
                                     class="absolute left-14 top-4 px-1 text-gray-500 text-base transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600 font-medium">
@@ -112,7 +112,7 @@
                                 <i class="ri-coupon-3-line text-xl"></i>
                             </div>
                             <select id="promoType" name="type"
-                                class="w-full px-5 py-4 pl-14 pr-10 text-lg rounded-xl border-2 border-gray-200 appearance-none"
+                                class="w-full px-5 py-4 pl-14 pr-10 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer appearance-none"
                                 required>
                                 <option value="percentage">Percentage</option>
                                 <option value="fixed">Fixed Amount</option>

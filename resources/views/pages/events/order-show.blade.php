@@ -8,7 +8,8 @@
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">Event Orders</h1>
-                <p class="text-indigo-600/80 dark:text-indigo-300/80 text-lg mt-2">Manage all event orders and payments</p>
+                <p class="text-indigo-600/80 dark:text-indigo-300/80 text-lg mt-2">Manage all event orders and payments
+                </p>
             </div>
         </div>
     </div>
@@ -17,7 +18,8 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Order Details -->
         <div class="lg:col-span-2">
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-6">
+            <div
+                class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-6">
                 <div class="flex justify-between items-start mb-6">
                     <div>
                         <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-1">{{ $events->title }}</h2>
@@ -37,13 +39,17 @@
 
                 <!-- Order Items -->
                 <div class="mb-8">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 border-b pb-2 border-gray-200 dark:border-gray-700">Order Items</h3>
+                    <h3
+                        class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 border-b pb-2 border-gray-200 dark:border-gray-700">
+                        Order Items</h3>
                     <div class="space-y-4">
                         @foreach ($order->items as $item)
                             <div class="flex justify-between items-start p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                 <div>
-                                    <p class="font-medium text-gray-800 dark:text-gray-100">{{ $item->product->title }}</p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">Quantity: {{ $item->quantity }}</p>
+                                    <p class="font-medium text-gray-800 dark:text-gray-100">{{ $item->product->title }}
+                                    </p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Quantity: {{ $item->quantity }}
+                                    </p>
                                     @if ($item->promo_id)
                                         <p class="text-sm text-green-600 dark:text-green-400 mt-1">
                                             <i class="ri-coupon-line"></i> Promo Applied
@@ -101,7 +107,7 @@
 
                         <!-- Tombol Close -->
                         <button class="absolute top-5 right-5 text-white text-3xl font-bold z-50 cursor-pointer"
-                        onclick="hideFullscreen()">
+                            onclick="hideFullscreen()">
                             &times;
                         </button>
 
@@ -113,17 +119,24 @@
             </div>
 
             <!-- Attendees -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 border-b pb-2 border-gray-200 dark:border-gray-700">Attendees
+            <div
+                class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h3
+                    class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 border-b pb-2 border-gray-200 dark:border-gray-700">
+                    Attendees
                     ({{ $order->attendees->count() }})</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
                             <tr>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 dark:text-gray-300">Name</th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 dark:text-gray-300">Ticket</th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 dark:text-gray-300">Status</th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 dark:text-gray-300">Ticket Code</th>
+                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 dark:text-gray-300">
+                                    Name</th>
+                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 dark:text-gray-300">
+                                    Ticket</th>
+                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 dark:text-gray-300">
+                                    Status</th>
+                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 dark:text-gray-300">
+                                    Ticket Code</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -136,8 +149,10 @@
                                                 {{ substr($attendee->name, 0, 1) }}
                                             </div>
                                             <div>
-                                                <div class="font-medium text-gray-800 dark:text-gray-100">{{ $attendee->name }}</div>
-                                                <div class="text-gray-500 dark:text-gray-400 text-sm">{{ $attendee->email }}</div>
+                                                <div class="font-medium text-gray-800 dark:text-gray-100">
+                                                    {{ $attendee->name }}</div>
+                                                <div class="text-gray-500 dark:text-gray-400 text-sm">
+                                                    {{ $attendee->email }}</div>
                                             </div>
                                         </div>
                                     </td>
@@ -174,8 +189,11 @@
         <!-- Customer & Payment Info -->
         <div class="lg:col-span-1 space-y-6">
             <!-- Customer Card -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 border-b pb-2 border-gray-200 dark:border-gray-700">Customer Information</h3>
+            <div
+                class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h3
+                    class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 border-b pb-2 border-gray-200 dark:border-gray-700">
+                    Customer Information</h3>
                 <div class="flex items-center gap-4 mb-4">
                     <div
                         class="flex-shrink-0 h-12 w-12 rounded-full bg-gradient-to-r from-indigo-400 to-indigo-500 flex items-center justify-center text-white font-bold">
@@ -189,18 +207,37 @@
                 <div class="space-y-2">
                     <div>
                         <p class="text-sm text-gray-500 dark:text-gray-400">Order Date</p>
-                        <p class="text-gray-800 dark:text-gray-100">{{ $order->created_at->format('F j, Y \a\t g:i A') }}</p>
+                        <p class="text-gray-800 dark:text-gray-100">
+                            {{ $order->created_at->format('F j, Y \a\t g:i A') }}</p>
                     </div>
                     <div>
                         <p class="text-sm text-gray-500 dark:text-gray-400">User ID</p>
                         <p class="text-gray-800 dark:text-gray-100">{{ $order->user_id }}</p>
                     </div>
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Phone</p>
+                        <p class="text-gray-800 dark:text-gray-100">
+                            <a href="https://wa.me/{{ $order->phone }}" target="_blank" class="hover:underline">{{ $order->phone ?? '-' }}</a>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Tipe Identitas</p>
+                        <p class="text-gray-800 dark:text-gray-100">{{ $order->identity_type ?? '-' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Nomor Identitas</p>
+                        <p class="text-gray-800 dark:text-gray-100">{{ $order->identity_number ?? '-' }}</p>
+                    </div>
                 </div>
+
             </div>
 
             <!-- Payment Status -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 border-b pb-2 border-gray-200 dark:border-gray-700">Payment Status</h3>
+            <div
+                class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h3
+                    class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 border-b pb-2 border-gray-200 dark:border-gray-700">
+                    Payment Status</h3>
                 <div class="space-y-4">
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600 dark:text-gray-300">Status</span>
@@ -221,8 +258,7 @@
 
                     <div class="pt-4">
                         @if ($order->status === 'pending')
-                            <form id="mark-as-paid-{{ $order->id }}"
-                                class="ajax-form"
+                            <form id="mark-as-paid-{{ $order->id }}" class="ajax-form"
                                 data-success="Order marked as paid successfully."
                                 data-confirm="Are you sure you want to mark this order as paid?"
                                 action="{{ route('orders.mark-as-paid', $order->id) }}" method="POST">
@@ -233,8 +269,7 @@
                                 </button>
                             </form>
                         @else
-                            <form id="mark-as-pending-{{ $order->id }}"
-                                class="ajax-form"
+                            <form id="mark-as-pending-{{ $order->id }}" class="ajax-form"
                                 data-success="Order marked as pending successfully."
                                 data-confirm="Are you sure you want to mark this order as pending?"
                                 action="{{ route('orders.mark-as-pending', $order->id) }}" method="POST">
@@ -272,10 +307,10 @@
     }
 
     if (overlay) {
-    overlay.addEventListener('click', function () {
-        hideFullscreen();
-    });
-}
+        overlay.addEventListener('click', function() {
+            hideFullscreen();
+        });
+    }
 
 
     // Mark as Paid

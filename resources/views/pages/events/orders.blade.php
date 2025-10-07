@@ -25,8 +25,8 @@
             </div>
         </div>
 
-        <!-- Main Content (8/12 width) -->
-        <div class="lg:col-span-8">
+        <!-- Main Content (9/12 width) -->
+        <div class="lg:col-span-9">
             <!-- Search and Filter Bar -->
             <div
                 class="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-6 shadow-lg sm:shadow-xl border border-gray-100 dark:border-gray-700">
@@ -164,8 +164,8 @@
             </div>
         </div>
 
-        <!-- Right Sidebar (4/12 width) -->
-        <div class="lg:col-span-4">
+        <!-- Right Sidebar (3/12 width) -->
+        <div class="lg:col-span-3">
             <div class="sticky top-4 sm:top-6 space-y-4 sm:space-y-6">
                 <!-- Summary Card -->
                 <div

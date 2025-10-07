@@ -2,6 +2,7 @@
 
 namespace App\Actions\Checkouts;
 
+use App\Actions\Checkouts\Concerns\HandlesCheckoutData;
 use App\Models\Activity;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -12,7 +13,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
-use App\Actions\Checkouts\Concerns\HandlesCheckoutData;
 
 class SubmitCheckout
 {
@@ -25,6 +25,8 @@ class SubmitCheckout
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:255',
+            'identity_type' => 'required|string|in:KTP,SIM,Paspor,Kartu Pelajar',
+            'identity_number' => 'required|numeric',
             'attendees' => 'nullable|array',
             'attendees.*.*.name' => 'required_with:attendees|string|max:255',
             'attendees.*.*.email' => 'required_with:attendees|email|max:255',
@@ -46,16 +48,21 @@ class SubmitCheckout
             }
             $eventId = Product::findOrFail($firstProductId)->event_id;
 
+            $normalTotal = $this->calculateNormalTotal($checkoutData);
+
+            $cacheKey = 'checkout_unique_code_'.$checkoutData['token'];
+            $uniqueCode = Cache::get($cacheKey, 0);
+            $uniqueAmount = $normalTotal + $uniqueCode;
+
             $order = Order::create([
                 'user_id' => Auth::id(),
                 'event_id' => $eventId,
                 'promo_id' => $promoId,
                 'name' => $validated['name'],
                 'email' => $validated['email'],
-                'phone' => $validated['phone'],
+                'phone' => $this->normalizePhone($validated['phone']),
                 'status' => 'pending',
-                'total_price' => 0,
-                'discount_amount' => 0,
+                'total_price' => $uniqueAmount,
             ]);
 
             $total = 0;
@@ -117,11 +124,12 @@ class SubmitCheckout
             }
 
             $order->update([
-                'total_price' => $total,
                 'discount_amount' => $discount,
             ]);
 
+            // HAPUS CACHE CHECKOUT DAN UNIQUE CODE
             Cache::forget('checkout:'.$checkoutData['token']);
+            Cache::forget($cacheKey);
             Session::forget(['checkout_token', 'checkout_data']);
 
             Activity::create([
@@ -140,5 +148,60 @@ class SubmitCheckout
 
             return back()->with('error', 'Checkout failed: '.$e->getMessage());
         }
+    }
+
+    // Hitung total normal dari checkout data (tanpa unique code)
+
+    protected function calculateNormalTotal(array $checkoutData): int
+    {
+        $productIds = array_merge(
+            array_column($checkoutData['tickets'], 'product_id'),
+            array_column($checkoutData['merchandise'] ?? [], 'product_id')
+        );
+
+        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+
+        $subtotal = 0;
+
+        // Hitung dari tickets
+        foreach ($checkoutData['tickets'] as $ticket) {
+            if (isset($products[$ticket['product_id']])) {
+                $subtotal += $products[$ticket['product_id']]->price * $ticket['quantity'];
+            }
+        }
+
+        // Hitung dari merchandise
+        foreach ($checkoutData['merchandise'] ?? [] as $merch) {
+            if (isset($products[$merch['product_id']])) {
+                $subtotal += $products[$merch['product_id']]->price * $merch['quantity'];
+            }
+        }
+
+        // Apply discount jika ada promo
+        if (isset($checkoutData['applied_promo'])) {
+            $promo = $checkoutData['applied_promo'];
+            if ($promo['type'] === 'percentage') {
+                $discount = $subtotal * ($promo['discount'] / 100);
+            } else {
+                $discount = $promo['discount'];
+            }
+
+            return $subtotal - $discount;
+        }
+
+        return $subtotal;
+    }
+
+    // Normalisasi nomor telepon Indonesia
+    public function normalizePhone(string $phone): string
+    {
+        $phone = preg_replace('/\D/', '', $phone); // hapus semua non-digit
+        if (str_starts_with($phone, '0')) {
+            $phone = '62'.substr($phone, 1); // ganti 0 depan menjadi 62
+        } elseif (! str_starts_with($phone, '62')) {
+            $phone = '62'.$phone; // tambahkan 62 jika belum ada
+        }
+
+        return $phone;
     }
 }

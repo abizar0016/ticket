@@ -15,6 +15,8 @@ class Order extends Model
         'email',
         'phone',
         'status',
+        'identity_type',
+        'identity_number',
         'total_price',
         'payment_proof',
         'promo_id'

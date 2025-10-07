@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('phone');
+            $table->enum('identity_type', ['KTP', 'SIM', 'Paspor', 'Kartu Pelajar'])->default('KTP');
+                $table->string('identity_number', 50)->nullable();
             $table->enum('status', ['pending', 'paid'])->default('pending');
             $table->decimal('total_price', 14, 2);
             $table->string('payment_proof')->nullable();
