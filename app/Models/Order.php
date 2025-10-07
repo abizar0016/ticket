@@ -18,6 +18,7 @@ class Order extends Model
         'identity_type',
         'identity_number',
         'total_price',
+        'unique_price',
         'payment_proof',
         'promo_id'
     ];

@@ -51,8 +51,7 @@ class SubmitCheckout
             $normalTotal = $this->calculateNormalTotal($checkoutData);
 
             $cacheKey = 'checkout_unique_code_'.$checkoutData['token'];
-            $uniqueCode = Cache::get($cacheKey, 0);
-            $uniqueAmount = $normalTotal + $uniqueCode;
+            $uniquePrice = Cache::get($cacheKey, 0);
 
             $order = Order::create([
                 'user_id' => Auth::id(),
@@ -62,7 +61,8 @@ class SubmitCheckout
                 'email' => $validated['email'],
                 'phone' => $this->normalizePhone($validated['phone']),
                 'status' => 'pending',
-                'total_price' => $uniqueAmount,
+                'total_price' => $normalTotal,
+                'unique_price' => $uniquePrice,
             ]);
 
             $total = 0;

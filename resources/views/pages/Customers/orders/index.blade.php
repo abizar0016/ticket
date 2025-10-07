@@ -35,7 +35,7 @@
                                             {{ strtoupper($order->status) }}
                                         </span>
                                         <span class="text-sm font-bold">
-                                            Rp {{ number_format($order->total_price, 0, ',', '.') }}
+                                            Rp {{ number_format($order->uniqueAmount, 0, ',', '.') }}
                                         </span>
 
                                         <i class="ri-arrow-right-s-line"></i>

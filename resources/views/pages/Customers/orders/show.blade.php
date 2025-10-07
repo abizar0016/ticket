@@ -60,7 +60,7 @@
                                         <div class="pt-2">
                                             <p class="text-sm mb-1">Total Pembayaran:</p>
                                             <p class="text-3xl font-bold text-blue-100">Rp
-                                                {{ number_format($order->total_price, 0, ',', '.') }}</p>
+                                                {{ number_format($order->uniqueAmount, 0, ',', '.') }}</p>
                                         </div>
 
                                         <div class="bg-blue-800 p-3 rounded-lg mt-3">
@@ -126,7 +126,8 @@
                                                             <p class="text-xs text-gray-400">#{{ $loop->iteration }}</p>
                                                             <p class="font-medium text-gray-100">{{ $attendee->name }}</p>
                                                             <p class="text-sm text-gray-300">{{ $attendee->email }}</p>
-                                                            <a href="https://wa.me/{{ $attendee->phone }}" target="_blank" class="text-sm text-gray-300 hover:underline">{{ $attendee->phone ?? '-' }}
+                                                            <a href="https://wa.me/{{ $attendee->phone }}" target="_blank"
+                                                                class="text-sm text-gray-300 hover:underline">{{ $attendee->phone ?? '-' }}
                                                             </a>
                                                             <div class="mt-2 flex items-center">
                                                                 <span
@@ -162,18 +163,60 @@
                         @endforeach
                     </div>
 
-                    <div class="mt-6 pt-6 border-t border-gray-700">
-                        <div class="flex justify-between">
-                            <span class="text-sm font-medium text-gray-400">Subtotal</span>
-                            <span class="text-sm text-gray-100">Rp
-                                {{ number_format($order->total_price, 0, ',', '.') }}</span>
-                        </div>
-                        <div class="flex justify-between mt-2">
-                            <span class="text-sm font-medium text-gray-400">Total</span>
-                            <span class="text-lg font-bold text-indigo-400">Rp
-                                {{ number_format($order->total_price, 0, ',', '.') }}</span>
+                    <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <div
+                            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+                            <div
+                                class="bg-gray-50 dark:bg-gray-900 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100">Ringkasan Pesanan</h3>
+                            </div>
+
+                            <div class="p-6">
+
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-medium text-gray-700 dark:text-gray-300">Subtotal</span>
+                                    <span class="font-semibold text-gray-800 dark:text-gray-100">
+                                        Rp {{ number_format($order->subtotal ?? $order->total_price, 0, ',', '.') }}
+                                    </span>
+                                </div>
+
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-medium text-gray-700 dark:text-gray-300">Kode Unik</span>
+                                    <span class="font-semibold text-green-600 dark:text-green-400">
+                                        + Rp {{ number_format($order->unique_price, 0, ',', '.') }}
+                                    </span>
+                                </div>
+
+                                <div
+                                    class="flex justify-between items-center text-lg font-bold mt-4 pt-2 border-t border-gray-200 dark:border-gray-700">
+                                    <span class="text-gray-800 dark:text-gray-100">Total Pembayaran</span>
+                                    <span class="text-indigo-600 dark:text-indigo-400">
+                                        Rp {{ number_format($order->uniqueAmount, 0, ',', '.') }}
+                                    </span>
+                                </div>
+
+                                <div
+                                    class="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-lg">
+                                    <div class="flex items-start">
+                                        <i class="ri-information-line text-yellow-500 text-lg mt-0.5 mr-2"></i>
+                                        <div>
+                                            <p class="text-sm text-yellow-700 dark:text-yellow-300 font-medium">
+                                                Transfer tepat sebesar:
+                                                <span class="font-bold">
+                                                    Rp {{ number_format($order->uniqueAmount, 0, ',', '.') }}
+                                                </span>
+                                            </p>
+                                            <p class="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                                                Kode unik <span class="font-bold">{{ $order->unique_price }}</span>
+                                                digunakan untuk memudahkan kami mengkonfirmasi pembayaran.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                 </div>
 
                 <!-- Customer Info -->
@@ -191,7 +234,8 @@
                         </div>
                         <div>
                             <p class="text-sm">Nomor Telepon</p>
-                            <a href="https://wa.me/{{ $order->phone }}" target="_blank" class="font-medium text-gray-100 hover:underline">{{ $order->phone ?? '-' }}</a>
+                            <a href="https://wa.me/{{ $order->phone }}" target="_blank"
+                                class="font-medium text-gray-100 hover:underline">{{ $order->phone ?? '-' }}</a>
                         </div>
                     </div>
                 </div>
@@ -202,8 +246,8 @@
                         <h2 class="text-lg font-semibold text-gray-200 mb-4">Upload Bukti Pembayaran</h2>
 
                         <form data-success="Thank you for making the payment, we are currently verifying your payment"
-                            action="{{ route('payment.proof', $order->id) }}" method="POST" enctype="multipart/form-data"
-                            class="ajax-form">
+                            action="{{ route('payment.proof', $order->id) }}" method="POST"
+                            enctype="multipart/form-data" class="ajax-form">
                             @csrf
                             <div class="space-y-4">
                                 <div id="preview-container"

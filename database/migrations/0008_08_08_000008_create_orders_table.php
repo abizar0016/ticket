@@ -23,6 +23,7 @@ return new class extends Migration
                 $table->string('identity_number', 50)->nullable();
             $table->enum('status', ['pending', 'paid'])->default('pending');
             $table->decimal('total_price', 14, 2);
+            $table->decimal('unique_price')->default('123');
             $table->string('payment_proof')->nullable();
             $table->timestampsTz();
         });
