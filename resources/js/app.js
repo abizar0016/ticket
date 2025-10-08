@@ -408,11 +408,65 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // ================== MANUAL CHECKINS =============
+
+    const manualCheckinModal = document.getElementById("manualCheckinModal");
+    const manualCheckinBackdrop = document.getElementById(
+        "manualCheckinBackdrop"
+    );
+    const manualCheckinPanel = document.getElementById("manualCheckinPanel"); // ← perbaikan huruf besar
+
+    document
+        .getElementById("openManualCheckinModal")
+        ?.addEventListener("click", () => {
+            manualCheckinModal.classList.remove("hidden");
+            document.body.classList.add("overflow-hidden");
+
+            setTimeout(() => {
+                manualCheckinBackdrop.classList.remove("opacity-0");
+                manualCheckinPanel.classList.remove(
+                    "opacity-0",
+                    "translate-y-4",
+
+                );
+            }, 10);
+        });
+
+    document
+        .getElementById("cancelManualCheckin")
+        ?.addEventListener("click", () => {
+            manualCheckinBackdrop.classList.add("opacity-0");
+            manualCheckinPanel.classList.add(
+                "opacity-0",
+                "translate-y-4",
+            );
+
+            setTimeout(() => {
+                manualCheckinModal.classList.add("hidden");
+                document.body.classList.remove("overflow-hidden");
+            }, 300);
+        });
+
+    // Optional: klik di backdrop untuk tutup modal
+    manualCheckinBackdrop?.addEventListener("click", () => {
+        manualCheckinBackdrop.classList.add("opacity-0");
+        manualCheckinPanel.classList.add(
+            "opacity-0",
+            "translate-y-4",
+            "scale-95"
+        );
+
+        setTimeout(() => {
+            manualCheckinModal.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
+        }, 300);
+    });
+
     // ================== CHECKINS VIEW ===============
 
     // semua tombol open
-    const openButtons = document.querySelectorAll(".view-checkin-btn");
-    const closeButtons = document.querySelectorAll(".close-checkin-modal");
+    const openButtons = document.querySelectorAll("#view-checkins-btn");
+    const closeButtons = document.querySelectorAll("#closeViewCheckinsModal");
 
     openButtons.forEach((button) => {
         button.addEventListener("click", () => {
@@ -575,7 +629,7 @@ document.addEventListener("DOMContentLoaded", () => {
             toggleIcon.classList.remove("ri-arrow-left-s-line");
             toggleIcon.classList.add("ri-arrow-right-s-line");
         }
-    };
+    }
 
     // Hanya jalan kalau elemen ada
     if (sidebar && toggleBtn && toggleIcon) {
@@ -585,7 +639,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const isOpen = sidebar.classList.contains("translate-x-0");
             setSidebarState(!isOpen);
         });
-    };
+    }
 
     // ================== IMAGE PREVIEW ==================
     setupImagePreview(
@@ -691,11 +745,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Ganti class button aktif
             document.querySelectorAll(".item-type-toggle").forEach((el) => {
-                el.classList.remove("bg-white", "shadow-sm", "text-indigo-600");
-                el.classList.add("text-gray-500");
+                el.classList.remove(
+                    "bg-white",
+                    "dark:bg-gray-800",
+                    "shadow-sm",
+                    "text-indigo-600",
+                    "dark:text-indigo-400"
+                );
+                el.classList.add("text-gray-500", "dark:text-gray-400");
             });
-            this.classList.add("bg-white", "shadow-sm", "text-indigo-600");
-            this.classList.remove("text-gray-500");
+            this.classList.add(
+                "bg-white",
+                "dark:bg-gray-800",
+                "shadow-sm",
+                "text-indigo-600",
+                "dark:text-indigo-400"
+            );
+            this.classList.remove("text-gray-500", "dark:text-gray-400");
 
             // Update value hidden input
             const itemTypeInput = document.getElementById("itemType");

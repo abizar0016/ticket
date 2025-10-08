@@ -35,7 +35,7 @@
                         <i class="ri-qr-scan-2-line text-indigo-600"></i>
                         QR Code Scanner
                     </h2>
-                    <button id="manual-entry-btn"
+                    <button id="openManualCheckinModal"
                         class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 text-xs sm:text-sm font-medium flex items-center gap-1 cursor-pointer">
                         <i class="ri-keyboard-line"></i> Manual Entry
                     </button>
@@ -232,7 +232,7 @@
                             </td>
                             <td
                                 class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end gap-2">
-                                <button id="open-view-checkins-modal-{{ $attendee->id }}"
+                                <button id="view-checkins-btn"
                                     class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 cursor-pointer"
                                     title="View" data-id="{{ $attendee->id }}">
                                     <i class="ri-eye-line text-lg"></i>
@@ -315,25 +315,12 @@
     const toast = document.getElementById('success-toast');
     const scanStatus = document.getElementById('scan-status');
     const manualEntryBtn = document.getElementById('manual-entry-btn');
-    const manualCheckinModal = document.getElementById('manual-checkin-modal');
-    const cancelManualCheckin = document.getElementById('cancel-manual-checkin');
-    const manualCheckinForm = document.getElementById('manual-checkin-form');
 
     let isProcessing = false;
 
     const successSound = new Audio('/Audio/mixkit-confirmation-tone-2867.wav');
     const failSound = new Audio('/Audio/mixkit-losing-bleeps-2026.wav');
     const scanSound = new Audio('/Audio/mixkit-confirmation-tone-2867.wav');
-
-    // === Manual check-in modal ===
-    manualEntryBtn?.addEventListener('click', () => {
-        manualCheckinModal.classList.remove('hidden');
-    });
-
-    cancelManualCheckin?.addEventListener('click', (e) => {
-        e.preventDefault();
-        manualCheckinModal.classList.add('hidden');
-    });
 
     // === QR Scanner ===
     const scanner = new QrScanner(video, async result => {
@@ -363,11 +350,6 @@
     scanner.start().catch(err => {
         console.error('Error starting scanner:', err);
     });
-
-    manualCheckinForm?.addEventListener('submit', () => {
-        manualCheckinModal.classList.add('hidden');
-    });
-
 
     document.addEventListener('ajax:success', () => {
         successSound.play().catch(() => {});

@@ -1,6 +1,6 @@
 {{-- Add Promo Modal --}}
 <div id="promoModal" class="fixed flex justify-center items-center inset-0 z-50 hidden overflow-y-auto">
-        <div class="flex items-center justify-center sm:block sm:p-0">
+    <div class="flex items-center justify-center sm:block sm:p-0">
         {{-- Backdrop --}}
         <div class="fixed inset-0 transition-opacity" aria-hidden="true">
             <div class="absolute inset-0 bg-gray-900/70 backdrop-blur-sm opacity-0 transition-opacity duration-300"
@@ -9,10 +9,10 @@
         </div>
 
         {{-- Modal Panel --}}
-        <div class="bg-white rounded-2xl overflow-hidden shadow-xl transform transition-all sm:max-w-2xl w-full opacity-0 translate-y-4 scale-95"
+        <div class="rounded-2xl overflow-hidden shadow-xl transform transition-all sm:max-w-2xl w-full opacity-0 translate-y-4 scale-95"
             id="promoPanel" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
 
-            <div class="bg-white px-6 pt-6 pb-4 sm:p-6">
+            <div class="bg-white dark:bg-gray-800 px-6 pt-6 pb-4 sm:p-6">
                 {{-- Header --}}
                 <div class="flex items-start justify-between mb-6">
                     <div class="flex items-start gap-4">
@@ -21,21 +21,16 @@
                             <i class="ri-coupon-2-line text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="text-2xl font-bold text-gray-900" id="modal-headline">Create New Promo Code</h3>
-                            <p class="text-indigo-600/80 text-lg mt-1">Set up discounts for your products</p>
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100" id="modal-headline">Create
+                                New Promo Code</h3>
+                            <p class="text-indigo-600 dark:text-indigo-400 text-lg mt-1">Set up discounts for your
+                                products</p>
                         </div>
                     </div>
-                    <button type="button" id="closePromoModal"
-                        class="text-gray-400 hover:text-indigo-500 transition-colors duration-200 cursor-pointer">
-                        <i class="ri-close-line text-2xl"></i>
-                    </button>
                 </div>
 
-                <form id="create-promo-form" 
-                action="{{ route('promos.store', $events->id) }}"
-                class="ajax-form"
-                data-success="Promo code created successfully."
-                method="POST">
+                <form id="create-promo-form" action="{{ route('promos.store', $events->id) }}" class="ajax-form"
+                    data-success="Promo code created successfully." method="POST">
                     @csrf
 
                     <div class="grid grid-cols-1 gap-6">
@@ -44,14 +39,14 @@
                             <!-- Name -->
                             <div class="relative group">
                                 <div
-                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
+                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500 dark:text-indigo-400">
                                     <i class="ri-coupon-2-line text-xl"></i>
                                 </div>
                                 <input type="text" id="promoName" name="name"
-                                    class="w-full px-5 py-4 pl-14 pr-4 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer"
+                                    class="w-full px-5 py-4 pl-14 pr-4 text-lg rounded-xl border-2 border-gray-200 dark:border-gray-600 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer outline-none"
                                     placeholder=" " required>
                                 <label for="promoName"
-                                    class="absolute left-14 top-4 px-1 text-gray-500 text-base transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600 font-medium">
+                                    class="absolute left-14 top-4 px-1 text-gray-500 dark:text-gray-400 text-base transition-all duration-300 transform -translate-y-9 scale-90 bg-white dark:bg-gray-700 rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600 dark:peer-focus:text-indigo-400 font-medium">
                                     Promo Name
                                 </label>
                             </div>
@@ -59,14 +54,14 @@
                             <!-- Code -->
                             <div class="relative group">
                                 <div
-                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
+                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500 dark:text-indigo-400">
                                     <i class="ri-hashtag text-xl"></i>
                                 </div>
                                 <input type="text" id="promo" name="code"
-                                    class="w-full px-5 py-4 pl-14 pr-4 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer"
+                                    class="w-full px-5 py-4 pl-14 pr-4 text-lg rounded-xl border-2 border-gray-200 dark:border-gray-600 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer outline-none"
                                     placeholder=" " required>
                                 <label for="promo"
-                                    class="absolute left-14 top-4 px-1 text-gray-500 text-base transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600 font-medium">
+                                    class="absolute left-14 top-4 px-1 text-gray-500 dark:text-gray-400 text-base transition-all duration-300 transform -translate-y-9 scale-90 bg-white dark:bg-gray-700 rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600 dark:peer-focus:text-indigo-400 font-medium">
                                     Promo Code
                                 </label>
                             </div>
@@ -77,14 +72,14 @@
                             <!-- Discount -->
                             <div class="relative group">
                                 <div
-                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
+                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500 dark:text-indigo-400">
                                     <i class="ri-money-dollar-circle-line text-xl"></i>
                                 </div>
                                 <input type="number" id="promoDiscount" name="discount"
-                                    class="w-full px-5 py-4 pl-14 pr-4 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer"
+                                    class="w-full px-5 py-4 pl-14 pr-4 text-lg rounded-xl border-2 border-gray-200 dark:border-gray-600 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer outline-none"
                                     placeholder=" " required min="0" step="0.01">
                                 <label for="promoDiscount"
-                                    class="absolute left-14 top-4 px-1 text-gray-500 text-base transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600 font-medium">
+                                    class="absolute left-14 top-4 px-1 text-gray-500 dark:text-gray-400 text-base transition-all duration-300 transform -translate-y-9 scale-90 bg-white dark:bg-gray-700 rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600 dark:peer-focus:text-indigo-400 font-medium">
                                     Discount Amount
                                 </label>
                             </div>
@@ -92,14 +87,14 @@
                             <!-- Max Uses -->
                             <div class="relative group">
                                 <div
-                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
+                                    class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500 dark:text-indigo-400">
                                     <i class="ri-group-line text-xl"></i>
                                 </div>
                                 <input type="number" id="promoMaxUses" name="max_uses"
-                                    class="w-full px-5 py-4 pl-14 pr-4 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer"
+                                    class="w-full px-5 py-4 pl-14 pr-4 text-lg rounded-xl border-2 border-gray-200 dark:border-gray-600 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer outline-none"
                                     placeholder=" " value="0" min="0">
                                 <label for="promoMaxUses"
-                                    class="absolute left-14 top-4 px-1 text-gray-500 text-base transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600 font-medium">
+                                    class="absolute left-14 top-4 px-1 text-gray-500 dark:text-gray-400 text-base transition-all duration-300 transform -translate-y-9 scale-90 bg-white dark:bg-gray-700 rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600 dark:peer-focus:text-indigo-400 font-medium">
                                     Max Uses (0 = Unlimited)
                                 </label>
                             </div>
@@ -108,18 +103,18 @@
                         <!-- Discount Type -->
                         <div class="relative group">
                             <div
-                                class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500">
+                                class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-indigo-500 dark:text-indigo-400">
                                 <i class="ri-coupon-3-line text-xl"></i>
                             </div>
                             <select id="promoType" name="type"
-                                class="w-full px-5 py-4 pl-14 pr-10 text-lg rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-white text-gray-800 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer appearance-none"
+                                class="w-full px-5 py-4 pl-14 pr-10 text-lg rounded-xl border-2 border-gray-200 dark:border-gray-600 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 transition-all duration-300 shadow-sm group-hover:border-indigo-300 peer appearance-none"
                                 required>
                                 <option value="percentage">Percentage</option>
                                 <option value="fixed">Fixed Amount</option>
-                            </select>
+                            </select outline-none>
 
                             <label for="promoType"
-                                class="absolute left-14 top-4 px-1 text-gray-500 text-base transition-all duration-300 transform -translate-y-9 scale-90 bg-white rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600 font-medium">
+                                class="absolute left-14 top-4 px-1 text-gray-500 dark:text-gray-400 text-base transition-all duration-300 transform -translate-y-9 scale-90 bg-white dark:bg-gray-700 rounded peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-9 peer-focus:scale-90 peer-focus:text-indigo-600 dark:peer-focus:text-indigo-400 font-medium">
                                 Discount Type
                             </label>
                             <div
@@ -130,59 +125,85 @@
 
                         <!-- Modern Checkbox Section -->
                         <div class="space-y-4">
-                            <label class="block text-base font-medium text-gray-700">Applicable To</label>
+                            <label class="block text-base font-medium text-gray-500 dark:text-gray-400">Applicable
+                                To</label>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {{-- Ticket Checkbox --}}
+                                <!-- Tickets Checkbox -->
                                 <label
-                                    class="relative flex items-start p-4 rounded-xl border-2 border-gray-200 hover:border-indigo-300 transition-all duration-300 cursor-pointer has-[:checked]:border-indigo-400 has-[:checked]:bg-indigo-50/50">
+                                    class="relative flex items-start p-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 
+         bg-white dark:bg-gray-700 hover:border-indigo-300 dark:hover:border-indigo-400
+         transition-all duration-300 cursor-pointer
+         has-[:checked]:border-indigo-400 dark:has-[:checked]:border-indigo-500
+         has-[:checked]:bg-indigo-50/50 dark:has-[:checked]:bg-indigo-500/20">
+
                                     <div class="flex items-center h-5">
                                         <input id="is_ticket" name="is_ticket" type="checkbox" value="1" checked
-                                            class="h-5 w-5 rounded border-2 border-gray-300 text-indigo-600 focus:ring-indigo-500 transition-all duration-200 peer">
+                                            class="h-5 w-5 rounded border-2 border-gray-300 dark:border-gray-500 
+             text-indigo-600 focus:ring-indigo-500 transition-all duration-200 peer">
                                     </div>
+
                                     <div class="ml-3 flex flex-col">
                                         <span
-                                            class="text-base font-medium text-gray-900 peer-checked:text-indigo-700">Tickets</span>
-                                        <span class="text-sm text-gray-500 peer-checked:text-indigo-600">Apply discount
-                                            to event tickets</span>
+                                            class="text-base font-medium text-gray-900 dark:text-gray-100 peer-checked:text-indigo-700 dark:peer-checked:text-indigo-400">
+                                            Tickets
+                                        </span>
+                                        <span
+                                            class="text-sm text-gray-500 dark:text-gray-400 peer-checked:text-indigo-600 dark:peer-checked:text-indigo-300">
+                                            Apply discount to event tickets
+                                        </span>
                                     </div>
+
                                     <div
-                                        class="absolute top-4 right-4 text-indigo-600 opacity-0 peer-checked:opacity-100 transition-opacity duration-300">
+                                        class="absolute top-4 right-4 text-indigo-600 dark:text-indigo-400 opacity-0 peer-checked:opacity-100 transition-opacity duration-300">
                                         <i class="ri-checkbox-circle-fill text-xl"></i>
                                     </div>
                                 </label>
 
-                                {{-- Merchandise Checkbox --}}
+                                <!-- Merchandise Checkbox -->
                                 <label
-                                    class="relative flex items-start p-4 rounded-xl border-2 border-gray-200 hover:border-indigo-300 transition-all duration-300 cursor-pointer has-[:checked]:border-indigo-400 has-[:checked]:bg-indigo-50/50">
+                                    class="relative flex items-start p-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 
+         bg-white dark:bg-gray-700 hover:border-indigo-300 dark:hover:border-indigo-400
+         transition-all duration-300 cursor-pointer
+         has-[:checked]:border-indigo-400 dark:has-[:checked]:border-indigo-500
+         has-[:checked]:bg-indigo-50/50 dark:has-[:checked]:bg-indigo-500/20">
+
                                     <div class="flex items-center h-5">
                                         <input id="is_merchandise" name="is_merchandise" type="checkbox"
                                             value="1"
-                                            class="h-5 w-5 rounded border-2 border-gray-300 text-indigo-600 focus:ring-indigo-500 transition-all duration-200 peer">
+                                            class="h-5 w-5 rounded border-2 border-gray-300 dark:border-gray-500 
+             text-indigo-600 focus:ring-indigo-500 transition-all duration-200 peer">
                                     </div>
+
                                     <div class="ml-3 flex flex-col">
                                         <span
-                                            class="text-base font-medium text-gray-900 peer-checked:text-indigo-700">Merchandise</span>
-                                        <span class="text-sm text-gray-500 peer-checked:text-indigo-600">Apply discount
-                                            to event merchandise</span>
+                                            class="text-base font-medium text-gray-900 dark:text-gray-100 peer-checked:text-indigo-700 dark:peer-checked:text-indigo-400">
+                                            Merchandise
+                                        </span>
+                                        <span
+                                            class="text-sm text-gray-500 dark:text-gray-400 peer-checked:text-indigo-600 dark:peer-checked:text-indigo-300">
+                                            Apply discount to event merchandise
+                                        </span>
                                     </div>
+
                                     <div
-                                        class="absolute top-4 right-4 text-indigo-600 opacity-0 peer-checked:opacity-100 transition-opacity duration-300">
+                                        class="absolute top-4 right-4 text-indigo-600 dark:text-indigo-400 opacity-0 peer-checked:opacity-100 transition-opacity duration-300">
                                         <i class="ri-checkbox-circle-fill text-xl"></i>
                                     </div>
                                 </label>
+
                             </div>
                         </div>
                     </div>
 
                     <!-- Modal Footer -->
-                    <div class="bg-gray-50 px-1 py-4 sm:flex sm:flex-row-reverse rounded-b-xl mt-6">
+                    <div class="bg-white dark:bg-gray-800 py-4 sm:flex sm:justify-end rounded-b-xl mt-6">
+                        <button type="button" id="cancelPromoModal"
+                            class="mt-3 w-full inline-flex justify-center items-center rounded-xl border border-gray-300 dark:border-gray-600 shadow-sm px-6 py-3 bg-white dark:bg-gray-700 text-base font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto transition-all duration-300 cursor-pointer">
+                            <i class="ri-close-line mr-2"></i> Cancel
+                        </button>
                         <button type="submit"
                             class="w-full inline-flex justify-center items-center rounded-xl border border-transparent shadow-sm px-6 py-3 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white text-base font-semibold hover:from-indigo-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-md cursor-pointer">
                             <i class="ri-save-line mr-2"></i> Save Promo Code
-                        </button>
-                        <button type="button" id="cancelPromoModal"
-                            class="mt-3 w-full inline-flex justify-center items-center rounded-xl border border-gray-300 shadow-sm px-6 py-3 bg-white text-base font-semibold text-gray-700 hover:bg-gray-50 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto transition-all duration-300 cursor-pointer">
-                            <i class="ri-close-line mr-2"></i> Cancel
                         </button>
                     </div>
                 </form>
