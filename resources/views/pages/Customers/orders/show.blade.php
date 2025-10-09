@@ -223,87 +223,104 @@
                 <div class="mb-8">
                     <h2 class="text-lg font-semibold text-gray-200 border-b border-gray-700 pb-2 mb-4">Informasi Pembeli
                     </h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-gray-300">
-                        <div>
-                            <p class="text-sm">Nama</p>
-                            <p class="font-medium text-gray-100">{{ $order->name }}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 mb-5 text-gray-300">
+                        <!-- KIRI -->
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-sm text-gray-400">Nama</p>
+                                <p class="text-base font-semibold text-white">{{ $order->name }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-400">Email</p>
+                                <p class="text-base font-semibold text-white">{{ $order->email }}</p>
+                            </div>
                         </div>
-                        <div>
-                            <p class="text-sm">Email</p>
-                            <p class="font-medium text-gray-100">{{ $order->email }}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm">Nomor Telepon</p>
-                            <a href="https://wa.me/{{ $order->phone }}" target="_blank"
-                                class="font-medium text-gray-100 hover:underline">{{ $order->phone ?? '-' }}</a>
+
+                        <!-- KANAN -->
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-sm text-gray-400">Nomor Telepon</p>
+                                <a href="https://wa.me/{{ $order->phone }}" target="_blank"
+                                    class="text-base font-semibold text-white hover:text-purple-400 transition">
+                                    {{ $order->phone ?? '-' }}
+                                </a>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-400">Tipe Identitas</p>
+                                <p class="text-base font-semibold text-white">{{ $order->identity_type ?? '-' }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-400">Nomor Identitas</p>
+                                <p class="text-base font-semibold text-white">{{ $order->identity_number ?? '-' }}</p>
+                            </div>
                         </div>
                     </div>
+
+                    @if ($order->status == 'pending')
+                        <!-- Payment Proof Upload -->
+                        <div class="p-6 bg-gray-800 border border-gray-700 rounded-xl shadow-sm">
+                            <h2 class="text-lg font-semibold text-gray-200 mb-4">Upload Bukti Pembayaran</h2>
+
+                            <form data-success="Thank you for making the payment, we are currently verifying your payment"
+                                action="{{ route('payment.proof', $order->id) }}" method="POST"
+                                enctype="multipart/form-data" class="ajax-form">
+                                @csrf
+                                <div class="space-y-4">
+                                    <div id="preview-container"
+                                        class="{{ $order->payment_proof ? 'text-center' : 'hidden text-center' }}">
+                                        <img id="preview-image"
+                                            src="{{ $order->payment_proof ? asset($order->payment_proof) : '#' }}"
+                                            alt="Preview"
+                                            class="mx-auto max-h-[90vh] rounded-md border border-gray-600 shadow-sm">
+
+                                        <button type="button" id="remove-image"
+                                            class="mt-2 inline-flex items-center text-sm text-red-500 hover:underline">
+                                            <i class="ri-close-line mr-1"></i> Hapus Gambar
+                                        </button>
+                                    </div>
+
+                                    <div>
+                                        <input type="file" name="payment_proof" id="payment_proof" class="hidden"
+                                            accept="image/*,.pdf">
+
+                                        <label for="payment_proof"
+                                            class="flex items-center justify-between px-4 py-3 bg-gray-700 border border-dashed border-gray-600 rounded-md cursor-pointer hover:bg-gray-600 transition">
+
+                                            <span id="file-name"
+                                                class="text-sm text-gray-400 italic truncate max-w-[200px]">
+                                                <i
+                                                    class="ri-upload-line mr-2 text-gray-400"></i>{{ $order->payment_proof ? basename($order->payment_proof) : 'Pilih File Bukti Pembayaran' }}
+                                            </span>
+
+                                        </label>
+                                    </div>
+
+                                    <div class="flex justify-center md:justify-end">
+                                        <button type="submit"
+                                            class="inline-flex items-center px-5 py-2 w-full md:w-1/3 bg-indigo-600 text-white text-sm font-medium rounded-md shadow hover:bg-indigo-700 transition">
+                                            <i class="ri-check-line mr-2 text-lg"></i> Konfirmasi Pembayaran
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    @endif
                 </div>
 
-                @if ($order->status == 'pending')
-                    <!-- Payment Proof Upload -->
-                    <div class="p-6 bg-gray-800 border border-gray-700 rounded-xl shadow-sm">
-                        <h2 class="text-lg font-semibold text-gray-200 mb-4">Upload Bukti Pembayaran</h2>
-
-                        <form data-success="Thank you for making the payment, we are currently verifying your payment"
-                            action="{{ route('payment.proof', $order->id) }}" method="POST"
-                            enctype="multipart/form-data" class="ajax-form">
-                            @csrf
-                            <div class="space-y-4">
-                                <div id="preview-container"
-                                    class="{{ $order->payment_proof ? 'text-center' : 'hidden text-center' }}">
-                                    <img id="preview-image"
-                                        src="{{ $order->payment_proof ? asset($order->payment_proof) : '#' }}"
-                                        alt="Preview"
-                                        class="mx-auto max-h-[90vh] rounded-md border border-gray-600 shadow-sm">
-
-                                    <button type="button" id="remove-image"
-                                        class="mt-2 inline-flex items-center text-sm text-red-500 hover:underline">
-                                        <i class="ri-close-line mr-1"></i> Hapus Gambar
-                                    </button>
-                                </div>
-
-                                <div>
-                                    <input type="file" name="payment_proof" id="payment_proof" class="hidden"
-                                        accept="image/*,.pdf">
-
-                                    <label for="payment_proof"
-                                        class="flex items-center justify-between px-4 py-3 bg-gray-700 border border-dashed border-gray-600 rounded-md cursor-pointer hover:bg-gray-600 transition">
-
-                                        <span id="file-name" class="text-sm text-gray-400 italic truncate max-w-[200px]">
-                                            <i
-                                                class="ri-upload-line mr-2 text-gray-400"></i>{{ $order->payment_proof ? basename($order->payment_proof) : 'Pilih File Bukti Pembayaran' }}
-                                        </span>
-
-                                    </label>
-                                </div>
-
-                                <div class="flex justify-center md:justify-end">
-                                    <button type="submit"
-                                        class="inline-flex items-center px-5 py-2 w-full md:w-1/3 bg-indigo-600 text-white text-sm font-medium rounded-md shadow hover:bg-indigo-700 transition">
-                                        <i class="ri-check-line mr-2 text-lg"></i> Konfirmasi Pembayaran
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                @endif
-            </div>
-
-            <!-- Action Buttons -->
-            <div
-                class="px-6 py-4 bg-gray-900 border-t border-gray-700 flex flex-col sm:flex-row justify-between space-y-3 sm:space-y-0 sm:space-x-4">
-                <a href="{{ route('home') }}"
-                    class="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 text-center">
-                    <i class="ri-arrow-left-line mr-2"></i> Kembali ke Beranda
-                </a>
-                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
-                    <a href="{{ route('orders.customers') }}"
-                        class="px-4 py-2 bg-indigo-600 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-indigo-700 inline-flex items-center justify-center">
-                        <i class="ri-list-check mr-2"></i> Pesanan Saya
+                <!-- Action Buttons -->
+                <div
+                    class="px-6 py-4 bg-gray-900 border-t border-gray-700 flex flex-col sm:flex-row justify-between space-y-3 sm:space-y-0 sm:space-x-4">
+                    <a href="{{ route('home') }}"
+                        class="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-700 text-center">
+                        <i class="ri-arrow-left-line mr-2"></i> Kembali ke Beranda
                     </a>
+                    <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                        <a href="{{ route('orders.customers') }}"
+                            class="px-4 py-2 bg-indigo-600 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-indigo-700 inline-flex items-center justify-center">
+                            <i class="ri-list-check mr-2"></i> Pesanan Saya
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-@endsection
+    @endsection

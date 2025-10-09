@@ -61,6 +61,8 @@ class SubmitCheckout
                 'email' => $validated['email'],
                 'phone' => $this->normalizePhone($validated['phone']),
                 'status' => 'pending',
+                'identity_type' => $validated['identity_type'],
+                'identity_number' => $validated['identity_number'],
                 'total_price' => $normalTotal,
                 'unique_price' => $uniquePrice,
             ]);

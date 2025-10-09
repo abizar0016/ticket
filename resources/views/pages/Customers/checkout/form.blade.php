@@ -204,9 +204,6 @@
                                 value="{{ $checkoutData['token'] }}">
                             <meta name="csrf-token" content="{{ csrf_token() }}">
 
-                            <div id="promo-message-container">
-                                <!-- Pesan error/success akan ditampilkan di sini -->
-                            </div>
 
                             <div id="promo-code-container">
                                 @php
