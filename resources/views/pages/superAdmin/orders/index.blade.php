@@ -58,7 +58,7 @@
                                 </ul>
                             </td>
                             <td class="px-6 py-5 font-bold text-indigo-600 dark:text-indigo-400">
-                                Rp{{ number_format($order->total_price, 0, ',', '.') }}
+                                Rp{{ number_format($order->uniqueAmount, 0, ',', '.') }}
                             </td>
                             <td class="px-6 py-5">
                                 @if ($order->status === 'paid')
@@ -82,7 +82,7 @@
                                 {{ $order->created_at->format('d M Y, H:i') }}
                             </td>
                             <td class="px-6 py-5 text-right">
-                                <a href="#"
+                                <a href="{{ route('orders.show', $order->id) }}"
                                     class="px-2 py-1 text-xs rounded-md bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 flex items-center space-x-1">
                                     <i class="ri-eye-line"></i><span>View</span>
                                 </a>

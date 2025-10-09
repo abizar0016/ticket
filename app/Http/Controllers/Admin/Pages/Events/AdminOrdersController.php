@@ -16,13 +16,17 @@ class AdminOrdersController extends AdminBaseController
 
         $search = request('search');
 
-        $ordersQuery = Order::whereHas('items.product', function ($q) use ($events) {
+$ordersQuery = Order::whereHas('items.product', function ($q) use ($events) {
             $q->where('event_id', $events->id);
         })
-            ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
+        ->when($search, function ($query) use ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
             });
+        })
+        ->select('*')
+        ->selectRaw('(total_price + unique_price) as uniqueAmount');
 
         $orders = $ordersQuery->orderByDesc('created_at')->paginate(10);
         $totalOrders = $orders->total();
@@ -54,39 +58,41 @@ class AdminOrdersController extends AdminBaseController
     }
 
     public function show($eventId, $orderId)
-{
-    $events = Event::with(['user', 'organization'])
-        ->findOrFail($eventId);
+    {
+        $events = Event::with(['user', 'organization'])
+            ->findOrFail($eventId);
 
-    $viewData = $this->getEventsViewData('orders-show', $eventId);
+        $viewData = $this->getEventsViewData('orders-show', $eventId);
 
-    $order = Order::with(['items.product.event', 'attendees'])
-        ->where('id', $orderId)
-        ->whereHas('items.product', fn ($q) => $q->where('event_id', $eventId))
-        ->firstOrFail();
+        $order = Order::with(['items.product.event', 'attendees'])
+            ->where('id', $orderId)
+            ->whereHas('items.product', fn ($q) => $q->where('event_id', $eventId))
+            ->firstOrFail();
 
-    $method = 'AES-256-CBC';
-    $key = env('QR_ENCRYPTION_KEY');
+        $method = 'AES-256-CBC';
+        $key = env('QR_ENCRYPTION_KEY');
 
-    foreach ($order->attendees as $attendee) {
-        $data = json_encode([
-            'nama' => $attendee->name,
-            'kode' => $attendee->code,
-        ]);
+        $uniquePrice = $order->unique_price ?? 0;
+        $order->uniqueAmount = $order->total_price + $uniquePrice;
 
-        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($method));
-        $encrypted_data = openssl_encrypt($data, $method, $key, 0, $iv);
-        $final_encrypted_output = base64_encode($encrypted_data . '::' . $iv);
+        foreach ($order->attendees as $attendee) {
+            $data = json_encode([
+                'nama' => $attendee->name,
+                'kode' => $attendee->code,
+            ]);
 
-        $url_qrcode = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&ecc=L&qzone=1&data=' . urlencode($final_encrypted_output);
+            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($method));
+            $encrypted_data = openssl_encrypt($data, $method, $key, 0, $iv);
+            $final_encrypted_output = base64_encode($encrypted_data.'::'.$iv);
 
-        $attendee->url_qrcode = $url_qrcode;
+            $url_qrcode = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&ecc=L&qzone=1&data='.urlencode($final_encrypted_output);
+
+            $attendee->url_qrcode = $url_qrcode;
+        }
+
+        return view('pages.admins.index', array_merge($viewData, [
+            'events' => $events,
+            'order' => $order,
+        ]));
     }
-
-    return view('pages.admins.index', array_merge($viewData, [
-        'events' => $events,
-        'order' => $order,
-    ]));
-}
-
 }

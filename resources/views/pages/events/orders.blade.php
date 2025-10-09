@@ -115,7 +115,7 @@
                                     </td>
                                     <td
                                         class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap text-gray-900 dark:text-gray-100 font-medium text-xs sm:text-sm">
-                                        Rp {{ number_format($order->total_price, 0, ',', '.') }}
+                                        Rp {{ number_format($order->uniqueAmount, 0, ',', '.') }}
                                     </td>
                                     <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap text-right">
                                         <div class="flex justify-end items-center gap-1 sm:gap-2">

@@ -70,23 +70,56 @@
                 </div>
 
                 <!-- Order Summary -->
-                <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Order Summary</h3>
-                    <div class="space-y-3">
-                        <div class="flex justify-between">
-                            <span class="text-gray-600 dark:text-gray-300">Subtotal</span>
-                            <span class="font-medium text-gray-800 dark:text-gray-100">Rp
-                                {{ number_format($order->items->sum('total_price'), 0, ',', '.') }}</span>
+                <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+                        <div
+                            class="bg-gray-50 dark:bg-gray-900 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100">Ringkasan Pesanan</h3>
                         </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600 dark:text-gray-300">Discount</span>
-                            <span class="font-medium text-green-600 dark:text-green-400">- Rp
-                                {{ number_format($order->items->sum('price_before_discount') - $order->items->sum('total_price'), 0, ',', '.') }}</span>
-                        </div>
-                        <div class="flex justify-between border-t border-gray-200 dark:border-gray-700 pt-3">
-                            <span class="text-gray-800 dark:text-gray-100 font-semibold">Total</span>
-                            <span class="text-indigo-600 dark:text-indigo-400 font-bold">Rp
-                                {{ number_format($order->total_price, 0, ',', '.') }}</span>
+
+                        <div class="p-6">
+
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-gray-700 dark:text-gray-300">Subtotal</span>
+                                <span class="font-semibold text-gray-800 dark:text-gray-100">
+                                    Rp {{ number_format($order->subtotal ?? $order->total_price, 0, ',', '.') }}
+                                </span>
+                            </div>
+
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-gray-700 dark:text-gray-300">Kode Unik</span>
+                                <span class="font-semibold text-green-600 dark:text-green-400">
+                                    + Rp {{ number_format($order->unique_price, 0, ',', '.') }}
+                                </span>
+                            </div>
+
+                            <div
+                                class="flex justify-between items-center text-lg font-bold mt-4 pt-2 border-t border-gray-200 dark:border-gray-700">
+                                <span class="text-gray-800 dark:text-gray-100">Total Pembayaran</span>
+                                <span class="text-indigo-600 dark:text-indigo-400">
+                                    Rp {{ number_format($order->uniqueAmount, 0, ',', '.') }}
+                                </span>
+                            </div>
+
+                            <div
+                                class="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-lg">
+                                <div class="flex items-start">
+                                    <i class="ri-information-line text-yellow-500 text-lg mt-0.5 mr-2"></i>
+                                    <div>
+                                        <p class="text-sm text-yellow-700 dark:text-yellow-300 font-medium">
+                                            Transfer tepat sebesar:
+                                            <span class="font-bold">
+                                                Rp {{ number_format($order->uniqueAmount, 0, ',', '.') }}
+                                            </span>
+                                        </p>
+                                        <p class="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                                            Kode unik <span class="font-bold">{{ $order->unique_price }}</span>
+                                            digunakan untuk memudahkan kami mengkonfirmasi pembayaran.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -217,7 +250,8 @@
                     <div>
                         <p class="text-sm text-gray-500 dark:text-gray-400">Phone</p>
                         <p class="text-gray-800 dark:text-gray-100">
-                            <a href="https://wa.me/{{ $order->phone }}" target="_blank" class="hover:underline">{{ $order->phone ?? '-' }}</a>
+                            <a href="https://wa.me/{{ $order->phone }}" target="_blank"
+                                class="hover:underline">{{ $order->phone ?? '-' }}</a>
                         </p>
                     </div>
                     <div>

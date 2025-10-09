@@ -20,9 +20,13 @@ class SuperAdminEventsOrdersController extends SuperAdminEventsBaseController
             $q->where('event_id', $events->id);
         })
             ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
-            });
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->select('*')
+            ->selectRaw('(total_price + unique_price) as uniqueAmount');
 
         $orders = $ordersQuery->orderByDesc('created_at')->paginate(10);
         $totalOrders = $orders->total();
@@ -68,6 +72,9 @@ class SuperAdminEventsOrdersController extends SuperAdminEventsBaseController
 
         $method = 'AES-256-CBC';
         $key = env('QR_ENCRYPTION_KEY');
+
+        $uniquePrice = $order->unique_price ?? 0;
+        $order->uniqueAmount = $order->total_price + $uniquePrice;
 
         foreach ($order->attendees as $attendee) {
             $data = json_encode([
