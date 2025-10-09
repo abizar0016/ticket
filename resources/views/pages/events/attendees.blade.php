@@ -179,12 +179,12 @@
                         </tbody>
                     </table>
                 </div>
+                <!-- Pagination -->
+                <div class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-t border-gray-200 dark:border-gray-700">
+                    {{ $attendees->appends(['content' => 'attendees'])->links() }}
+                </div>
             </div>
 
-            <!-- Pagination -->
-            <div class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-t border-gray-200 dark:border-gray-700">
-                {{ $attendees->appends(['content' => 'attendees'])->links('pagination::default') }}
-            </div>
         </div>
 
         <!-- Right Sidebar (4/12 width) -->

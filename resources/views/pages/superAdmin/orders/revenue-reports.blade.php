@@ -72,7 +72,7 @@
                             <td class="px-4 py-3">{{ $loop->iteration }}</td>
                             <td class="px-4 py-3">{{ $order->event?->title }}</td>
                             <td class="px-4 py-3">{{ $order->user->name }}</td>
-                            <td class="px-4 py-3">Rp{{ number_format($order->total_price, 0, ',', '.') }}</td>
+                            <td class="px-4 py-3">Rp{{ number_format($order->uniqueAmount, 0, ',', '.') }}</td>
                             <td class="px-4 py-3">{{ $order->created_at->format('d M Y') }}</td>
                         </tr>
                     @endforeach
@@ -83,32 +83,8 @@
     </div>
 </div>
 
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const ctx = document.getElementById('revenueChart');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: @json($revenueByMonth->pluck('month')),
-            datasets: [{
-                label: 'Revenue',
-                data: @json($revenueByMonth->pluck('revenue')),
-                borderWidth: 2,
-                borderColor: 'rgb(99, 102, 241)',
-                backgroundColor: 'rgba(99, 102, 241, 0.2)',
-                fill: true,
-                tension: 0.3
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+    window.revenueReportsData = {
+        revenueByEvent: @json($revenueByEvent),
+    }
 </script>

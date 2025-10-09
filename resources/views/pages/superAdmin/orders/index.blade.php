@@ -82,7 +82,7 @@
                                 {{ $order->created_at->format('d M Y, H:i') }}
                             </td>
                             <td class="px-6 py-5 text-right">
-                                <a href="{{ route('orders.show', $order->id) }}"
+                                <a href="{{ route(Auth::user()->role === 'superadmin' ? 'superAdmin.events.orders.show' :  'admin.events.orders.show', [$order->event->id, $order->id]) }}"
                                     class="px-2 py-1 text-xs rounded-md bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 flex items-center space-x-1">
                                     <i class="ri-eye-line"></i><span>View</span>
                                 </a>

@@ -8,12 +8,22 @@ document.addEventListener("DOMContentLoaded", () => {
         performance = {},
         bestSellerEvents = {},
         reportEvents = [],
-        mostIncome = {}
+        mostIncome = {},
     } = window.dashboardData || {};
 
     const months = [
-        "Jan","Feb","Mar","Apr","May","Jun",
-        "Jul","Aug","Sep","Oct","Nov","Dec"
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
     ];
 
     /** ===== User Growth (Line Chart) ===== */
@@ -200,11 +210,42 @@ document.addEventListener("DOMContentLoaded", () => {
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            callback: (value) =>
-                                "Rp " + value.toLocaleString(),
+                            callback: (value) => "Rp " + value.toLocaleString(),
                         },
                         suggestedMax: 100,
                     },
+                },
+            },
+        });
+    }
+
+    const ctx = document.getElementById("revenueChart")?.getContext("2d");
+    const revenueData = window.revenueReportsData?.revenueByEvent || [];
+
+    if (ctx && revenueData.length > 0) {
+        const labels = revenueData.map((e) => e.title);
+        const revenues = revenueData.map((e) => e.revenue);
+
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: "Revenue per Event",
+                        data: revenues,
+                        backgroundColor: "rgba(99, 102, 241, 0.7)",
+                        borderColor: "rgb(99, 102, 241)",
+                        borderWidth: 1,
+                        borderRadius: 6,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true },
                 },
             },
         });

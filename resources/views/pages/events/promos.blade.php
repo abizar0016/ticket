@@ -233,7 +233,7 @@
                 </table>
             </div>
             <div class="px-4 py-3 sm:px-6 sm:py-4 border-t border-gray-200 dark:border-gray-700">
-                {{ $promos->appends(['content' => 'promo-codes'])->links('pagination::default') }}
+                {{ $promos->appends(['content' => 'promo-codes'])->links() }}
             </div>
         </div>
     </div>

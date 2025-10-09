@@ -159,7 +159,7 @@
 
                 <!-- Pagination -->
                 <div class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-t border-gray-200 dark:border-gray-700">
-                    {{ $orders->appends(['content' => 'orders'])->links('pagination::default') }}
+                    {{ $orders->appends(['content' => 'orders'])->links() }}
                 </div>
             </div>
         </div>
