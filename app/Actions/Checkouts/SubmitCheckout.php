@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use App\Mail\NewOrderNotification;
 
 class SubmitCheckout
 {
@@ -46,7 +48,8 @@ class SubmitCheckout
             if (! $firstProductId) {
                 throw new \Exception('No products found in checkout');
             }
-            $eventId = Product::findOrFail($firstProductId)->event_id;
+            $event = Product::findOrFail($firstProductId)->event;
+            $eventId = $event->id;
 
             $normalTotal = $this->calculateNormalTotal($checkoutData);
 
@@ -129,7 +132,7 @@ class SubmitCheckout
                 'discount_amount' => $discount,
             ]);
 
-            // HAPUS CACHE CHECKOUT DAN UNIQUE CODE
+            // 🧹 Hapus cache checkout dan unique code
             Cache::forget('checkout:'.$checkoutData['token']);
             Cache::forget($cacheKey);
             Session::forget(['checkout_token', 'checkout_data']);
@@ -141,9 +144,15 @@ class SubmitCheckout
                 'model_id' => $order->id,
             ]);
 
+            // ✉️ Kirim email ke pemilik event
+            if ($event && $event->user && $event->user->email) {
+                Mail::to($event->user->email)->send(new NewOrderNotification($order));
+            }
+
             DB::commit();
 
-            return redirect()->route('orders.show', $order->id)->with('success', 'Order created successfully!');
+            return redirect()->route('orders.show', $order->id)
+                ->with('success', 'Order created successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Checkout failed: '.$e->getMessage());
