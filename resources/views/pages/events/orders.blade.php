@@ -1,11 +1,10 @@
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-3 sm:p-4 md:p-6">
-    <!-- Dynamic Grid Layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 md:gap-8">
-        <!-- Animated Header -->
+    <div class="grid grid-cols-1 gap-4 sm:gap-6 md:gap-8">
+        <!-- Header -->
         <div
-            class="lg:col-span-12 relative overflow-hidden rounded-xl sm:rounded-2xl 
+            class="relative overflow-hidden rounded-xl sm:rounded-2xl 
             bg-gradient-to-r from-indigo-50 to-indigo-100 dark:from-gray-700 dark:to-gray-800 
-            p-4 sm:p-6 md:p-8 mb-4 sm:mb-6 md:mb-8 shadow-lg sm:shadow-xl md:shadow-2xl 
+            p-4 sm:p-6 md:p-8 shadow-lg sm:shadow-xl md:shadow-2xl 
             transition-all duration-500 hover:shadow-xl sm:hover:shadow-2xl group">
             <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 md:gap-6">
                 <div
@@ -14,9 +13,11 @@
                 </div>
                 <div>
                     <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">
-                        Event Orders</h1>
+                        Event Orders
+                    </h1>
                     <p class="text-indigo-600/80 dark:text-indigo-300/80 text-sm sm:text-base md:text-lg mt-1 sm:mt-2">
-                        Manage all event orders and payments</p>
+                        Manage all event orders and payments
+                    </p>
                 </div>
             </div>
             <div
@@ -25,9 +26,89 @@
             </div>
         </div>
 
-        <!-- Main Content (9/12 width) -->
-        <div class="lg:col-span-9">
-            <!-- Search and Filter Bar -->
+        <!-- Sidebar (Now on Top) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+            <!-- Orders Summary -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-lg sm:shadow-xl border border-gray-100 dark:border-gray-700 transition-all duration-500 hover:shadow-md sm:hover:shadow-lg hover:-translate-y-0.5 sm:hover:-translate-y-1">
+                <h3
+                    class="text-base sm:text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100 mb-2 sm:mb-3 md:mb-4 flex items-center gap-1 sm:gap-2">
+                    <i class="ri-line-chart-line text-indigo-500 text-lg sm:text-xl md:text-2xl"></i>
+                    Orders Summary
+                </h3>
+
+                <div class="space-y-3 sm:space-y-4">
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-2xs sm:text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Total Orders
+                            </span>
+                            <span
+                                class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">
+                                {{ $orders->total() }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-2xs sm:text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Paid
+                            </span>
+                            <span
+                                class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">
+                                {{ $paidOrdersCount }}
+                            </span>
+                        </div>
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
+                            <div class="bg-green-500 h-1.5 sm:h-2 rounded-full"
+                                style="width: {{ $paidPercentage }}%">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-2xs sm:text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Pending
+                            </span>
+                            <span
+                                class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">
+                                {{ $pendingOrdersCount }}
+                            </span>
+                        </div>
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
+                            <div class="bg-yellow-500 h-1.5 sm:h-2 rounded-full"
+                                style="width: {{ $pendingPercentage }}%">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revenue -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-lg sm:shadow-xl border border-gray-100 dark:border-gray-700 transition-all duration-500 hover:shadow-md sm:hover:shadow-lg hover:-translate-y-0.5 sm:hover:-translate-y-1">
+                <h3
+                    class="text-base sm:text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100 mb-2 sm:mb-3 md:mb-4 flex items-center gap-1 sm:gap-2">
+                    <i class="ri-money-dollar-circle-line text-blue-500 text-lg sm:text-xl md:text-2xl"></i>
+                    Total Revenue
+                </h3>
+
+                <div class="flex items-end gap-2">
+                    <span class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
+                        Rp {{ number_format($totalRevenue, 0, ',', '.') }}
+                    </span>
+                </div>
+                <p class="text-2xs sm:text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-1 sm:mt-2">
+                    from {{ $orders->total() }} orders
+                </p>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div>
+                       <!-- Search and Filter Bar -->
             <div
                 class="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-6 shadow-lg sm:shadow-xl border border-gray-100 dark:border-gray-700">
                 <form action="" method="GET"
@@ -160,73 +241,6 @@
                 <!-- Pagination -->
                 <div class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-t border-gray-200 dark:border-gray-700">
                     {{ $orders->appends(['content' => 'orders'])->links() }}
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Sidebar (3/12 width) -->
-        <div class="lg:col-span-3">
-            <div class="sticky top-4 sm:top-6 space-y-4 sm:space-y-6">
-                <!-- Summary Card -->
-                <div
-                    class="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-lg sm:shadow-xl border border-gray-100 dark:border-gray-700 transition-all duration-500 hover:shadow-md sm:hover:shadow-lg hover:-translate-y-0.5 sm:hover:-translate-y-1">
-                    <h3
-                        class="text-base sm:text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100 mb-2 sm:mb-3 md:mb-4 flex items-center gap-1 sm:gap-2">
-                        <i class="ri-line-chart-line text-indigo-500 text-lg sm:text-xl md:text-2xl"></i>
-                        Orders Summary
-                    </h3>
-
-                    <div class="space-y-3 sm:space-y-4">
-                        <div>
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-2xs sm:text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">Total
-                                    Orders</span>
-                                <span
-                                    class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">{{ $orders->total() }}</span>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-2xs sm:text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">Paid</span>
-                                <span
-                                    class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">{{ $paidOrdersCount }}</span>
-                            </div>
-                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
-                                <div class="bg-green-500 h-1.5 sm:h-2 rounded-full"
-                                    style="width: {{ $paidPercentage }}%"></div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-2xs sm:text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">Pending</span>
-                                <span
-                                    class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">{{ $pendingOrdersCount }}</span>
-                            </div>
-                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
-                                <div class="bg-yellow-500 h-1.5 sm:h-2 rounded-full"
-                                    style="width: {{ $pendingPercentage }}%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Revenue Card -->
-                <div
-                    class="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-lg sm:shadow-xl border border-gray-100 dark:border-gray-700 transition-all duration-500 hover:shadow-md sm:hover:shadow-lg hover:-translate-y-0.5 sm:hover:-translate-y-1">
-                    <h3
-                        class="text-base sm:text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100 mb-2 sm:mb-3 md:mb-4 flex items-center gap-1 sm:gap-2">
-                        <i class="ri-money-dollar-circle-line text-blue-500 text-lg sm:text-xl md:text-2xl"></i>
-                        Total Revenue
-                    </h3>
-
-                    <div class="flex items-end gap-2">
-                        <span class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Rp
-                            {{ number_format($totalRevenue, 0, ',', '.') }}</span>
-                    </div>
-                    <p class="text-2xs sm:text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-1 sm:mt-2">from {{ $orders->total() }}
-                        orders</p>
                 </div>
             </div>
         </div>

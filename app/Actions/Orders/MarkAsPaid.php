@@ -2,15 +2,18 @@
 
 namespace App\Actions\Orders;
 
+use App\Mail\OrderPaidConfirmationMail;
 use App\Models\Order;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\{Log, Mail, Http};
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class MarkAsPaid
 {
     public function handle(int $id): JsonResponse
     {
-        $order = Order::with(['items.product', 'attendees'])->findOrFail($id);
+        $order = Order::with(['items.product.event', 'attendees'])->findOrFail($id);
 
         if ($order->status !== 'pending') {
             return response()->json([
@@ -20,7 +23,7 @@ class MarkAsPaid
         }
 
         // ===================================================
-        // 🔹 1. Kurangi stok produk
+        // 1. Kurangi stok produk
         // ===================================================
         foreach ($order->items as $item) {
             if ($item->product && $item->product->quantity !== null) {
@@ -29,7 +32,7 @@ class MarkAsPaid
         }
 
         // ===================================================
-        // 🔹 2. Update status attendee & order
+        // 2. Update status attendee & order
         // ===================================================
         foreach ($order->attendees as $attendee) {
             $attendee->update(['status' => 'active']);
@@ -38,75 +41,62 @@ class MarkAsPaid
         $order->update(['status' => 'paid']);
 
         // ===================================================
-        // 🔹 3. Siapkan pesan utama
+        // 3. Kirim notifikasi utama ke pemesan
         // ===================================================
-        $message = "Halo, pesanan Anda dengan ID #{$order->id} telah dikonfirmasi.";
-        $whatsappLinks = [];
+        $this->sendEmailAndWhatsApp(
+            $order->email,
+            $order->phone,
+            $order,
+            $order->name ?? 'Pelanggan'
+        );
 
         // ===================================================
-        // 🔹 4. Kirim ke email & WhatsApp pemesan utama
-        // ===================================================
-        $this->sendEmail($order->email, 'Konfirmasi Pesanan Anda', $message);
-
-        if ($order->phone) {
-            $waLink = $this->sendWhatsApp($order->phone, $message);
-            $whatsappLinks[] = [
-                'recipient' => $order->phone,
-                'link' => $waLink,
-            ];
-        }
-
-        // ===================================================
-        // 🔹 5. Kirim ke semua attendee
+        // 4. Kirim notifikasi ke semua attendee
         // ===================================================
         foreach ($order->attendees as $attendee) {
-            $messageAttendee = "Halo {$attendee->name}, pesanan Anda dengan ID #{$order->id} telah dikonfirmasi.";
-
-            $this->sendEmail($attendee->email, 'Konfirmasi Pesanan Anda', $messageAttendee);
-
-            if ($attendee->phone) {
-                $waLink = $this->sendWhatsApp($attendee->phone, $messageAttendee);
-                $whatsappLinks[] = [
-                    'recipient' => $attendee->phone,
-                    'link' => $waLink,
-                ];
-            }
+            $this->sendEmailAndWhatsApp(
+                $attendee->email,
+                $attendee->phone,
+                $order,
+                $attendee->name
+            );
         }
 
-        // ===================================================
-        // 🔹 6. Response
-        // ===================================================
         return response()->json([
             'success' => true,
             'message' => 'Order marked as paid and notifications sent.',
-            'whatsapp_links' => $whatsappLinks,
         ]);
     }
 
     // ===================================================
-    // ✉️ Helper: Kirim Email
+    // ✉️ Helper: Kirim Email dan WhatsApp
     // ===================================================
-    protected function sendEmail(?string $to, string $subject, string $message): void
+    protected function sendEmailAndWhatsApp(?string $email, ?string $phone, Order $order, string $recipientName): void
     {
-        if (!$to) return;
+        // Kirim email
+        if ($email) {
+            try {
+                Mail::to($email)->send(new OrderPaidConfirmationMail($order, $recipientName));
+                Log::info("✅ Email sent to {$email}");
+            } catch (\Throwable $e) {
+                Log::error("❌ Failed sending email to {$email}: ".$e->getMessage());
+            }
+        }
 
-        try {
-            Mail::raw($message, function ($mail) use ($to, $subject) {
-                $mail->to($to)->subject($subject);
-            });
-            Log::info("✅ Email sent to {$to}");
-        } catch (\Throwable $e) {
-            Log::error("❌ Failed sending email to {$to}: " . $e->getMessage());
+        // Kirim WhatsApp
+        if ($phone) {
+            $message = "Halo {$recipientName}, pesanan Anda dengan ID #{$order->id} telah dikonfirmasi.";
+            $this->sendWhatsApp($phone, $message);
         }
     }
 
     // ===================================================
-    // 💬 Helper: Kirim WhatsApp (via API Fonnte)
+    // 💬 Helper: Kirim WhatsApp via Fonnte API
     // ===================================================
-    protected function sendWhatsApp(string $phone, string $message): string
+    protected function sendWhatsApp(string $phone, string $message): void
     {
         $normalized = $this->normalizePhone($phone);
-        $waLink = 'https://wa.me/' . $normalized . '?text=' . urlencode($message);
+        $waLink = "https://wa.me/{$normalized}?text=" . urlencode($message);
 
         Log::info("📱 WhatsApp link created: {$waLink}");
 
@@ -123,16 +113,14 @@ class MarkAsPaid
                 if ($response->successful()) {
                     Log::info("✅ WhatsApp sent via Fonnte to {$normalized}");
                 } else {
-                    Log::warning("⚠️ Fonnte response error for {$normalized}: " . $response->body());
+                    Log::warning("⚠️ Fonnte response error for {$normalized}: ".$response->body());
                 }
             } else {
-                Log::warning("⚠️ Fonnte token not set — message not sent via API.");
+                Log::warning('⚠️ Fonnte token not set — message not sent via API.');
             }
         } catch (\Throwable $th) {
-            Log::error("❌ Failed sending WhatsApp via API to {$normalized}: " . $th->getMessage());
+            Log::error("❌ Failed sending WhatsApp via API to {$normalized}: ".$th->getMessage());
         }
-
-        return $waLink;
     }
 
     // ===================================================
@@ -144,6 +132,7 @@ class MarkAsPaid
         if (str_starts_with($phone, '0')) {
             $phone = '62' . substr($phone, 1);
         }
+
         return $phone;
     }
 }

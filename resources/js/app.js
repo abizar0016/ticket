@@ -244,7 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!promoDiscountInput || !promoTypeSelect) return;
 
         const type = promoTypeSelect.value;
-        const max = type === "percentage" ? 100 : 1000000; // batas max
+        const max = type === "percentage" ? 100 : 1000000;
         if (Number(promoDiscountInput.value) > max)
             promoDiscountInput.value = max;
         if (Number(promoDiscountInput.value) < 0) promoDiscountInput.value = 0;
@@ -414,7 +414,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const manualCheckinBackdrop = document.getElementById(
         "manualCheckinBackdrop"
     );
-    const manualCheckinPanel = document.getElementById("manualCheckinPanel"); // ← perbaikan huruf besar
+    const manualCheckinPanel = document.getElementById("manualCheckinPanel");
 
     document
         .getElementById("openManualCheckinModal")
@@ -426,8 +426,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 manualCheckinBackdrop.classList.remove("opacity-0");
                 manualCheckinPanel.classList.remove(
                     "opacity-0",
-                    "translate-y-4",
-
+                    "translate-y-4"
                 );
             }, 10);
         });
@@ -436,10 +435,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .getElementById("cancelManualCheckin")
         ?.addEventListener("click", () => {
             manualCheckinBackdrop.classList.add("opacity-0");
-            manualCheckinPanel.classList.add(
-                "opacity-0",
-                "translate-y-4",
-            );
+            manualCheckinPanel.classList.add("opacity-0", "translate-y-4");
 
             setTimeout(() => {
                 manualCheckinModal.classList.add("hidden");
@@ -529,6 +525,43 @@ document.addEventListener("DOMContentLoaded", () => {
             modal.classList.add("hidden");
         }, 300);
     }
+
+    // ================== REPORTS CREATE ===============
+
+    const reportCreateModal = document.getElementById("reportEventModal");
+    const reportCreatePanel = document.getElementById("reportEventPanel");
+
+    document
+        .getElementById("openReportCreateModal")
+        ?.addEventListener("click", () => {
+            reportCreateModal.classList.remove("hidden");
+            document.body.classList.add("overflow-hidden");
+
+            setTimeout(() => {
+                reportCreatePanel.classList.remove(
+                    "opacity-0",
+                    "translate-y-4",
+                    "scale-95"
+                );
+                reportCreatePanel.classList.add(
+                    "opacity-100",
+                    "translate-y-0",
+                    "scale-100"
+                );
+            }, 10);
+        });
+
+    document
+        .getElementById("cancelReportEventModal")
+        ?.addEventListener("click", () => {
+            
+            reportCreatePanel.classList.add("opacity-0", "translate-y-4");
+
+            setTimeout(() => {
+                reportCreateModal.classList.add("hidden");
+                document.body.classList.remove("overflow-hidden");
+            }, 300);
+        });
 
     // ================== DROPDOWNS ==================
     const userMenuButton = document.getElementById("user-menu-button");

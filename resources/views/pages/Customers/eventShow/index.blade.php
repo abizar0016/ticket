@@ -93,8 +93,12 @@
                             <i class="ri-share-forward-line mr-2"></i>
                             Share
                         </button>
-                    </div>
 
+                        <button type="button" id="openReportCreateModal"
+                            class="px-8 py-3 bg-transparent hover:bg-red-500/10 text-red-300 hover:text-red-400 font-semibold rounded-lg border border-red-400/40 transition-all duration-300 transform hover:scale-105 flex items-center justify-center cursor-pointer">
+                            <i class="fas fa-flag mr-2"></i> Laporkan Event
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -194,8 +198,7 @@
                                                 </p>
                                             </div>
                                             <div class="text-left sm:text-right mt-3 sm:mt-0">
-                                                <p
-                                                    class="text-lg md:text-xl font-bold text-primary-600 dark:text-white">
+                                                <p class="text-lg md:text-xl font-bold text-primary-600 dark:text-white">
                                                     Rp {{ number_format($ticket->price, 0, ',', '.') }}
                                                 </p>
                                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -456,6 +459,8 @@
             </div>
         </div>
     </section>
+
+    @include('modals.reports.Customers.createReports')
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

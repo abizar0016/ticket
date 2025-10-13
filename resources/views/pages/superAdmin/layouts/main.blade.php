@@ -70,6 +70,10 @@
         @include('pages.superAdmin.customers-reports.index')
     @break
 
+    @case('activity')
+        @include('pages.superAdmin.activity.index')
+    @break
+
     @default
         @include('pages.superAdmin.dashboard.index')
 @endswitch
