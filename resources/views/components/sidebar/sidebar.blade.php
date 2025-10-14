@@ -1,7 +1,7 @@
 <!-- Toggle Button (Mobile Only) -->
 <button id="sidebarToggle"
     class="fixed left-0 top-1/2 -translate-y-1/2 z-50 flex items-center justify-center
-           w-10 h-16 bg-indigo-600 text-white rounded-r-xl shadow-lg md:hidden transition-all duration-300">
+           w-7 h-12 bg-indigo-600 text-white rounded-r-xl shadow-lg md:hidden transition-all duration-300">
     <i id="sidebarToggleIcon" class="ri-arrow-right-s-line text-2xl"></i>
 </button>
 
