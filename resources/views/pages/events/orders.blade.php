@@ -12,7 +12,8 @@
                     <i class="ri-shopping-cart-line text-xl sm:text-2xl md:text-3xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">
+                    <h1
+                        class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">
                         Event Orders
                     </h1>
                     <p class="text-indigo-600/80 dark:text-indigo-300/80 text-sm sm:text-base md:text-lg mt-1 sm:mt-2">
@@ -43,8 +44,7 @@
                             <span class="text-2xs sm:text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Total Orders
                             </span>
-                            <span
-                                class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">
+                            <span class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">
                                 {{ $orders->total() }}
                             </span>
                         </div>
@@ -55,14 +55,12 @@
                             <span class="text-2xs sm:text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Paid
                             </span>
-                            <span
-                                class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">
+                            <span class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">
                                 {{ $paidOrdersCount }}
                             </span>
                         </div>
                         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
-                            <div class="bg-green-500 h-1.5 sm:h-2 rounded-full"
-                                style="width: {{ $paidPercentage }}%">
+                            <div class="bg-green-500 h-1.5 sm:h-2 rounded-full" style="width: {{ $paidPercentage }}%">
                             </div>
                         </div>
                     </div>
@@ -72,8 +70,7 @@
                             <span class="text-2xs sm:text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Pending
                             </span>
-                            <span
-                                class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">
+                            <span class="text-2xs sm:text-xs md:text-sm font-bold text-gray-900 dark:text-gray-100">
                                 {{ $pendingOrdersCount }}
                             </span>
                         </div>
@@ -108,7 +105,7 @@
 
         <!-- Main Content -->
         <div>
-                       <!-- Search and Filter Bar -->
+            <!-- Search and Filter Bar -->
             <div
                 class="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-6 shadow-lg sm:shadow-xl border border-gray-100 dark:border-gray-700">
                 <form action="" method="GET"
@@ -135,87 +132,89 @@
             <!-- Orders Table -->
             <div
                 class="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
-                <div class="overflow-x-auto">
+
+                <!-- Desktop Table -->
+                <div class="hidden md:block overflow-x-auto">
                     <table class="w-full min-w-[600px]">
                         <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
                             <tr>
-                                <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                <th
+                                    class="px-4 py-3 text-left text-sm font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Order</th>
-                                <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                <th
+                                    class="px-4 py-3 text-left text-sm font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Customer</th>
-                                <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                <th
+                                    class="px-4 py-3 text-left text-sm font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Date & Time</th>
-                                <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                <th
+                                    class="px-4 py-3 text-left text-sm font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Status</th>
-                                <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                <th
+                                    class="px-4 py-3 text-left text-sm font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Amount</th>
-                                <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-right text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                <th
+                                    class="px-4 py-3 text-right text-sm font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                             @forelse($orders as $order)
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
-                                    <td
-                                        class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap text-gray-900 dark:text-gray-100 font-medium text-xs sm:text-sm">
-                                        #{{ $loop->iteration }}
-                                    </td>
-                                    <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
-                                        <div class="flex items-center gap-2 sm:gap-3">
+                                    <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
+                                        #{{ $loop->iteration }}</td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center gap-3">
                                             <div
-                                                class="flex-shrink-0 h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 rounded-full bg-gradient-to-r from-indigo-400 to-indigo-500 flex items-center justify-center text-white font-medium sm:font-bold text-xs sm:text-sm">
+                                                class="flex-shrink-0 h-9 w-9 rounded-full bg-gradient-to-r from-indigo-400 to-indigo-500 flex items-center justify-center text-white font-semibold text-sm">
                                                 {{ substr($order->name, 0, 1) }}{{ substr(strstr($order->name, ' '), 1, 1) ?? '' }}
                                             </div>
                                             <div>
-                                                <div
-                                                    class="font-medium text-gray-900 dark:text-gray-100 text-xs sm:text-sm md:text-base">
+                                                <div class="font-medium text-gray-900 dark:text-gray-100">
                                                     {{ $order->name }}</div>
-                                                <div class="text-gray-500 dark:text-gray-400 text-2xs sm:text-xs">
+                                                <div class="text-gray-500 dark:text-gray-400 text-xs">
                                                     {{ $order->email }}</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
-                                        <div class="text-gray-900 dark:text-gray-100 text-xs sm:text-sm">
-                                            {{ $order->created_at->format('M d, Y') }}</div>
-                                        <div class="text-gray-500 dark:text-gray-400 text-2xs sm:text-xs">
-                                            {{ $order->created_at->format('h:i A') }}</div>
+                                    <td class="px-4 py-3 text-sm text-gray-800 dark:text-gray-100">
+                                        {{ $order->created_at->format('M d, Y') }} <br>
+                                        <span
+                                            class="text-gray-500 dark:text-gray-400 text-xs">{{ $order->created_at->format('h:i A') }}</span>
                                     </td>
-                                    <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
+                                    <td class="px-4 py-3">
                                         @if ($order->status === 'paid')
                                             <span
-                                                class="px-2 py-1 text-2xs sm:text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 font-medium flex items-center gap-1 w-fit">
-                                                <i class="ri-checkbox-circle-line text-xs sm:text-sm"></i> Paid
+                                                class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 font-medium flex items-center gap-1 w-fit">
+                                                <i class="ri-checkbox-circle-line"></i> Paid
                                             </span>
                                         @else
                                             <span
-                                                class="px-2 py-1 text-2xs sm:text-xs rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 font-medium flex items-center gap-1 w-fit">
-                                                <i class="ri-time-line text-xs sm:text-sm"></i> Pending
+                                                class="px-2 py-1 text-xs rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 font-medium flex items-center gap-1 w-fit">
+                                                <i class="ri-time-line"></i> Pending
                                             </span>
                                         @endif
                                     </td>
-                                    <td
-                                        class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap text-gray-900 dark:text-gray-100 font-medium text-xs sm:text-sm">
+                                    <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
                                         Rp {{ number_format($order->uniqueAmount, 0, ',', '.') }}
                                     </td>
-                                    <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap text-right">
-                                        <div class="flex justify-end items-center gap-1 sm:gap-2">
-                                            <a href="{{ route(Auth::user()->role === 'superadmin' ? 'superAdmin.events.orders.show' :  'admin.events.orders.show', [$events->id, $order->id]) }}"
-                                                class="p-1 sm:p-1.5 md:p-2 text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
+                                    <td class="px-4 py-3 text-right">
+                                        <div class="flex justify-end items-center gap-2">
+                                            <a href="{{ route(Auth::user()->role === 'superadmin' ? 'superAdmin.events.orders.show' : 'admin.events.orders.show', [$events->id, $order->id]) }}"
+                                                class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
                                                 title="View Details">
-                                                <i class="ri-eye-line text-base sm:text-lg md:text-xl"></i>
+                                                <i class="ri-eye-line text-lg"></i>
                                             </a>
-                                            <form id="delete-order-{{ $order->id }}"
-                                                class="ajax-form"
+                                            <form id="delete-order-{{ $order->id }}" class="ajax-form"
                                                 data-success="Deleted successfully."
                                                 data-confirm="Are you sure you want to delete this order?"
                                                 action="{{ route('orders.destroy', $order->id) }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
-                                                    class="p-1 sm:p-1.5 md:p-2 text-gray-600 dark:text-gray-300 hover:text-red-600 transition cursor-pointer"
+                                                    class="text-gray-600 dark:text-gray-300 hover:text-red-600 transition cursor-pointer"
                                                     title="Delete">
-                                                    <i class="ri-delete-bin-line text-base sm:text-lg md:text-xl"></i>
+                                                    <i class="ri-delete-bin-line text-lg"></i>
                                                 </button>
                                             </form>
                                         </div>
@@ -223,26 +222,80 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-4 sm:px-6 py-6 text-center">
-                                        <div
-                                            class="flex flex-col items-center justify-center gap-2 sm:gap-3 text-gray-400 dark:text-gray-500">
-                                            <i class="ri-shopping-cart-line text-2xl sm:text-3xl md:text-4xl"></i>
-                                            <p class="text-sm sm:text-base md:text-lg">No orders found</p>
-                                            <p class="text-2xs sm:text-xs md:text-sm">Try adjusting your search or
-                                                filters</p>
-                                        </div>
-                                    </td>
+                                    <td colspan="6" class="py-6 text-center text-gray-400 dark:text-gray-500">No
+                                        orders found</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
 
+                <!-- Mobile Cards -->
+                <div class="block md:hidden divide-y divide-gray-200 dark:divide-gray-700">
+                    @forelse($orders as $order)
+                        <div
+                            class="p-4 flex flex-col gap-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-400 to-indigo-500 flex items-center justify-center text-white font-semibold">
+                                        {{ substr($order->name, 0, 1) }}{{ substr(strstr($order->name, ' '), 1, 1) ?? '' }}
+                                    </div>
+                                    <div>
+                                        <h3 class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                                            {{ $order->name }}</h3>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $order->email }}</p>
+                                    </div>
+                                </div>
+                                @if ($order->status === 'paid')
+                                    <span
+                                        class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 font-medium">
+                                        Paid
+                                    </span>
+                                @else
+                                    <span
+                                        class="px-2 py-1 text-xs rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 font-medium">
+                                        Pending
+                                    </span>
+                                @endif
+                            </div>
+
+                            <div class="flex justify-between text-xs text-gray-600 dark:text-gray-300">
+                                <span>{{ $order->created_at->format('d M Y, H:i') }}</span>
+                                <span class="font-semibold">Rp
+                                    {{ number_format($order->uniqueAmount, 0, ',', '.') }}</span>
+                            </div>
+
+                            <div class="flex justify-end gap-2">
+                                <a href="{{ route(Auth::user()->role === 'superadmin' ? 'superAdmin.events.orders.show' : 'admin.events.orders.show', [$events->id, $order->id]) }}"
+                                    class="p-1.5 text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 transition"
+                                    title="View">
+                                    <i class="ri-eye-line text-lg"></i>
+                                </a>
+                                <form id="delete-order-mobile-{{ $order->id }}" class="ajax-form"
+                                    data-success="Deleted successfully."
+                                    data-confirm="Are you sure you want to delete this order?"
+                                    action="{{ route('orders.destroy', $order->id) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="p-1.5 text-red-500 hover:text-red-700 transition"
+                                        title="Delete">
+                                        <i class="ri-delete-bin-line text-lg"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="p-6 text-center text-gray-400 dark:text-gray-500">No orders found</div>
+                    @endforelse
+                </div>
+
                 <!-- Pagination -->
-                <div class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-t border-gray-200 dark:border-gray-700">
+                <div class="px-4 py-4 border-t border-gray-200 dark:border-gray-700">
                     {{ $orders->appends(['content' => 'orders'])->links() }}
                 </div>
             </div>
+
         </div>
     </div>
 </div>
