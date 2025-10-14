@@ -57,7 +57,7 @@ class UpdateProduct
 
         Activity::create([
             'user_id' => Auth::id(),
-            'action' => 'update product',
+            'action' => 'Update',
             'model_type' => 'Product',
             'model_id' => $product->id,
         ]);

@@ -20,7 +20,7 @@ class DeletePromo
 
             Activity::create([
                 'user_id' => Auth::id(),
-                'action' => 'delete promo',
+                'action' => 'Delete',
                 'model_type' => 'Promo',
                 'model_id' => $id,
             ]);

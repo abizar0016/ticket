@@ -3,8 +3,10 @@
 namespace App\Actions\Orders;
 
 use App\Mail\OrderPaidConfirmationMail;
+use App\Models\Activity;
 use App\Models\Order;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -87,6 +89,13 @@ class MarkAsPaid
             }
         }
         $sentContacts[] = $contactKey;
+
+        Activity::create([
+            'user_id'    => Auth::id(),
+            'action'     => 'Mark as Paid',
+            'model_type' => 'Order',
+            'model_id'   => $order->id,
+        ]);
 
         return response()->json([
             'success' => true,

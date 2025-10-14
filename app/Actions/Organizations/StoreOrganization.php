@@ -2,6 +2,7 @@
 
 namespace App\Actions\Organizations;
 
+use App\Models\Activity;
 use App\Models\Organization;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,6 +40,13 @@ class StoreOrganization
 
             $user->organization_id = $organization->id;
             $user->save();
+
+            Activity::create([
+                'user_id' => Auth::id(),
+                'action' => 'Create',
+                'model_type' => 'Organization',
+                'model_id' => $organization->id,
+        ]);;
 
             return response()->json([
                 'success' => true,

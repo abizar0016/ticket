@@ -139,7 +139,7 @@ class SubmitCheckout
 
             Activity::create([
                 'user_id' => Auth::id(),
-                'action' => 'checkout',
+                'action' => 'Checkout',
                 'model_type' => 'Order',
                 'model_id' => $order->id,
             ]);

@@ -38,7 +38,7 @@ class UploadPaymentProof
             // Buat aktivitas user
             Activity::create([
                 'user_id' => $user->id,
-                'action' => 'upload payment proof',
+                'action' => 'Upload payment proof',
                 'model_type' => 'Order',
                 'model_id' => $order->id,
             ]);

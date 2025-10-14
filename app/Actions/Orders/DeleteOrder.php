@@ -22,7 +22,7 @@ class DeleteOrder
 
         Activity::create([
             'user_id' => Auth::id(),
-            'action' => 'delete order',
+            'action' => 'Delete',
             'model_type' => 'Order',
             'model_id' => $order->id,
         ]);

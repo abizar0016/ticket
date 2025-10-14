@@ -36,7 +36,7 @@ class DeleteProduct
 
             Activity::create([
                 'user_id' => Auth::id(),
-                'action' => 'delete product',
+                'action' => 'Delete',
                 'model_type' => 'Product',
                 'model_id' => $product->id,
             ]);

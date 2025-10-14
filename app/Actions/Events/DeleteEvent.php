@@ -28,7 +28,7 @@ class DeleteEvent
 
         Activity::create([
             'user_id'    => Auth::id(),
-            'action'     => 'delete event',
+            'action'     => 'Delete',
             'model_type' => 'Event',
             'model_id'   => $id,
         ]);

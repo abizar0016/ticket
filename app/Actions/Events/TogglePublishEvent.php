@@ -32,7 +32,7 @@ class TogglePublishEvent
 
             Activity::create([
                 'user_id'    => Auth::id(),
-                'action'     => 'publish event',
+                'action'     => 'Publish',
                 'model_type' => 'Event',
                 'model_id'   => $event->id,
             ]);

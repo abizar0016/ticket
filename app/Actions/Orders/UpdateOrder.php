@@ -32,7 +32,7 @@ class UpdateOrder
 
         Activity::create([
             'user_id' => Auth::id(),
-            'action' => 'update order',
+            'action' => 'Update',
             'model_type' => 'Order',
             'model_id' => $order->id,
         ]);

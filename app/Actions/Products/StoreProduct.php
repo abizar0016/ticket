@@ -53,7 +53,7 @@ class StoreProduct
 
         Activity::create([
             'user_id' => Auth::id(),
-            'action' => 'create product',
+            'action' => 'Create',
             'model_type' => 'Product',
             'model_id' => $product->id,
         ]);

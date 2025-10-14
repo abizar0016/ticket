@@ -19,7 +19,7 @@ class CreateCategory
 
         Activity::create([
             'user_id' => Auth::id(),
-            'action' => 'created category',
+            'action' => 'Create',
             'model_type' => 'Category',
             'model_id' => $category->id,
         ]);

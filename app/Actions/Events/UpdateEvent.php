@@ -89,7 +89,7 @@ class UpdateEvent
 
             Activity::create([
                 'user_id'    => Auth::id(),
-                'action'     => 'update event',
+                'action'     => 'Update',
                 'model_type' => 'Event',
                 'model_id'   => $events->id,
             ]);

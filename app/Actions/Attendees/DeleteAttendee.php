@@ -14,7 +14,7 @@ class DeleteAttendee
 
         Activity::create([
             'user_id'    => Auth::id(),
-            'action'     => 'delete attendee',
+            'action'     => 'Delete',
             'model_type' => 'Attendee',
             'model_id'   => $attendee->id,
         ]);

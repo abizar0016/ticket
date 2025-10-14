@@ -67,7 +67,7 @@ public function handle(Request $request)
 
         Activity::create([
             'user_id'    => Auth::id(),
-            'action'     => 'checkin',
+            'action'     => 'Checkin',
             'model_type' => 'Checkin',
             'model_id'   => $checkin->id
         ]);

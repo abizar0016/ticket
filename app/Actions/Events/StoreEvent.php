@@ -56,7 +56,7 @@ class StoreEvent
 
         Activity::create([
             'user_id'    => Auth::id(),
-            'action'     => 'create event',
+            'action'     => 'Create',
             'model_type' => 'Event',
             'model_id'   => $event->id,
         ]);

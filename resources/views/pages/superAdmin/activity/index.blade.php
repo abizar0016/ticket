@@ -1,6 +1,3 @@
-@extends('layouts.app')
-
-@section('content')
 <div class="max-w-6xl mx-auto px-4 py-8">
     <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 flex items-center gap-2">
         <i class="ri-history-line text-indigo-500 text-3xl"></i>
@@ -9,9 +6,8 @@
 
     <!-- Search -->
     <form method="GET" action="{{ route('superAdmin.activities') }}" class="mb-6">
-        <input type="text" name="search" placeholder="Cari aktivitas..."
-               value="{{ request('search') }}"
-               class="w-full sm:w-80 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
+        <input type="text" name="search" placeholder="Cari aktivitas..." value="{{ request('search') }}"
+            class="w-full sm:w-80 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
     </form>
 
     <!-- Table -->
@@ -27,7 +23,8 @@
             </thead>
             <tbody>
                 @forelse ($activities as $activity)
-                    <tr class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                    <tr
+                        class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
                         <td class="py-3 px-4">
                             <div class="flex items-center gap-2">
                                 <i class="ri-user-line text-indigo-500"></i>
@@ -42,11 +39,11 @@
                         <td class="py-3 px-4 text-gray-600 dark:text-gray-400">
                             {{ $activity->created_at->diffForHumans() }}
                         </td>
-                        <td class="py-3 px-4">
+                        <td class="px-6 py-5 text-center">
                             @if ($activity->link)
                                 <a href="{{ $activity->link }}"
-                                   class="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 transition">
-                                   <i class="ri-external-link-line"></i> Lihat
+                                    class="px-2 py-1 text-xs rounded-md bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 flex items-center justify-center space-x-1">
+                                    <i class="ri-eye-line"></i><span>View</span>
                                 </a>
                             @else
                                 <span class="text-gray-400 italic">-</span>
@@ -68,4 +65,3 @@
         {{ $activities->links() }}
     </div>
 </div>
-@endsection

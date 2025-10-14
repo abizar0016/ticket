@@ -146,7 +146,7 @@ class AuthController extends Controller
 
         Activity::create([
             'user_id' => $user->id,
-            'action' => 'register',
+            'action' => 'Register',
             'model_type' => 'User',
             'model_id' => $user->id,
         ]);

@@ -44,7 +44,7 @@ class UpdatePromo
 
                 Activity::create([
                     'user_id' => Auth::id(),
-                    'action' => 'update promo',
+                    'action' => 'Update',
                     'model_type' => 'Promo',
                     'model_id' => $promo->id,
                 ]);

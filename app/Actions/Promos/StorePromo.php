@@ -40,7 +40,7 @@ class StorePromo
 
                 Activity::create([
                     'user_id' => Auth::id(),
-                    'action' => 'create promo',
+                    'action' => 'Create',
                     'model_type' => 'Promo',
                     'model_id' => $promo->id,
                 ]);

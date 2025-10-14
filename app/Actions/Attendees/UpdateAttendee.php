@@ -35,7 +35,7 @@ class UpdateAttendee
 
         Activity::create([
             'user_id'    => Auth::id(),
-            'action'     => 'update attendee',
+            'action'     => 'Update',
             'model_type' => 'Attendee',
             'model_id'   => $attendee->id,
         ]);
