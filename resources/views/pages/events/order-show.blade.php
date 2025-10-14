@@ -298,7 +298,7 @@
                                 action="{{ route('orders.mark-as-paid', $order->id) }}" method="POST">
                                 @csrf
                                 <button type="submit"
-                                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-medium transition duration-200">
+                                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-medium transition duration-200 cursor-pointer">
                                     Mark as Paid
                                 </button>
                             </form>
@@ -309,7 +309,7 @@
                                 action="{{ route('orders.mark-as-pending', $order->id) }}" method="POST">
                                 @csrf
                                 <button type="submit"
-                                    class="w-full bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-4 rounded-lg font-medium transition duration-200">
+                                    class="w-full bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-4 rounded-lg font-medium transition duration-200 cursor-pointer">
                                     Mark as Pending
                                 </button>
                             </form>

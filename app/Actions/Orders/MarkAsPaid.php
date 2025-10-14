@@ -53,14 +53,40 @@ class MarkAsPaid
         // ===================================================
         // 4. Kirim notifikasi ke semua attendee
         // ===================================================
+        $sentContacts = [];
+
+        // Tambahkan kontak pemesan ke daftar agar tidak dikirim dua kali
+        if ($order->email) {
+            $sentContacts[] = $order->email;
+        }
+        if ($order->phone) {
+            $sentContacts[] = $order->phone;
+        }
+
         foreach ($order->attendees as $attendee) {
+            $contactKey = $attendee->email ?: $attendee->phone;
+
+            // Skip jika email/phone sudah pernah dikirim
+            if (in_array($contactKey, $sentContacts, true)) {
+                continue;
+            }
+
             $this->sendEmailAndWhatsApp(
                 $attendee->email,
                 $attendee->phone,
                 $order,
                 $attendee->name
             );
+
+            // Simpan email & phone agar tidak dikirim ulang
+            if ($attendee->email) {
+                $sentContacts[] = $attendee->email;
+            }
+            if ($attendee->phone) {
+                $sentContacts[] = $attendee->phone;
+            }
         }
+        $sentContacts[] = $contactKey;
 
         return response()->json([
             'success' => true,
@@ -96,7 +122,7 @@ class MarkAsPaid
     protected function sendWhatsApp(string $phone, string $message): void
     {
         $normalized = $this->normalizePhone($phone);
-        $waLink = "https://wa.me/{$normalized}?text=" . urlencode($message);
+        $waLink = "https://wa.me/{$normalized}?text=".urlencode($message);
 
         Log::info("📱 WhatsApp link created: {$waLink}");
 
@@ -130,7 +156,7 @@ class MarkAsPaid
     {
         $phone = preg_replace('/[^0-9]/', '', $phone);
         if (str_starts_with($phone, '0')) {
-            $phone = '62' . substr($phone, 1);
+            $phone = '62'.substr($phone, 1);
         }
 
         return $phone;
