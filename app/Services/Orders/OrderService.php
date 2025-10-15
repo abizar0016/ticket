@@ -4,6 +4,7 @@ namespace App\Services\Orders;
 
 use App\Actions\Orders\MarkAsPaid;
 use App\Actions\Orders\MarkAsPending;
+use App\Actions\Orders\MarkAsExpired;
 use App\Actions\Orders\UpdateOrder;
 use App\Actions\Orders\DeleteOrder;
 use Illuminate\Http\Request;
@@ -19,6 +20,11 @@ class OrderService
     public function markAsPending(int $id): JsonResponse
     {
         return (new MarkAsPending())->handle($id);
+    }
+
+    public function markAsExpired(int $id): JsonResponse
+    {
+        return (new MarkAsExpired())->handle($id);
     }
 
     public function update(Request $request, int $id): JsonResponse

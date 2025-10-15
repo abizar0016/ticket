@@ -20,6 +20,11 @@ class OrdersController extends Controller
         return $this->service->markAsPending($id);
     }
 
+    public function markAsExpired($id)
+    {
+        return $this->service->markAsExpired($id);
+    }
+
     public function update(Request $request, $id)
     {
         return $this->service->update($request, $id);

@@ -17,13 +17,6 @@ class MarkAsPaid
     {
         $order = Order::with(['items.product.event', 'attendees'])->findOrFail($id);
 
-        if ($order->status !== 'pending') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Order is not in pending status.',
-            ], 400);
-        }
-
         // ===================================================
         // 1. Kurangi stok produk
         // ===================================================

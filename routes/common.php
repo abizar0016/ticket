@@ -21,6 +21,7 @@ Route::delete('/attendees/{id}/destroy', [AttendeesController::class, 'delete'])
 
 Route::post('/order/{id}/mark-as-paid', [OrdersController::class, 'markAsPaid'])->name('orders.mark-as-paid');
 Route::post('/order/{id}/mark-as-pending', [OrdersController::class, 'markAsPending'])->name('orders.mark-as-pending');
+Route::post('/order/{id}/mark-as-expired', [OrdersController::class, 'markAsExpired'])->name('orders.mark-as-expired');
 Route::put('/order/{id}/update', [OrdersController::class, 'update'])->name('orders.update');
 Route::delete('/order/{id}/destroy', [OrdersController::class, 'destroy'])->name('orders.destroy');
 

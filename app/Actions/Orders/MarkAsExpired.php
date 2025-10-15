@@ -5,27 +5,28 @@ namespace App\Actions\Orders;
 use App\Models\Order;
 use Illuminate\Http\JsonResponse;
 
-class MarkAsPending
+class MarkAsExpired
 {
     public function handle(int $id): JsonResponse
     {
         $order = Order::with(['items.product', 'attendees'])->findOrFail($id);
 
-        foreach ($order->items as $item) {
-            if ($item->product->quantity !== null) {
-                $item->product->increment('quantity', $item->quantity);
-            }
+        if ($order->status === 'expired') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order is already expired.',
+            ], 400);
         }
 
         foreach ($order->attendees as $attendee) {
-            $attendee->update(['status' => 'pending']);
+            $attendee->update(['status' => 'expired']);
         }
 
-        $order->update(['status' => 'pending']);
+        $order->update(['status' => 'expired']);
 
         return response()->json([
             'success' => true,
-            'message' => 'Order marked as pending.',
+            'message' => 'Order marked as expired.',
         ]);
     }
 }

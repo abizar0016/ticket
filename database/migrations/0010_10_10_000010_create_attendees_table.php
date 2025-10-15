@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->foreignId('event_id')->constrained()->cascadeOnDelete();
             $table->string('ticket_code')->nullable();
-            $table->enum('status' , ['active', 'pending', 'used'])->default('pending');
+            $table->enum('status' , ['active', 'pending', 'used', 'expired'])->default('pending');
             $table->timestamps();
         });
     }

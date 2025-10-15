@@ -550,17 +550,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
             }, 10);
         });
-
+        
     document
-        .getElementById("cancelReportEventModal")
+        .getElementById("cancleReportEventModal")
         ?.addEventListener("click", () => {
-            
-            reportCreatePanel.classList.add("opacity-0", "translate-y-4");
+            reportCreateModal.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
 
             setTimeout(() => {
-                reportCreateModal.classList.add("hidden");
-                document.body.classList.remove("overflow-hidden");
-            }, 300);
+                reportCreatePanel.classList.add(
+                    "opacity-0",
+                    "translate-y-4",
+                    "scale-95"
+                );
+                reportCreatePanel.classList.remove(
+                    "opacity-100",
+                    "translate-y-0",
+                    "scale-100"
+                );
+            }, 10);
         });
 
     // ================== DROPDOWNS ==================

@@ -30,9 +30,13 @@
                     </div>
                     <span
                         class="px-3 py-1 rounded-full text-sm font-medium 
-                        @if ($order->status === 'paid') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 
+                        @if ($order->status === 'paid')
+                        bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 
+                        @elseif ($order->status === 'expired')
+                        bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
                         @else
-                        bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 @endif">
+                        bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                        @endif">
                         {{ ucfirst($order->status) }}
                     </span>
                 </div>
@@ -199,6 +203,9 @@
                                         @elseif($attendee->status === 'active')
                                             <span
                                                 class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 font-medium">Active</span>
+                                        @elseif ($attendee->status === 'expired')
+                                            <span
+                                                class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 font-medium">Expired</span>
                                         @else
                                             <span
                                                 class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 font-medium">Pending</span>
@@ -276,7 +283,14 @@
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600 dark:text-gray-300">Status</span>
                         <span
-                            class="font-medium @if ($order->status === 'paid') text-green-600 dark:text-green-400 @else text-yellow-600 dark:text-yellow-400 @endif">
+                            class="font-medium 
+                            @if ($order->status === 'paid')
+                            text-green-600 dark:text-green-400 
+                            @elseif ($order->status === 'expired')
+                            text-red-600 dark:text-red-400
+                            @else
+                            text-yellow-600 dark:text-yellow-400
+                            @endif">
                             {{ ucfirst($order->status) }}
                         </span>
                     </div>
@@ -289,9 +303,9 @@
                             </span>
                         </div>
                     @endif
-
                     <div class="pt-4">
                         @if ($order->status === 'pending')
+                            {{-- Tombol Mark as Paid --}}
                             <form id="mark-as-paid-{{ $order->id }}" class="ajax-form"
                                 data-success="Order marked as paid successfully."
                                 data-confirm="Are you sure you want to mark this order as paid?"
@@ -302,7 +316,20 @@
                                     Mark as Paid
                                 </button>
                             </form>
-                        @else
+
+                            {{-- Tombol Mark as Expired --}}
+                            <form id="mark-as-expired-{{ $order->id }}" class="ajax-form mt-2"
+                                data-success="Order marked as expired successfully."
+                                data-confirm="Are you sure you want to mark this order as expired?"
+                                action="{{ route('orders.mark-as-expired', $order->id) }}" method="POST">
+                                @csrf
+                                <button type="submit"
+                                    class="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg font-medium transition duration-200 cursor-pointer">
+                                    Mark as Expired
+                                </button>
+                            </form>
+                        @elseif ($order->status === 'paid')
+                            {{-- Tombol Mark as Pending --}}
                             <form id="mark-as-pending-{{ $order->id }}" class="ajax-form"
                                 data-success="Order marked as pending successfully."
                                 data-confirm="Are you sure you want to mark this order as pending?"
@@ -315,6 +342,8 @@
                             </form>
                         @endif
                     </div>
+
+
                 </div>
             </div>
 
