@@ -174,6 +174,11 @@
                                             <i class="ri-checkbox-circle-line text-xs sm:text-sm"></i> <span
                                                 class="hidden sm:inline">Used</span>
                                         </span>
+                                    @elseif($attendee->status === 'expired')
+                                        <span
+                                            class="px-2 py-1 text-xs rounded-full bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 font-medium flex items-center gap-1 w-fit">
+                                            <i class="ri-close-line"></i> Expired
+                                        </span>
                                     @else
                                         <span
                                             class="px-1.5 sm:px-2 py-0.5 sm:py-1 text-2xs sm:text-xs rounded-full bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 font-medium flex items-center gap-1 w-fit">
