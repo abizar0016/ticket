@@ -213,15 +213,29 @@
                                 <div class="text-gray-500 text-xs">{{ $attendee->ticket_type }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
+                                @php
+                                    $checkedToday = $attendee->checked_today ?? false;
+                                @endphp
+
                                 @if ($attendee->status === 'used')
                                     <span
                                         class="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-300">
                                         <i class="ri-checkbox-circle-line mr-1"></i> Checked In
                                     </span>
+                                @elseif ($attendee->status === 'active' && $checkedToday)
+                                    <span
+                                        class="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-300">
+                                        <i class="ri-checkbox-circle-line mr-1"></i> Active (Checked In Today)
+                                    </span>
                                 @elseif ($attendee->status === 'active')
                                     <span
                                         class="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-300">
                                         <i class="ri-checkbox-circle-line mr-1"></i> Active
+                                    </span>
+                                @elseif ($attendee->status === 'expired')
+                                    <span
+                                        class="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-300">
+                                        <i class="ri-close-line mr-1"></i> Expired
                                     </span>
                                 @else
                                     <span
@@ -230,6 +244,7 @@
                                     </span>
                                 @endif
                             </td>
+
                             <td
                                 class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end gap-2">
                                 <button id="view-checkins-btn"
@@ -264,7 +279,8 @@
 @include('modals.checkins.manual')
 @include('modals.checkins.view')
 
-<form action="{{ route('checkins.process') }}" data-success="Checked in successfully." method="POST" class="ajax-form hidden" id="checkin-form">
+<form action="{{ route('checkins.process') }}" data-success="Checked in successfully." method="POST"
+    class="ajax-form hidden" id="checkin-form">
     @csrf
     <input type="hidden" name="ticket_code" id="ticket-code-input">
 </form>
@@ -336,7 +352,10 @@
 
         scanSound.play().catch(() => {});
 
-        form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+        form.dispatchEvent(new Event('submit', {
+            bubbles: true,
+            cancelable: true
+        }));
 
         setTimeout(() => {
             video.classList.remove('border-green-500');
@@ -361,4 +380,3 @@
         failSound.play().catch(() => {});
     });
 </script>
-

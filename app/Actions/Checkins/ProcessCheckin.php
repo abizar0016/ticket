@@ -26,11 +26,20 @@ public function handle(Request $request)
             ], 404);
         }
 
+        // 🚫 Jika order belum dibayar
         if ($attendee->status === 'pending' && $attendee->order->status !== 'paid') {
             return response()->json([
                 'success' => false,
                 'message' => 'Tiket ini belum dibayar.'
             ], 403);
+        }
+
+        // 🕒 Tambahkan kondisi expired di sini
+        if ($attendee->order->status === 'expired') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tiket ini sudah kedaluwarsa dan tidak dapat digunakan.'
+            ], 410);
         }
 
         $product = $attendee->product;
@@ -43,6 +52,7 @@ public function handle(Request $request)
 
         $scanMode = strtolower($product->scan_mode ?? 'single');
 
+        // 🔄 Cek kalau tiket mode single dan sudah pernah check-in
         if ($scanMode === 'single') {
             if ($existing = Checkin::where('attendee_id', $attendee->id)->first()) {
                 return response()->json([
@@ -53,6 +63,7 @@ public function handle(Request $request)
             }
         }
 
+        // ✅ Buat record check-in baru
         $checkin = Checkin::create([
             'event_id'    => $attendee->event_id,
             'attendee_id' => $attendee->id,
@@ -87,4 +98,5 @@ public function handle(Request $request)
         ], 500);
     }
 }
+
 }

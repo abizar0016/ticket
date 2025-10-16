@@ -15,6 +15,7 @@ class Attendee extends Model
         'phone',
         'ticket_type',
         'ticket_code',
+        'url_qrcode',
         'status',
     ];
 

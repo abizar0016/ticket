@@ -4,7 +4,7 @@
         class="fixed inset-0 bg-gray-900/70 backdrop-blur-sm transition-opacity duration-300"></div>
 
     <div id="modalAddCategoryPanel"
-        class="relative  bg-white dark:bg-gray-800 rounded-2xl shadow-2xl transform transition-all duration-300 w-full max-w-lg max-h-[90vh] overflow-y-auto translate-y-4 scale-95 border border-gray-100">
+        class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl transform transition-all duration-300 w-full max-w-lg max-h-[90vh] overflow-y-auto translate-y-4 scale-95 border border-gray-100 dark:border-gray-600">
 
         <div class="sticky top-0 px-6 pt-5 pb-2 border-b border-gray-100 dark:border-gray-600 z-10">
             <div class="flex items-start justify-between">
@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        <form id="create-category-form" action="{{ route('categories.store') }}" method="POST" enctype="multipart/form-data">
+        <form id="create-category-form" class="ajax-form" data-success="Category created successfully." action="{{ route('categories.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="px-6 py-4 space-y-6">
                 <div class="relative group">
@@ -48,7 +48,7 @@
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-gray-800 py-4 sm:flex sm:justify-end rounded-b-xl mt-6">
+            <div class="bg-white dark:bg-gray-800 px-5 py-4 sm:flex sm:justify-end rounded-b-xl mt-6">
                 <div class="flex justify-end space-x-3">
                     <button type="submit"
                         class="w-full inline-flex justify-center items-center rounded-xl border border-transparent shadow-sm px-6 py-3 
@@ -63,58 +63,3 @@
         </form>
     </div>
 </div>
-
-<script>
-    document.querySelector('form[id="create-category-form"]').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const form = this;
-        const formData = new FormData(form);
-        const submitBtn = form.querySelector('button[type="submit"]');
-
-        submitBtn.disabled = true;
-        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Creating...';
-
-        fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value,
-                },
-            }).then(async (res) => {
-                const data = await res.json();
-
-                if (res.ok && data.success) {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: data.message,
-                        icon: 'success',
-                        confirmButtonColor: '#6366F1'
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Oops!',
-                        html: (data.errors || ['Something went wrong']).join("<br>"),
-                        icon: 'error',
-                        confirmButtonColor: '#EF4444'
-                    });
-                }
-            })
-            .catch(() => {
-                Swal.fire({
-                    title: 'Oops!',
-                    text: 'Something went wrong',
-                    icon: 'error',
-                    confirmButtonColor: '#EF4444'
-                });
-            })
-            .finally(() => {
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                submitBtn.innerHTML = '<i class="ri-add-line"></i> Create Organization';
-            });
-    });
-</script>

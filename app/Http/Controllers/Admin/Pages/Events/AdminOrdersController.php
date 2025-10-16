@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin\Pages\Events;
 
 use App\Models\Event;
 use App\Models\Order;
-use Illuminate\Support\Facades\Log;
 
 class AdminOrdersController extends AdminBaseController
 {
@@ -17,17 +16,17 @@ class AdminOrdersController extends AdminBaseController
 
         $search = request('search');
 
-$ordersQuery = Order::whereHas('items.product', function ($q) use ($events) {
+        $ordersQuery = Order::whereHas('items.product', function ($q) use ($events) {
             $q->where('event_id', $events->id);
         })
-        ->when($search, function ($query) use ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
-            });
-        })
-        ->select('*')
-        ->selectRaw('(total_price + unique_price) as uniqueAmount');
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->select('*')
+            ->selectRaw('(total_price + unique_price) as uniqueAmount');
 
         $orders = $ordersQuery->orderByDesc('created_at')->paginate(10);
         $totalOrders = $orders->total();
@@ -70,36 +69,15 @@ $ordersQuery = Order::whereHas('items.product', function ($q) use ($events) {
             ->whereHas('items.product', fn ($q) => $q->where('event_id', $eventId))
             ->firstOrFail();
 
-        $method = 'AES-256-CBC';
-        $key = env('QR_ENCRYPTION_KEY');
-
         $uniquePrice = $order->unique_price ?? 0;
         $order->uniqueAmount = $order->total_price + $uniquePrice;
 
-        foreach ($order->attendees as $attendee) {
-            $dataToEncrypt = $attendee->ticket_code;
-            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($method));
-            $encrypted_data = openssl_encrypt($dataToEncrypt, $method, $key, 0, $iv);
+        $attendees = $order->attendees;
 
-            $final_encrypted_output = base64_encode($encrypted_data.'::'.base64_encode($iv));
-
-            $url_qrcode = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&ecc=L&qzone=1&data='.
-                urlencode($final_encrypted_output);
-
-            $attendee->url_qrcode = $url_qrcode;
-
-            Log::debug('Generated QR code for attendee', [
-                'attendee_id' => $attendee->id,
-                'ticket_code' => $attendee->ticket_code,
-                'encrypted_data' => $encrypted_data,
-                'iv_length' => strlen($iv),
-                'final_output' => $final_encrypted_output,
-            ]);
-        }
-        
         return view('pages.admins.index', array_merge($viewData, [
             'events' => $events,
             'order' => $order,
+            'attendees' => $attendees,
         ]));
     }
 }

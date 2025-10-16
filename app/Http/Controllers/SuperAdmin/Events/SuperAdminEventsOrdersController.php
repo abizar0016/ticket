@@ -4,7 +4,6 @@ namespace App\Http\Controllers\SuperAdmin\Events;
 
 use App\Models\Event;
 use App\Models\Order;
-use Illuminate\Support\Facades\Log;
 
 class SuperAdminEventsOrdersController extends SuperAdminEventsBaseController
 {
@@ -60,7 +59,6 @@ class SuperAdminEventsOrdersController extends SuperAdminEventsBaseController
 
     public function show($eventId, $orderId)
     {
-
         $events = Event::with(['user', 'organization'])
             ->findOrFail($eventId);
 
@@ -71,36 +69,15 @@ class SuperAdminEventsOrdersController extends SuperAdminEventsBaseController
             ->whereHas('items.product', fn ($q) => $q->where('event_id', $eventId))
             ->firstOrFail();
 
-        $method = 'AES-256-CBC';
-        $key = env('QR_ENCRYPTION_KEY');
-
         $uniquePrice = $order->unique_price ?? 0;
         $order->uniqueAmount = $order->total_price + $uniquePrice;
 
-        foreach ($order->attendees as $attendee) {
-            $dataToEncrypt = $attendee->ticket_code;
-            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($method));
-            $encrypted_data = openssl_encrypt($dataToEncrypt, $method, $key, 0, $iv);
-
-            $final_encrypted_output = base64_encode($encrypted_data.'::'.base64_encode($iv));
-
-            $url_qrcode = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&ecc=L&qzone=1&data='.
-                urlencode($final_encrypted_output);
-
-            $attendee->url_qrcode = $url_qrcode;
-
-            Log::debug('Generated QR code for attendee', [
-                'attendee_id' => $attendee->id,
-                'ticket_code' => $attendee->ticket_code,
-                'encrypted_data' => $encrypted_data,
-                'iv_length' => strlen($iv),
-                'final_output' => $final_encrypted_output,
-            ]);
-        }
+        $attendees = $order->attendees;
 
         return view('layouts.superAdmin.index', array_merge($viewData, [
             'events' => $events,
             'order' => $order,
+            'attendees' => $attendees,
         ]));
     }
 }

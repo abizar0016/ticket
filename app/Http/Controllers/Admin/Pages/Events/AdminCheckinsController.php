@@ -20,56 +20,73 @@ class AdminCheckinsController extends AdminBaseController
         $status = request('status');
         $today = Carbon::today();
 
-        $attendeesQuery = Attendee::whereHas('order.items.product', fn ($q) => $q->where('event_id', $events->id))
-            ->when($search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', "%$search%")
-                        ->orWhere('ticket_code', 'like', "%$search%");
-                });
-            })
-            ->when($status === 'checked', fn ($q) => $q->whereHas('checkins', fn ($q2) => $q2->whereDate('created_at', $today)))
-            ->when($status === 'pending', fn ($q) => $q->whereDoesntHave('checkins', fn ($q2) => $q2->whereDate('created_at', $today)));
+        // Base query
+        $attendeesQuery = Attendee::whereHas('order.items.product', fn($q) =>
+            $q->where('event_id', $events->id)
+        )
+        ->when($search, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('ticket_code', 'like', "%$search%");
+            });
+        })
+        ->with(['order', 'checkins'])
+        ->select('attendees.*')
+        ->selectRaw('(
+            SELECT MAX(created_at)
+            FROM checkins
+            WHERE checkins.attendee_id = attendees.id
+        ) as last_checkin_at')
+        ->selectRaw('EXISTS (
+            SELECT 1
+            FROM checkins
+            WHERE checkins.attendee_id = attendees.id
+            AND DATE(checkins.created_at) = ?
+        ) as checked_today', [$today])
+        ->orderByRaw("FIELD(status, 'used', 'active', 'pending', 'expired')")
+        ->orderByDesc('last_checkin_at');
 
-        $attendees = $attendeesQuery
-            ->with([
-                'order',
-                'checkins',
-            ])
-            ->select('attendees.*')
-            ->selectRaw('(
-    SELECT MAX(created_at)
-    FROM checkins
-    WHERE checkins.attendee_id = attendees.id
-) as last_checkin_at')
-            ->orderByRaw("FIELD(status, 'used', 'active', 'pending')")
-            ->orderByDesc('last_checkin_at')
-            ->paginate(8);
+        // Filter tab
+        if ($status === 'checked') {
+            $attendeesQuery->whereRaw('EXISTS (
+                SELECT 1 FROM checkins
+                WHERE checkins.attendee_id = attendees.id
+                AND DATE(checkins.created_at) = ?
+            )', [$today]);
+        } elseif ($status === 'pending') {
+            $attendeesQuery->whereRaw('NOT EXISTS (
+                SELECT 1 FROM checkins
+                WHERE checkins.attendee_id = attendees.id
+                AND DATE(checkins.created_at) = ?
+            )', [$today]);
+        }
 
-        $attendees->getCollection()->transform(function ($attendee) {
-            if ($attendee->checkins->isNotEmpty()) {
-                $attendee->status = 'used';
-            }
+        $attendees = $attendeesQuery->paginate(8);
 
-            return $attendee;
-        });
+        // Statistik
+        $totalAttendees = Attendee::whereHas('order.items.product', fn($q) =>
+            $q->where('event_id', $events->id)
+        )->count();
 
-        $totalAttendees = Attendee::whereHas('order.items.product', fn ($q) => $q->where('event_id', $events->id))->count();
-        $checkedInCount = Checkin::whereHas('attendee.order.items.product', fn ($q) => $q->where('event_id', $events->id))
-            ->distinct('attendee_id')
-            ->count('attendee_id');
+        $checkedInCount = Checkin::whereHas('attendee.order.items.product', fn($q) =>
+            $q->where('event_id', $events->id)
+        )
+        ->distinct('attendee_id')
+        ->count('attendee_id');
+
         $recentCheckIns = Checkin::with(['attendee'])
-                ->whereHas('attendee.order.items.product', fn($q) => $q->where('event_id', $events->id))
-                ->orderByDesc('created_at')
-                ->take(5)
-                ->get()
-                ->map(function ($checkin) {
-                    return (object) [
-                        'name' => $checkin->attendee->name,
-                        'checked_in_at' => $checkin->created_at
-                    ];
-                });
+            ->whereHas('attendee.order.items.product', fn($q) =>
+                $q->where('event_id', $events->id)
+            )
+            ->orderByDesc('created_at')
+            ->take(5)
+            ->get()
+            ->map(fn($checkin) => (object) [
+                'name' => $checkin->attendee->name,
+                'checked_in_at' => $checkin->created_at
+            ]);
 
-            return view('pages.admins.index', array_merge($viewData, [
+        return view('pages.admins.index', array_merge($viewData, [
             'events' => $events,
             'attendees' => $attendees,
             'totalAttendees' => $totalAttendees,
