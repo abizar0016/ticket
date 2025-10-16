@@ -14,10 +14,22 @@ class Report extends Model
     protected $fillable = [
         'user_id',
         'event_id',
-        'title',
-        'message',
-        'reply',
+        'reason',
+        'description',
+        'admin_reply',
+        'admin_replied_at',
+        'super_admin_reply',
+        'super_admin_replied_at',
+        'escalated_at',
         'status',
+    ];
+
+    protected $casts = [
+        'admin_replied_at' => 'datetime',
+        'super_admin_replied_at' => 'datetime',
+        'escalated_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function user()
@@ -30,3 +42,4 @@ class Report extends Model
         return $this->belongsTo(Event::class);
     }
 }
+

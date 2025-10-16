@@ -1,9 +1,8 @@
-<div id="reportEventModal"
-    class="fixed inset-0 z-50 hidden flex justify-center items-center overflow-y-auto">
+<div id="reportEventModal" class="fixed inset-0 z-50 hidden flex justify-center items-center overflow-y-auto">
 
     <!-- Backdrop -->
-    <div id="reportEventBackdrop"
-        class="fixed inset-0 bg-gray-900/70 backdrop-blur-sm transition-opacity duration-300"></div>
+    <div id="reportEventBackdrop" class="fixed inset-0 bg-gray-900/70 backdrop-blur-sm transition-opacity duration-300">
+    </div>
 
     <!-- Modal Panel -->
     <div class="relative rounded-2xl overflow-hidden shadow-2xl transform transition-all sm:max-w-2xl w-full 
@@ -26,10 +25,8 @@
         </div>
 
         <!-- Form -->
-        <form id="report-event-form-{{ $event->id }}"
-            class="ajax-form p-6 space-y-6"
-            data-success="Laporan berhasil dikirim."
-            action="" method="POST">
+        <form id="report-event-form" class="ajax-form p-6 space-y-6"
+            data-success="Laporan berhasil dikirim." action="{{ route('reports.store', $event->id) }}" method="POST">
             @csrf
             <input type="hidden" name="event_id" value="{{ $event->id }}">
 
@@ -40,17 +37,18 @@
                 </div>
                 <select name="reason"
                     class="w-full px-5 py-4 pl-14 text-lg rounded-xl border-2 border-gray-200 dark:border-gray-600
-                           bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100
-                           focus:border-red-500 focus:ring-2 focus:ring-red-400/40
-                           transition-all duration-300 outline-none appearance-none"
+           bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100
+           focus:border-red-500 focus:ring-2 focus:ring-red-400/40
+           transition-all duration-300 outline-none appearance-none cursor-pointer"
                     required>
-                    <option value="">Pilih alasan laporan</option>
-                    <option value="event_scam">Event Terindikasi Scam</option>
-                    <option value="inappropriate_content">Konten Tidak Pantas</option>
-                    <option value="false_information">Informasi Palsu</option>
-                    <option value="payment_issue">Masalah Pembayaran</option>
+                    <option value="" disabled selected>Pilih alasan laporan</option>
+                    <option value="Event Terindikasi Scam">Event Terindikasi Scam</option>
+                    <option value="Konten Tidak Pantas">Konten Tidak Pantas</option>
+                    <option value="Informasi Palsu">Informasi Palsu</option>
+                    <option value="Masalah Pembayaran">Masalah Pembayaran</option>
                     <option value="other">Lainnya</option>
                 </select>
+
                 <div class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 dark:text-gray-500">
                     <i class="ri-arrow-down-s-line text-xl"></i>
                 </div>
@@ -88,14 +86,14 @@
                 <button type="button" id="cancelReportEventModal"
                     class="px-6 py-3 rounded-xl border border-gray-300 dark:border-gray-600 
                            bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 
-                           font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300">
-                    <i class="ri-close-line mr-2"></i>Batal
+                           font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 cursor-pointer">
+                    <i class="ri-close-line mr-2"></i>Cancel
                 </button>
 
                 <button type="submit"
                     class="px-6 py-3 rounded-xl bg-gradient-to-r from-red-500 to-red-600 
                            text-white font-semibold shadow-md hover:shadow-lg 
-                           hover:from-red-600 hover:to-red-700 transition-all duration-300">
+                           hover:from-red-600 hover:to-red-700 transition-all duration-300 cursor-pointer">
                     <i class="ri-flag-2-line mr-2"></i>Kirim Laporan
                 </button>
             </div>

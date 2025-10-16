@@ -10,7 +10,6 @@ use App\Actions\Promos\UpdatePromo;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\{Cache, Session};
-use Illuminate\Http\JsonResponse;
 
 class PromoService
 {
@@ -29,12 +28,12 @@ class PromoService
         return (new DeletePromo)->handle($id);
     }
 
-    public function applyPromo(string $token, string $promoCode): JsonResponse
+    public function applyPromo(string $token, string $promoCode)
     {
         return (new ApplyPromo)->handle($token, $promoCode);
     }
 
-    public function removePromo(string $token): JsonResponse
+    public function removePromo(string $token)
     {
         return (new RemovePromo)->handle($token);
     }

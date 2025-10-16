@@ -12,7 +12,7 @@
     </div>
 
     <!-- Table -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow overflow-y-auto">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead class="bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
                 <tr class="text-left">
@@ -51,11 +51,11 @@
                     <td class="px-6 py-4 text-sm">
                         <div class="flex gap-2">
                             <a href="#"
-                               class="inline-flex items-center px-3 py-1 text-xs font-medium text-yellow-600 dark:text-yellow-200 bg-yellow-50 dark:bg-yellow-900 rounded hover:bg-yellow-100">
+                               class="inline-flex items-center px-3 py-1 text-xs font-medium text-yellow-600 dark:text-yellow-200 bg-yellow-50 dark:bg-yellow-900 rounded hover:bg-yellow-100 dark:hover:bg-yellow-800">
                                 <i class="ri-edit-line mr-1"></i>Edit
                             </a>
                             <a href="#"
-                               class="inline-flex items-center px-3 py-1 text-xs font-medium text-red-600 dark:text-red-200 bg-red-50 dark:bg-red-900 rounded hover:bg-red-100">
+                               class="inline-flex items-center px-3 py-1 text-xs font-medium text-red-600 dark:text-red-200 bg-red-50 dark:bg-red-900 rounded hover:bg-red-100 dark:hover:bg-red-800">
                                 <i class="ri-delete-bin-6-line mr-1"></i>Delete
                             </a>
                         </div>

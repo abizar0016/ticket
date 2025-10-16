@@ -31,6 +31,14 @@
         @include('pages.events.promos')
     @break
 
+    @case('reports')
+        @include('pages.events.reports')
+    @break
+
+    @case('reports-show')
+        @include('pages.events.reports-show')
+    @break
+
     @default
         @include('pages.events.dashboard')
 @endswitch

@@ -188,6 +188,11 @@
                                                 class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 font-medium flex items-center gap-1 w-fit">
                                                 <i class="ri-checkbox-circle-line"></i> Paid
                                             </span>
+                                        @elseif($order->status === 'expired')
+                                            <span
+                                                class="px-2 py-1 text-xs rounded-full bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 font-medium flex items-center gap-1 w-fit">
+                                                <i class="ri-close-line"></i> Expired
+                                            </span>
                                         @else
                                             <span
                                                 class="px-2 py-1 text-xs rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 font-medium flex items-center gap-1 w-fit">

@@ -41,6 +41,10 @@
                 @include('pages.events.promos')
             @break
 
+            @case('reports')
+                @include('pages.events.reports')
+            @break
+
             @default
                 @include('pages.events.dashboard')
         @endswitch
@@ -68,6 +72,10 @@
 
     @case('customers-reports')
         @include('pages.superAdmin.customers-reports.index')
+    @break
+
+    @case('reports-show')
+        @include('pages.superAdmin.customers-reports.show')
     @break
 
     @case('activity')

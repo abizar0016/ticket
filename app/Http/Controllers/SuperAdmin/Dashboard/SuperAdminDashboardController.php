@@ -59,16 +59,23 @@ class SuperAdminDashboardController extends SuperAdminBaseController
             ->limit(8)
             ->get();
 
-        $mostIncome = Event::select('events.id', 'events.title', DB::raw('COALESCE(SUM(orders.total_price), 0) as revenue'))
-            ->leftJoin('orders', 'events.id', '=', 'orders.event_id')
-            ->groupBy('events.id', 'events.title')
-            ->orderByDesc('revenue')
-            ->take(5)
-            ->get()
-            ->mapWithKeys(function ($event) {
-                return [$event->title => (int) $event->revenue];
-            })
-            ->toArray();
+        $mostIncome = Event::select(
+            'events.id',
+            'events.title',
+            DB::raw('COALESCE(SUM(orders.total_price), 0) as revenue')
+        )
+                        ->leftJoin('orders', function ($join) {
+                            $join->on('events.id', '=', 'orders.event_id')
+                                ->where('orders.status', '=', 'paid');
+                        })
+                        ->groupBy('events.id', 'events.title')
+                        ->orderByDesc('revenue')
+                        ->take(5)
+                        ->get()
+                        ->mapWithKeys(function ($event) {
+                            return [$event->title => (int) $event->revenue];
+                        })
+                        ->toArray();
 
         $upcomingEvents = Event::where('start_date', '>', now())
             ->orderBy('start_date', 'asc')

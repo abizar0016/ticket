@@ -196,6 +196,13 @@
                                 <span class="menu-item-text font-medium relative z-10 ml-3">Promo</span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route(Auth::user()->role == 'superadmin' ? 'superAdmin.events.reports' : 'admin.events.reports', $eventId) }}"
+                                class="menu-item group relative flex items-center py-3 px-4 rounded-xl transition-all duration-300 text-gray-800 hover:bg-indigo-100 hover:shadow-md hover:shadow-gray-300 dark:hover:bg-gray-800 dark:text-indigo-100 dark:shadow-indigo-300">
+                                <i class="ri-file-warning-line text-xl relative z-10"></i>
+                                <span class="menu-item-text font-medium relative z-10 ml-3">Customer Reports</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             @endif

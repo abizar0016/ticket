@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Common\Categories\CategoriesController;
+use App\Http\Controllers\Common\Report\ReportEventsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Common\Products\ProductsController;
 use App\Http\Controllers\Common\Attendees\AttendeesController;
@@ -44,5 +45,10 @@ Route::put('events/{id}/toggle-publish', [EventsController::class, 'togglePublis
 Route::put('events/{id}/update', [EventsController::class, 'update'])->name('events.update');
 Route::delete('events/{id}/delete', [EventsController::class, 'destroy'])->name('events.delete');
 
+Route::post('/event/{eventId}/report', [ReportEventsController::class, 'store'])->name('reports.store');
+
 Route::post('categories/create', [CategoriesController::class, 'create'])->name('categories.store');
 Route::delete('categories/{id}/delete', [CategoriesController::class, 'destroy'])->name('categories.delete');
+
+Route::post('/report/{id}/admin/reply', [ReportEventsController::class, 'adminUpdate'])->name('admin.reports.reply');
+Route::post('/report/{id}/superadmin/reply', [ReportEventsController::class, 'superAdminUpdate'])->name('superadmin.reports.reply');

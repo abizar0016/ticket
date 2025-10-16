@@ -11,6 +11,7 @@ use App\Http\Controllers\SuperAdmin\Events\SuperAdminEventsDashboardController;
 use App\Http\Controllers\SuperAdmin\Events\SuperAdminEventsOrdersController;
 use App\Http\Controllers\SuperAdmin\Events\SuperAdminEventsProductsController;
 use App\Http\Controllers\SuperAdmin\Events\SuperAdminEventsPromosController;
+use App\Http\Controllers\SuperAdmin\Events\SuperAdminEventsReportsController;
 use App\Http\Controllers\SuperAdmin\Events\SuperAdminEventsSettingsController;
 use App\Http\Controllers\SuperAdmin\Orders\SuperAdminOrdersController;
 use App\Http\Controllers\SuperAdmin\Orders\SuperAdminRevenueReportController;
@@ -33,6 +34,7 @@ Route::middleware(['auth', 'role:superadmin'])
         Route::get('/users', [SuperAdminUsersController::class, 'index'])->name('users');
         Route::get('/organizations', [SuperAdminOrganizationsController::class, 'index'])->name('organizations');
         Route::get('/customers-reports', [SuperAdminCustomersReportsController::class, 'index'])->name('customers-reports');
+        Route::get('/customers-reports/{id}', [SuperAdminCustomersReportsController::class, 'show'])->name('reports.show');
         Route::get('/log-activity', [SuperAdminActivityController::class, 'index'])->name('activities');
         
         Route::prefix('events/{eventId}')->name('events.')->group(function () {
@@ -44,6 +46,7 @@ Route::middleware(['auth', 'role:superadmin'])
             Route::get('/products', [SuperAdminEventsProductsController::class, 'index'])->name('products');
             Route::get('/checkins', [SuperAdminEventsCheckinsController::class, 'index'])->name('checkins');
             Route::get('/promos', [SuperAdminEventsPromosController::class, 'index'])->name('promos');
+            Route::get('/reports', [SuperAdminEventsReportsController::class, 'index'])->name('reports');
             Route::get('/show/{orderId}', [SuperAdminEventsPromosController::class, 'show'])->name('orders.show');
         });
     });

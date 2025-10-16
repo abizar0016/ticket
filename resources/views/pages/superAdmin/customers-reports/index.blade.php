@@ -1,127 +1,129 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 sm:mb-12 gap-4">
-        <div class="flex flex-col gap-2">
-            <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white">
-                Customer Reports
-            </h1>
-            <p class="text-gray-600 dark:text-gray-400 max-w-2xl">
-                Manage all customer reports
-            </p>
-        </div>
-    </div>
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-10 px-4 sm:px-6 lg:px-10">
+    <div class="max-w-7xl mx-auto space-y-10">
+        
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div>
+                <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+                    Customer Reports
+                </h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    Kelola laporan pengguna dari semua event yang terdaftar.
+                </p>
+            </div>
 
-    <!-- Desktop Table -->
-    <div
-        class="hidden md:block bg-white dark:bg-gray-800 shadow-lg rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+            <!-- Filter -->
+            <form method="GET" class="flex flex-wrap sm:flex-nowrap gap-3 bg-white dark:bg-gray-800 
+                                     border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm 
+                                     px-4 py-3">
+                <input type="text" name="search" value="{{ request('search') }}"
+                    placeholder="Cari alasan, user, event..."
+                    class="w-full sm:w-64 rounded-lg border border-gray-300 dark:border-gray-700 
+                           bg-white dark:bg-gray-900 dark:text-gray-200 text-sm 
+                           focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 outline-none" />
+                <select name="status"
+                    class="rounded-lg border border-gray-300 dark:border-gray-700 
+                           bg-white dark:bg-gray-900 dark:text-gray-200 text-sm 
+                           focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 outline-none">
+                    <option value="">Semua Status</option>
+                    @foreach (['unread', 'read', 'replied', 'escalated', 'resolved', 'dismissed'] as $opt)
+                        <option value="{{ $opt }}" @selected(request('status') == $opt)>
+                            {{ ucfirst($opt) }}
+                        </option>
+                    @endforeach
+                </select>
+                <button type="submit"
+                    class="px-5 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold 
+                           hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 transition">
+                    Filter
+                </button>
+            </form>
+        </div>
+
+        <!-- Statistik -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            @php
+                $stats = [
+                    ['label' => 'Total', 'count' => $totalReports, 'color' => 'text-indigo-600 dark:text-indigo-400'],
+                    ['label' => 'Unread', 'count' => $unreadReports, 'color' => 'text-yellow-600 dark:text-yellow-400'],
+                    ['label' => 'Resolved', 'count' => $resolvedReports, 'color' => 'text-green-600 dark:text-green-400'],
+                    ['label' => 'Escalated', 'count' => $escalatedReports, 'color' => 'text-red-600 dark:text-red-400'],
+                ];
+            @endphp
+            @foreach ($stats as $stat)
+                <div class="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                    <p class="text-xs uppercase text-gray-500 dark:text-gray-400 tracking-wider">{{ $stat['label'] }}</p>
+                    <p class="mt-2 text-3xl font-extrabold {{ $stat['color'] }}">{{ $stat['count'] }}</p>
+                </div>
+            @endforeach
+        </div>
+
+        <!-- Tabel -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md overflow-hidden border border-gray-100 dark:border-gray-700">
+            <table class="min-w-full">
+                <thead class="bg-gray-100 dark:bg-gray-700/50">
                     <tr>
-                        <th class="px-6 py-4 text-sm font-semibold">No.</th>
-                        <th class="px-6 py-4 text-sm font-semibold">Reason</th>
-                        <th class="px-6 py-4 text-sm font-semibold">User</th>
-                        <th class="px-6 py-4 text-sm font-semibold">Event</th>
-                        <th class="px-6 py-4 text-sm font-semibold">Message</th>
-                        <th class="px-6 py-4 text-sm font-semibold">Status</th>
-                        <th class="px-6 py-4 text-sm font-semibold">Date</th>
-                        <th class="px-6 py-4 text-sm font-semibold text-right">Actions</th>
+                        @foreach (['User', 'Event', 'Reason', 'Status', 'Tanggal', ''] as $head)
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
+                                {{ $head }}
+                            </th>
+                        @endforeach
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                    @foreach ($customersReports as $report)
-                        <tr
-                            class="hover:shadow-md dark:hover:shadow-gray-700 hover:-translate-y-0.5 transition transform bg-white dark:bg-gray-800">
-                            <td class="px-6 py-5 font-semibold text-gray-800 dark:text-gray-100">{{ $loop->iteration }}
+                    @forelse ($customersReports as $report)
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                                {{ $report->user->name ?? 'N/A' }}
                             </td>
-                            <td class="px-6 py-5 text-gray-700 dark:text-gray-100 truncate max-w-3xs">
-                                {{ $report->reason ?? 'No reason' }}</td>
-                            <td class="px-6 py-5">{{ $report->user->name ?? '-' }}</td>
-                            <td class="px-6 py-5">{{ $report->event->title ?? '-' }}</td>
-                            <td class="px-6 py-5 truncate max-w-3xs">{{ Str::limit($report->description, 50) }}</td>
-                            <td class="px-6 py-5">
+                            <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
+                                {{ $report->event->title ?? 'Tidak ada event' }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                                {{ Str::limit($report->reason ?? '-', 60) }}
+                            </td>
+                            <td class="px-6 py-4">
                                 @php
                                     $statusColors = [
-                                        'unread' => 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-200',
-                                        'read' => 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200',
-                                        'replied' =>
-                                            'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200',
-                                        'escalated' =>
-                                            'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200',
-                                        'resolved' =>
-                                            'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200',
-                                        'dismissed' => 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200',
+                                        'unread' => 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200',
+                                        'read' => 'bg-indigo-100 text-indigo-800 dark:bg-indigo-600/30 dark:text-indigo-300',
+                                        'resolved' => 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200',
+                                        'escalated' => 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200',
+                                        'replied' => 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200',
+                                        'dismissed' => 'bg-gray-100 text-gray-800 dark:bg-gray-600/30 dark:text-gray-300',
                                     ];
+                                    $color = $statusColors[$report->status] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-600/30 dark:text-gray-300';
                                 @endphp
-                                <span
-                                    class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full {{ $statusColors[$report->status] ?? 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-200' }}">
+                                <span class="px-3 py-1.5 rounded-full text-xs font-semibold {{ $color }}">
                                     {{ ucfirst($report->status) }}
                                 </span>
                             </td>
-                            <td class="px-6 py-5 text-sm text-gray-500 dark:text-gray-100">
-                                {{ $report->created_at->format('d M Y') }}</td>
-                            <td class="px-6 py-5 text-right flex justify-end gap-2">
-                                <a href="#"
-                                    class="px-2 py-1 text-xs rounded-md bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 flex items-center space-x-1">
-                                    <i class="ri-eye-line"></i><span>View</span>
-                                </a>
-                                <a href="#"
-                                    class="px-2 py-1 text-xs rounded-md bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 flex items-center space-x-1">
-                                    <i class="ri-delete-bin-line"></i><span>Delete</span>
+                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                                {{ $report->created_at->format('d M Y, H:i') }}
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <a href="{{ route('superAdmin.reports.show', $report->id) }}"
+                                   class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium
+                                          bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200
+                                          hover:bg-blue-200 dark:hover:bg-blue-800 transition">
+                                    <i class="ri-eye-line"></i> View
                                 </a>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="6" class="py-14 text-center text-gray-500 dark:text-gray-400 text-sm">
+                                Belum ada laporan yang ditemukan.
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
-    </div>
 
-    <!-- Mobile Cards -->
-    <div class="block md:hidden space-y-4">
-        @foreach ($customersReports as $report)
-            <div
-                class="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-4 sm:p-6 hover:shadow-xl transition transform hover:-translate-y-0.5">
-                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-                    <div class="flex items-center gap-3">
-                        <span class="text-gray-400 dark:text-gray-300 font-semibold">#{{ $loop->iteration }}</span>
-                        <div class="flex flex-col gap-1">
-                            <p class="font-medium text-gray-800 dark:text-gray-100">
-                                {{ $report->reason ?? 'No reason' }}</p>
-                            <span class="text-gray-500 dark:text-gray-400 text-sm">by
-                                {{ $report->user->name ?? '-' }}</span>
-                        </div>
-                    </div>
-                    <div class="mt-2 sm:mt-0">
-                        <span
-                            class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full {{ $statusColors[$report->status] ?? 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-200' }}">
-                            {{ ucfirst($report->status) }}
-                        </span>
-                    </div>
-                </div>
-                <div class="mt-3 text-sm text-gray-700 dark:text-gray-100">
-                    <p><span class="font-semibold">Event:</span> {{ $report->event->title ?? '-' }}</p>
-                    <p class="mt-1"><span class="font-semibold">Message:</span>
-                        {{ Str::limit($report->description, 200) }}</p>
-                </div>
-                <p class="text-gray-500 dark:text-gray-400 text-xs">Created at:
-                    {{ $report->created_at->format('d M Y') }}</p>
-                <div class="flex justify-end flex-row gap-2 mt-2 sm:mt-0">
-                    <a href="#"
-                        class="px-2 py-1 text-xs rounded-md bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 flex items-center space-x-1">
-                        <i class="ri-eye-line"></i><span>View</span>
-                    </a>
-                    <a href="#"
-                        class="px-2 py-1 text-xs rounded-md bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 flex items-center space-x-1">
-                        <i class="ri-delete-bin-line"></i><span>Delete</span>
-                    </a>
-                </div>
-            </div>
-        @endforeach
-    </div>
-
-    <!-- Pagination -->
-    <div class="mt-6">
-        {{ $customersReports->links() }}
+        <!-- Pagination -->
+        <div class="pt-6 dark:border-gray-700 flex justify-center">
+            {{ $customersReports->links() }}
+        </div>
     </div>
 </div>

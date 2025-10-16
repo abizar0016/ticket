@@ -14,8 +14,12 @@
                     </div>
                     <div class="mt-3 md:mt-0">
                         <span
-                            class="px-3 py-1 rounded-full text-sm font-medium 
-                        {{ $order->status == 'paid' ? 'bg-green-700 text-green-100' : 'bg-yellow-700 text-yellow-100' }}">
+                            class="px-3 py-1 rounded-full text-xs font-medium
+        @if ($order->status === 'paid') bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200
+        @elseif ($order->status === 'expired')
+            bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200
+        @else
+            bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 @endif">
                             {{ strtoupper($order->status) }}
                         </span>
                     </div>
@@ -136,12 +140,12 @@
                                                                 </span>
                                                                 <span
                                                                     class="text-xs px-2 py-1 rounded
-                                    {{ $attendee->status == 'active'
-                                        ? 'bg-green-700 text-green-100'
-                                        : ($attendee->status == 'used'
-                                            ? 'bg-purple-700 text-purple-100'
-                                            : 'bg-yellow-700 text-yellow-100') }}">
-                                                                    {{ strtoupper($attendee->status) }}
+        @if ($order->status === 'paid') bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200
+        @elseif ($order->status === 'expired')
+            bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200
+        @else
+            bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 @endif">
+                                                                    {{ strtoupper($order->status) }}
                                                                 </span>
                                                             </div>
                                                         </div>

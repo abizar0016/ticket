@@ -145,9 +145,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document
-        .getElementById("closeEventModal")
-        ?.addEventListener("click", closeEventModal);
-    document
         .getElementById("cancelEventModal")
         ?.addEventListener("click", closeEventModal);
     eventModal?.addEventListener("click", (e) => {
@@ -550,25 +547,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
             }, 10);
         });
-        
+
     document
-        .getElementById("cancleReportEventModal")
+        .getElementById("cancelReportEventModal")
         ?.addEventListener("click", () => {
-            reportCreateModal.classList.add("hidden");
-            document.body.classList.remove("overflow-hidden");
+            // Jalankan animasi keluar dulu
+            reportCreatePanel.classList.add(
+                "opacity-0",
+                "translate-y-4",
+                "scale-95"
+            );
+            reportCreatePanel.classList.remove(
+                "opacity-100",
+                "translate-y-0",
+                "scale-100"
+            );
 
             setTimeout(() => {
-                reportCreatePanel.classList.add(
-                    "opacity-0",
-                    "translate-y-4",
-                    "scale-95"
-                );
-                reportCreatePanel.classList.remove(
-                    "opacity-100",
-                    "translate-y-0",
-                    "scale-100"
-                );
-            }, 10);
+                reportCreateModal.classList.add("hidden");
+                document.body.classList.remove("overflow-hidden");
+            }, 300);
         });
 
     // ================== DROPDOWNS ==================

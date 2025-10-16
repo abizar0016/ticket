@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\Pages\Events\AdminReportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Pages\Home\AdminHomeController;
 use App\Http\Controllers\Admin\Pages\Events\AdminDashboardController;
@@ -29,6 +30,8 @@ Route::middleware(['auth', 'role:superadmin,admin'])
                 Route::get('/orders/{orderId}', [AdminOrdersController::class, 'show'])->name('orders.show');
                 Route::get('/products', [AdminProductsController::class, 'index'])->name('products');
                 Route::get('/promo', [AdminPromoController::class, 'index'])->name('promos');
+                Route::get('/reports', [AdminReportController::class, 'index'])->name('reports');
+                Route::get('/reports/{reportId}', [AdminReportController::class, 'show'])->name('reports.show');
             });
         });
     });

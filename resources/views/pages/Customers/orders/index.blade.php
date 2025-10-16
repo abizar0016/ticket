@@ -30,10 +30,15 @@
                                     </div>
                                     <div class="flex items-center space-x-4">
                                         <span
-                                            class="px-3 py-1 rounded-full text-xs font-medium 
-                            {{ $order->status == 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                            class="px-3 py-1 rounded-full text-xs font-medium
+        @if ($order->status === 'paid') bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200
+        @elseif ($order->status === 'expired')
+            bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200
+        @else
+            bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 @endif">
                                             {{ strtoupper($order->status) }}
                                         </span>
+
                                         <span class="text-sm font-bold">
                                             Rp {{ number_format($order->uniqueAmount, 0, ',', '.') }}
                                         </span>
