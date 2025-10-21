@@ -27,7 +27,7 @@ class Event extends Model
         'bank_account_name',
         'event_location_id',
         'is_published',
-        'status'
+        'status',
     ];
 
     protected $casts = [
@@ -65,4 +65,18 @@ class Event extends Model
         return $this->hasMany(Attendee::class);
     }
 
+    public function promos()
+    {
+        return $this->hasMany(Promo::class);
+    }
+
+    public function checkins()
+    {
+        return $this->hasMany(Checkin::class);
+    }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
+    }
 }

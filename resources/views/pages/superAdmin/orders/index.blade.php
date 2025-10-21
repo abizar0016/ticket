@@ -81,9 +81,9 @@
                                 </td>
                                 <td class="px-6 py-5 text-sm text-gray-500 dark:text-gray-100">
                                     {{ $order->created_at->format('d M Y, H:i') }}</td>
-                                <td class="px-6 py-5 text-right">
+                                <td class="px-6 py-4 text-center">
                                     <a href="{{ route('superAdmin.events.orders.show', [$order->event->id, $order->id]) }}"
-                                        class="px-2 py-1 text-xs rounded-md bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 flex items-center space-x-1">
+                                        class="inline-flex items-center gap-1 px-3 py-1.5 text-xs rounded-md font-medium bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 transition  ">
                                         <i class="ri-eye-line"></i><span>View</span>
                                     </a>
                                 </td>

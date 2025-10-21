@@ -34,10 +34,17 @@
                                     {{ $loop->iteration }}</td>
                                 <td class="px-6 py-5">
                                     <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-400 to-indigo-500 text-white flex items-center justify-center font-bold">
-                                            {{ strtoupper(substr($user->name, 0, 1)) }}
-                                        </div>
+                                        @if ($user->profile_picture)
+                                            <img src="{{ asset($user->profile_picture) }}" alt="Profile Picture"
+                                                class="w-10 h-10 rounded-full shadow-md border border-gray-200 dark:border-gray-700 object-cover">
+                                        @else
+                                            <div
+                                                class="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-400 to-indigo-500 
+                text-white flex items-center justify-center font-bold text-2xl shadow-md">
+                                                {{ strtoupper(substr($user->name, 0, 1)) }}
+                                            </div>
+                                        @endif
+
                                         <div>
                                             <p class="font-medium text-gray-800 dark:text-gray-100">{{ $user->name }}
                                             </p>
@@ -68,14 +75,21 @@
                                 </td>
                                 <td class="px-6 py-5 text-right">
                                     <div class="flex justify-end gap-2">
-                                        <a href="#"
-                                            class="px-2 py-1 text-xs rounded-md bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 hover:bg-yellow-200 dark:hover:bg-yellow-800 flex items-center space-x-1">
+                                        <button id="open-user-update-modal-{{ $user->id }}"
+                                            data-id="{{ $user->id }}"
+                                            class="px-2 py-1 text-xs rounded-md bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 hover:bg-yellow-200 dark:hover:bg-yellow-800 flex items-center space-x-1 cursor-pointer">
                                             <i class="ri-edit-line"></i><span>Edit</span>
-                                        </a>
-                                        <a href="#"
-                                            class="px-2 py-1 text-xs rounded-md bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 hover:bg-red-200 dark:hover:bg-red-800 flex items-center space-x-1">
-                                            <i class="ri-delete-bin-6-line"></i><span>Delete</span>
-                                        </a>
+                                        </button>
+                                        <form action="{{ route('superAdmin.users.delete', $user->id) }}" method="POST"
+                                            class="inline ajax-form" data-success="User deleted successfully."
+                                            data-confirm="Are you sure you want to delete this user?">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="px-2 py-1 w-20 text-xs rounded-md bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 flex justify-center items-center space-x-1 hover:bg-red-200 dark:hover:bg-red-800 transition">
+                                                <i class="ri-delete-bin-line"></i><span>Delete</span>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -126,10 +140,10 @@
 
                     <!-- Actions -->
                     <div class="flex justify-end gap-2 mt-3">
-                        <a href="#"
-                            class="px-2 py-1 w-24 text-xs rounded-md bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 flex justify-center items-center space-x-1">
+                        <button id="open-user-update-modal-{{ $user->id }}" data-id="{{ $user->id }}"
+                            class="px-2 py-1 w-24 text-xs rounded-md bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 flex justify-center items-center space-x-1 cursor-pointer">
                             <i class="ri-edit-line"></i><span>Edit</span>
-                        </a>
+                        </button>
                         <a href="#"
                             class="px-2 py-1 w-24 text-xs rounded-md bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 flex justify-center items-center space-x-1">
                             <i class="ri-delete-bin-6-line"></i><span>Delete</span>
@@ -145,3 +159,5 @@
         </div>
     </div>
 </div>
+
+@include('modals.users.updateUsers')

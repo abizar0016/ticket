@@ -124,7 +124,7 @@
                 class="flex items-center gap-2 pl-1 pr-2 py-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer">
                 <div class="relative">
                     @if (!empty(Auth::user()->profile_picture))
-                        <img src="{{ Auth::user()->profile_picture }}" alt="{{ Auth::user()->name }}"
+                        <img src="{{ asset(Auth::user()->profile_picture) }}" alt="{{ Auth::user()->name }}"
                             class="w-9 h-9 rounded-full border-2 border-white shadow-sm object-cover">
                     @else
                         <div

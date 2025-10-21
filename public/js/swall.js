@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("form.ajax-form").forEach((form) => {
-        form.addEventListener("submit", function(e) {
+        form.addEventListener("submit", function (e) {
             e.preventDefault();
 
             const runAjax = () => {
@@ -25,46 +25,49 @@ document.addEventListener("DOMContentLoaded", () => {
                         'Accept': 'application/json'
                     }
                 })
-                .then(async (res) => {
-                    const data = await res.json();
+                    .then(async (res) => {
+                        const data = await res.json();
 
-                    if (res.ok && data.success) {
-                        Swal.fire({
-                            title: 'Success!',
-                            text: data.message || successMessage,
-                            icon: 'success',
-                            confirmButtonColor: '#6366F1'
-                        }).then(() => {
-                            if (form.dataset.reload !== "false") {
-                                window.location.reload();
-                            }
-                        });
-                    } else {
-                        let errorMessage = data.message || 
-                            (data.errors ? Object.values(data.errors).join('<br>') : "Something went wrong");
+                        if (res.ok && data.success) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: data.message || successMessage,
+                                icon: 'success',
+                                confirmButtonColor: '#6366F1'
+                            }).then(() => {
+                                // ✅ Cek apakah controller memberikan URL redirect
+                                if (data.redirect) {
+                                    window.location.href = data.redirect;
+                                } else if (form.dataset.reload !== "false") {
+                                    window.location.reload();
+                                }
+                            });
+                        } else {
+                            let errorMessage = data.message ||
+                                (data.errors ? Object.values(data.errors).join('<br>') : "Something went wrong");
 
+                            Swal.fire({
+                                title: 'Oops!',
+                                html: errorMessage,
+                                icon: 'error',
+                                confirmButtonColor: '#EF4444'
+                            });
+                        }
+                    })
+                    .catch(() => {
                         Swal.fire({
-                            title: 'Oops!',
-                            html: errorMessage,
+                            title: 'Network Error',
+                            text: 'Please try again.',
                             icon: 'error',
                             confirmButtonColor: '#EF4444'
                         });
-                    }
-                })
-                .catch(() => {
-                    Swal.fire({
-                        title: 'Network Error',
-                        text: 'Please try again.',
-                        icon: 'error',
-                        confirmButtonColor: '#EF4444'
+                    })
+                    .finally(() => {
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalText;
+                        }
                     });
-                })
-                .finally(() => {
-                    if (submitBtn) {
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = originalText;
-                    }
-                });
             };
 
             const confirmMsg = form.dataset.confirm;

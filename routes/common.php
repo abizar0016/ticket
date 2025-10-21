@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Common\Categories\CategoriesController;
 use App\Http\Controllers\Common\Report\ReportEventsController;
+use App\Http\Controllers\Common\Users\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Common\Products\ProductsController;
 use App\Http\Controllers\Common\Attendees\AttendeesController;
@@ -36,6 +37,8 @@ Route::post('/checkin', [CheckinsController::class, 'processCheckin'])->name('ch
 Route::post('/manual/process', [CheckinsController::class, 'processManualCheckin'])->name('checkins.manual');
 
 Route::post('/organization/store', [OrganizationsController::class, 'store'])->name('organizations.store');
+Route::put('/organization/{id}/update', [OrganizationsController::class, 'update'])->name('organizations.update');
+Route::delete('/organization/{id}/delete', [OrganizationsController::class, 'destroy'])->name('organizations.delete');
 
 Route::post('/checkout', [CheckoutsController::class, 'checkout'])->name('checkouts');
 Route::post('/checkout/submit', [CheckoutsController::class, 'submit'])->name('checkouts.submit');
@@ -52,3 +55,6 @@ Route::delete('categories/{id}/delete', [CategoriesController::class, 'destroy']
 
 Route::post('/report/{id}/admin/reply', [ReportEventsController::class, 'adminUpdate'])->name('admin.reports.reply');
 Route::post('/report/{id}/superadmin/reply', [ReportEventsController::class, 'superAdminUpdate'])->name('superadmin.reports.reply');
+
+Route::put('/user/{id}/update', [UserController::class, 'update'])->name('superAdmin.users.update');
+Route::delete('/user/{id}/delete', [UserController::class, 'destroy'])->name('superAdmin.users.delete');

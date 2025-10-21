@@ -12,7 +12,7 @@ class Organization extends Model
         'name',
     ];
 
-    public function event()
+    public function events()
     {
         return $this->hasMany(Event::class);
     }

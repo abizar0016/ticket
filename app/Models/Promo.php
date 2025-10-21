@@ -19,7 +19,7 @@ class Promo extends Model
         'is_merchandise'
     ];
 
-    public function event()
+    public function events()
     {
         return $this->belongsTo(Event::class);
     }

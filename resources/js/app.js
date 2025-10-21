@@ -78,6 +78,59 @@ function handlePromoUpdateModal(promoId, action) {
         }, 300);
     }
 }
+function handleUserUpdateModal(userId, action) {
+    const modal = document.getElementById(`userUpdateModal-${userId}`);
+    const backdrop = document.getElementById(`userUpdateBackdrop-${userId}`);
+    const panel = document.getElementById(`userUpdatePanel-${userId}`);
+
+    if (!modal || !backdrop || !panel) return;
+
+    if (action === "open") {
+        modal.classList.remove("hidden");
+        document.body.classList.add("overflow-hidden");
+        setTimeout(() => {
+            backdrop.classList.remove("opacity-0");
+            panel.classList.remove("opacity-0", "scale-95");
+            panel.classList.add("opacity-100", "scale-100");
+        }, 10);
+    } else {
+        backdrop.classList.add("opacity-0");
+        panel.classList.remove("opacity-100", "scale-100");
+        panel.classList.add("opacity-0", "scale-95");
+        setTimeout(() => {
+            modal.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
+        }, 300);
+    }
+}
+
+function handleOrganizationUpdateModal(orgId, action) {
+    const modal = document.getElementById(`organizationUpdateModal-${orgId}`);
+    const backdrop = document.getElementById(
+        `organizationUpdateBackdrop-${orgId}`
+    );
+    const panel = document.getElementById(`organizationUpdatePanel-${orgId}`);
+
+    if (!modal || !backdrop || !panel) return;
+
+    if (action === "open") {
+        modal.classList.remove("hidden");
+        document.body.classList.add("overflow-hidden");
+        setTimeout(() => {
+            backdrop.classList.remove("opacity-0");
+            panel.classList.remove("opacity-0", "translate-y-4", "scale-95");
+            panel.classList.add("opacity-100", "translate-y-0", "scale-100");
+        }, 10);
+    } else {
+        backdrop.classList.add("opacity-0");
+        panel.classList.remove("opacity-100", "translate-y-0", "scale-100");
+        panel.classList.add("opacity-0", "translate-y-4", "scale-95");
+        setTimeout(() => {
+            modal.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
+        }, 300);
+    }
+}
 
 // ================== DOMContentLoaded START ==================
 document.addEventListener("DOMContentLoaded", () => {
@@ -160,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 300);
     }
 
-    // ================== ORGANIZation MODAL ==================
+    // ================== ORGANIZATION MODAL ==================
     const organizationModal = document.getElementById("organizationModal");
     const organizationBackdrop = document.getElementById(
         "organizationModalBackdrop"
@@ -199,6 +252,39 @@ document.addEventListener("DOMContentLoaded", () => {
             document.body.classList.remove("overflow-hidden");
         }, 300);
     }
+
+    // ================== ORGANIZATION UPDATE MODAL ==================
+    document
+        .querySelectorAll("[id^='open-organizations-update-modal-']")
+        .forEach((button) => {
+            button.addEventListener("click", function (e) {
+                e.preventDefault();
+                const orgId = this.id.split("-").pop();
+                if (orgId) handleOrganizationUpdateModal(orgId, "open");
+            });
+        });
+
+    // Tutup modal via tombol Cancel
+    document
+        .querySelectorAll("[id^='cancelUpdateOrganizationModal-']")
+        .forEach((button) => {
+            button.addEventListener("click", function () {
+                const orgId = this.id.split("-").pop();
+                if (orgId) handleOrganizationUpdateModal(orgId, "close");
+            });
+        });
+
+    // Tutup modal via klik backdrop
+    document
+        .querySelectorAll("[id^='organizationUpdateModal-']")
+        .forEach((modal) => {
+            modal.addEventListener("click", function (e) {
+                if (e.target === this) {
+                    const orgId = this.id.split("-").pop();
+                    if (orgId) handleOrganizationUpdateModal(orgId, "close");
+                }
+            });
+        });
 
     // ================== ITEM MODAL ==================
     const itemModal = document.getElementById("itemModal");
@@ -401,6 +487,36 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (ticketId) {
                     handleTicketProductUpdateModal(ticketId, "close");
                 }
+            }
+        });
+    });
+
+    // ================== USERS UPDATE MODAL =============
+
+    document
+        .querySelectorAll("[id^='open-user-update-modal-']")
+        .forEach((button) => {
+            button.addEventListener("click", function (e) {
+                e.preventDefault();
+                const userId = this.getAttribute("data-id");
+                if (userId) handleUserUpdateModal(userId, "open");
+            });
+        });
+
+    document
+        .querySelectorAll("[id^='cancelUserUpdateModal-']")
+        .forEach((button) => {
+            button.addEventListener("click", function () {
+                const userId = this.id.split("-").pop();
+                if (userId) handleUserUpdateModal(userId, "close");
+            });
+        });
+
+    document.querySelectorAll('[id^="userUpdateModal-"]').forEach((modal) => {
+        modal.addEventListener("click", function (e) {
+            if (e.target === this) {
+                const userId = this.id.split("-")[1];
+                if (userId) handleUserUpdateModal(userId, "close");
             }
         });
     });

@@ -64,107 +64,205 @@ class SuperAdminDashboardController extends SuperAdminBaseController
             'events.title',
             DB::raw('COALESCE(SUM(orders.total_price), 0) as revenue')
         )
-                        ->leftJoin('orders', function ($join) {
-                            $join->on('events.id', '=', 'orders.event_id')
-                                ->where('orders.status', '=', 'paid');
-                        })
-                        ->groupBy('events.id', 'events.title')
-                        ->orderByDesc('revenue')
-                        ->take(5)
-                        ->get()
-                        ->mapWithKeys(function ($event) {
-                            return [$event->title => (int) $event->revenue];
-                        })
-                        ->toArray();
+            ->leftJoin('orders', function ($join) {
+                $join->on('events.id', '=', 'orders.event_id')
+                    ->where('orders.status', '=', 'paid');
+            })
+            ->groupBy('events.id', 'events.title')
+            ->orderByDesc('revenue')
+            ->take(5)
+            ->get()
+            ->mapWithKeys(function ($event) {
+                return [$event->title => (int) $event->revenue];
+            })
+            ->toArray();
 
         $upcomingEvents = Event::where('start_date', '>', now())
             ->orderBy('start_date', 'asc')
             ->take(5)
             ->get();
 
+        // ✅ Refactored recent activities
         $recentActivities = Activity::with('user')
             ->latest()
             ->take(5)
             ->get()
             ->map(function ($activity) {
                 $relatedName = null;
-                if ($activity->model_type === 'User') {
-                    $user = User::find($activity->model_id);
-                    $relatedName = $user?->name;
-                } elseif ($activity->model_type === 'Organization') {
-                    $organization = Organization::find($activity->model_id);
-                    $relatedName = $organization?->name;
-                } elseif ($activity->model_type === 'Event') {
-                    $event = Event::find($activity->model_id);
-                    $relatedName = $event?->title;
-                } elseif ($activity->model_type === 'Order') {
-                    $order = Order::find($activity->model_id);
-                    $relatedName = 'Order #'.$order?->id;
+                switch ($activity->model_type) {
+                    case 'User':
+                        $relatedName = User::find($activity->model_id)?->name;
+                        break;
+                    case 'Organization':
+                        $relatedName = Organization::find($activity->model_id)?->name;
+                        break;
+                    case 'Event':
+                        $relatedName = Event::find($activity->model_id)?->title;
+                        break;
+                    case 'Attendee':
+                        $relatedName = 'Attendee #'.$activity->model_id;
+                        break;
+                    case 'Product':
+                        $relatedName = 'Product #'.$activity->model_id;
+                        break;
+                    case 'Checkin':
+                        $relatedName = 'Checkin #'.$activity->model_id;
+                        break;
+                    case 'Order':
+                        $relatedName = 'Order #'.$activity->model_id;
+                        break;
+                    case 'Promo':
+                        $relatedName = 'Promo #'.$activity->model_id;
+                        break;
+                    case 'Category':
+                        $relatedName = 'Category #'.$activity->model_id;
+                        break;
                 }
 
                 $userName = $activity->user->name ?? 'Someone';
+                $action = strtolower($activity->action);
+                $model = strtolower($activity->model_type);
 
-                $message = match ($activity->action) {
-                    'register' => "$userName register an account",
-                    'create event' => "$userName membuat $relatedName",
-                    'update event' => "$userName memperbarui $relatedName",
-                    'delete event' => "$userName menghapus $relatedName",
-                    'publish event' => "$userName mempublikasikan $relatedName",
-                    'checkin' => "$userName melakukan check-in",
-                    'checkout' => "$userName melakukan checkout",
-                    'update order' => "$userName memperbarui $relatedName",
-                    'pay order' => "$userName membayar $relatedName",
-                    'delete order' => "$userName membatalkan $relatedName",
-                    'apply promo' => "$userName menggunakan promo $relatedName",
-                    'checkin attendee' => "$userName check-in attendee $relatedName",
-                    default => "$userName melakukan aksi $activity->action",
+                // Pesan Activity
+                $message = match (true) {
+                    $action === 'register' => "$userName mendaftar akun",
+
+                    $action === 'create' && $model === 'event' => "$userName membuat event $relatedName",
+                    $action === 'update' && $model === 'event' => "$userName memperbarui event $relatedName",
+                    $action === 'delete' && $model === 'event' => "$userName menghapus event $relatedName",
+                    $action === 'publish' && $model === 'event' => "$userName mempublikasikan event $relatedName",
+
+                    $action === 'update' && $model === 'order' => "$userName memperbarui $relatedName",
+                    $action === 'delete' && $model === 'order' => "$userName membatalkan $relatedName",
+                    $action === 'mark as paid' && $model === 'order' => "$userName menandai $relatedName sebagai lunas",
+
+                    $action === 'checkin' => "$userName melakukan check-in",
+                    $action === 'checkout' => "$userName melakukan checkout",
+                    $action === 'checkin attendee' => "$userName melakukan check-in untuk attendee $relatedName",
+
+                    $action === 'create' && $model === 'organization' => "$userName membuat organisasi $relatedName",
+                    $action === 'update' && $model === 'organization' => "$userName memperbarui organisasi $relatedName",
+                    $action === 'delete' && $model === 'organization' => "$userName menghapus organisasi $relatedName",
+
+                    $action === 'create' && $model === 'product' => "$userName menambahkan produk $relatedName",
+                    $action === 'update' && $model === 'product' => "$userName memperbarui produk $relatedName",
+                    $action === 'delete' && $model === 'product' => "$userName menghapus produk $relatedName",
+
+                    $action === 'create' && $model === 'promo' => "$userName membuat promo $relatedName",
+                    $action === 'update' && $model === 'promo' => "$userName memperbarui promo $relatedName",
+                    $action === 'delete' && $model === 'promo' => "$userName menghapus promo $relatedName",
+                    $action === 'activate' && $model === 'promo' => "$userName mengaktifkan promo $relatedName",
+                    $action === 'deactivate' && $model === 'promo' => "$userName menonaktifkan promo $relatedName",
+
+                    $action === 'create' && $model === 'category' => "$userName menambahkan kategori $relatedName",
+                    $action === 'update' && $model === 'category' => "$userName memperbarui kategori $relatedName",
+                    $action === 'delete' && $model === 'category' => "$userName menghapus kategori $relatedName",
+
+                    $action === 'create' && $model === 'checkin' => "$userName membuat data check-in baru",
+                    $action === 'delete' && $model === 'checkin' => "$userName menghapus data check-in",
+
+                    default => "$userName melakukan aksi $activity->action pada $activity->model_type",
                 };
 
-                $icon = match ($activity->action) {
-                    'register' => 'ri-user-add-line',
-                    'create event' => 'ri-calendar-event-line',
-                    'update event' => 'ri-edit-line',
-                    'delete event' => 'ri-delete-bin-line',
-                    'publish event' => 'ri-rocket-line',
-                    'checkin' => 'ri-check-line',
-                    'checkout' => 'ri-shopping-cart-line',
-                    'update order' => 'ri-file-edit-line',
-                    'pay order' => 'ri-money-dollar-circle-line',
-                    'delete order' => 'ri-delete-bin-line',
-                    'apply promo' => 'ri-ticket-2-line',
-                    'checkin attendee' => 'ri-calendar-check-line',
+                // Ikon
+                $icon = match (true) {
+                    $action === 'register' => 'ri-user-add-line',
+
+                    $action === 'create' && $model === 'event' => 'ri-calendar-event-line',
+                    $action === 'update' && $model === 'event' => 'ri-edit-line',
+                    $action === 'delete' && $model === 'event' => 'ri-delete-bin-line',
+                    $action === 'publish' && $model === 'event' => 'ri-rocket-line',
+
+                    $action === 'update' && $model === 'order' => 'ri-file-edit-line',
+                    $action === 'delete' && $model === 'order' => 'ri-delete-bin-line',
+                    $action === 'mark as paid' && $model === 'order' => 'ri-money-dollar-circle-line',
+
+                    $action === 'checkin' => 'ri-check-line',
+                    $action === 'checkout' => 'ri-shopping-cart-line',
+                    $action === 'checkin attendee' => 'ri-calendar-check-line',
+
+                    $action === 'create' && $model === 'organization' => 'ri-building-line',
+                    $action === 'update' && $model === 'organization' => 'ri-building-2-line',
+                    $action === 'delete' && $model === 'organization' => 'ri-delete-bin-line',
+
+                    $action === 'create' && $model === 'product' => 'ri-shopping-bag-line',
+                    $action === 'update' && $model === 'product' => 'ri-edit-box-line',
+                    $action === 'delete' && $model === 'product' => 'ri-delete-bin-line',
+
+                    $action === 'create' && $model === 'promo' => 'ri-ticket-2-line',
+                    $action === 'update' && $model === 'promo' => 'ri-edit-line',
+                    $action === 'delete' && $model === 'promo' => 'ri-delete-bin-line',
+                    $action === 'activate' && $model === 'promo' => 'ri-check-double-line',
+                    $action === 'deactivate' && $model === 'promo' => 'ri-close-circle-line',
+
+                    $action === 'create' && $model === 'category' => 'ri-folder-add-line',
+                    $action === 'update' && $model === 'category' => 'ri-folder-chart-line',
+                    $action === 'delete' && $model === 'category' => 'ri-folder-reduce-line',
+
+                    $action === 'create' && $model === 'checkin' => 'ri-login-circle-line',
+                    $action === 'delete' && $model === 'checkin' => 'ri-logout-circle-line',
+
                     default => 'ri-information-line',
                 };
 
-                $bgColor = match ($activity->action) {
-                    'register' => 'bg-indigo-100 dark:bg-indigo-900/60',
-                    'create event' => 'bg-sky-100 dark:bg-sky-900/60',
-                    'update event' => 'bg-amber-100 dark:bg-amber-900/60',
-                    'delete event' => 'bg-rose-100 dark:bg-rose-900/60',
-                    'publish event' => 'bg-emerald-100 dark:bg-emerald-900/60',
-                    'checkin' => 'bg-teal-100 dark:bg-teal-900/60',
-                    'checkout' => 'bg-cyan-100 dark:bg-cyan-900/60',
-                    'update order' => 'bg-orange-100 dark:bg-orange-900/60',
-                    'pay order' => 'bg-green-100 dark:bg-green-900/60',
-                    'delete order' => 'bg-red-100 dark:bg-red-900/60',
-                    'apply promo' => 'bg-purple-100 dark:bg-purple-900/60',
-                    'checkin attendee' => 'bg-yellow-100 dark:bg-yellow-900/60',
+                // Warna latar belakang
+                $bgColor = match (true) {
+                    $action === 'register' => 'bg-indigo-100 dark:bg-indigo-900/60',
+
+                    $action === 'create' && $model === 'event' => 'bg-sky-100 dark:bg-sky-900/60',
+                    $action === 'update' && $model === 'event' => 'bg-amber-100 dark:bg-amber-900/60',
+                    $action === 'delete' && $model === 'event' => 'bg-rose-100 dark:bg-rose-900/60',
+                    $action === 'publish' && $model === 'event' => 'bg-emerald-100 dark:bg-emerald-900/60',
+
+                    $action === 'update' && $model === 'order' => 'bg-orange-100 dark:bg-orange-900/60',
+                    $action === 'delete' && $model === 'order' => 'bg-red-100 dark:bg-red-900/60',
+                    $action === 'mark as paid' && $model === 'order' => 'bg-green-100 dark:bg-green-900/60',
+
+                    $action === 'checkin' => 'bg-teal-100 dark:bg-teal-900/60',
+                    $action === 'checkout' => 'bg-cyan-100 dark:bg-cyan-900/60',
+                    $action === 'checkin attendee' => 'bg-yellow-100 dark:bg-yellow-900/60',
+
+                    $action === 'create' && $model === 'organization' => 'bg-purple-100 dark:bg-purple-900/60',
+                    $action === 'update' && $model === 'organization' => 'bg-fuchsia-100 dark:bg-fuchsia-900/60',
+                    $action === 'delete' && $model === 'organization' => 'bg-rose-100 dark:bg-rose-900/60',
+
+                    $action === 'create' && $model === 'product' => 'bg-indigo-100 dark:bg-indigo-900/60',
+                    $action === 'update' && $model === 'product' => 'bg-blue-100 dark:bg-blue-900/60',
+                    $action === 'delete' && $model === 'product' => 'bg-red-100 dark:bg-red-900/60',
+
+                    $action === 'create' && $model === 'promo' => 'bg-pink-100 dark:bg-pink-900/60',
+                    $action === 'update' && $model === 'promo' => 'bg-pink-200 dark:bg-pink-800/60',
+                    $action === 'delete' && $model === 'promo' => 'bg-rose-100 dark:bg-rose-900/60',
+                    $action === 'activate' && $model === 'promo' => 'bg-green-100 dark:bg-green-900/60',
+                    $action === 'deactivate' && $model === 'promo' => 'bg-gray-100 dark:bg-gray-900/60',
+
+                    $action === 'create' && $model === 'category' => 'bg-cyan-100 dark:bg-cyan-900/60',
+                    $action === 'update' && $model === 'category' => 'bg-blue-100 dark:bg-blue-900/60',
+                    $action === 'delete' && $model === 'category' => 'bg-red-100 dark:bg-red-900/60',
+
+                    $action === 'create' && $model === 'checkin' => 'bg-teal-100 dark:bg-teal-900/60',
+                    $action === 'delete' && $model === 'checkin' => 'bg-rose-100 dark:bg-rose-900/60',
+
                     default => 'bg-gray-100 dark:bg-gray-800',
                 };
 
-                $textColor = match ($activity->action) {
-                    'register' => 'text-indigo-600 dark:text-indigo-300',
-                    'create event' => 'text-sky-600 dark:text-sky-300',
-                    'update event' => 'text-amber-600 dark:text-amber-300',
-                    'delete event' => 'text-rose-600 dark:text-rose-300',
-                    'publish event' => 'text-emerald-600 dark:text-emerald-300',
-                    'checkin' => 'text-teal-600 dark:text-teal-300',
-                    'checkout' => 'text-cyan-600 dark:text-cyan-300',
-                    'update order' => 'text-orange-600 dark:text-orange-300',
-                    'pay order' => 'text-green-600 dark:text-green-300',
-                    'delete order' => 'text-red-600 dark:text-red-300',
-                    'apply promo' => 'text-purple-600 dark:text-purple-300',
-                    'checkin attendee' => 'text-yellow-600 dark:text-yellow-300',
+                // Warna teks
+                $textColor = match (true) {
+                    $action === 'register' => 'text-indigo-600 dark:text-indigo-300',
+
+                    $action === 'create' && $model === 'event' => 'text-sky-600 dark:text-sky-300',
+                    $action === 'update' && $model === 'event' => 'text-amber-600 dark:text-amber-300',
+                    $action === 'delete' && $model === 'event' => 'text-rose-600 dark:text-rose-300',
+                    $action === 'publish' && $model === 'event' => 'text-emerald-600 dark:text-emerald-300',
+
+                    $action === 'update' && $model === 'order' => 'text-orange-600 dark:text-orange-300',
+                    $action === 'delete' && $model === 'order' => 'text-red-600 dark:text-red-300',
+                    $action === 'mark as paid' && $model === 'order' => 'text-green-600 dark:text-green-300',
+
+                    $action === 'checkin' => 'text-teal-600 dark:text-teal-300',
+                    $action === 'checkout' => 'text-cyan-600 dark:text-cyan-300',
+                    $action === 'checkin attendee' => 'text-yellow-600 dark:text-yellow-300',
+
                     default => 'text-gray-600 dark:text-gray-400',
                 };
 
